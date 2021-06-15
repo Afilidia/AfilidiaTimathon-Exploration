@@ -1,6 +1,6 @@
 let data = {
     config: require('./config.json'),
-    colors: require('./colors.json')
+    colors: require('./colors.js')
 }
 
 function Tools() {
@@ -12,7 +12,7 @@ function Tools() {
         let response = {
             level,
             message,
-            date: Date.now()
+            date: new Date().toUTCString()
         }
         if(data.config.debug < level) return reject("Lower debug level (config.json)");
         else if(level < 0) return reject("Level can't be lower than 0 (log)");
