@@ -1,0 +1,38 @@
+@import 'tools';
+
+
+.hamburger-menu {
+    position: absolute;
+    top: (@menu-height / 2);
+    right: 5%;
+    transform: translateY(-50%);
+    opacity: 0;
+
+    .bar-1, .bar-2, .bar-3 {
+        width: 35px;
+        height: 5px;
+        background-color: @light-purple;
+        margin: 6px 0;
+        transition: 0.4s;
+        border-radius: 2px;
+    }
+
+    &.change .bar-1 {
+        -webkit-transform: rotate(-45deg) translate(-9px, 6px);
+        transform: rotate(-45deg) translate(-9px, 6px);
+    }
+
+    &.change .bar-2 {opacity: 0;}
+
+    &.change .bar-3 {
+        -webkit-transform: rotate(45deg) translate(-9px, -7px);
+        transform: rotate(45deg) translate(-9px, -7px);
+    }
+
+    /* MEDIA */
+    @media screen and (max-width: 1100px) {
+        & {
+            opacity: 1;
+        }
+    }
+}
