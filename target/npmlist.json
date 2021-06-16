@@ -1,0 +1,1 @@
+{"version":"0.0.0","name":"afilidiatimathon-exploration","dependencies":{"cookie-parser":{"version":"1.4.5"},"crypto":{"version":"1.0.1"},"debug":{"version":"2.6.9"},"ejs":{"version":"2.6.2"},"express":{"version":"4.16.4"},"http-errors":{"version":"1.6.3"},"less-middleware":{"version":"2.2.1"},"morgan":{"version":"1.9.1"}}}
