@@ -1,6 +1,5 @@
 let express = require('express');
 let router = express.Router();
-let crypto = require('crypto');
 
 router.post('/commit', function(req, res, next) {
     
