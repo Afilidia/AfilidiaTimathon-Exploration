@@ -2,7 +2,7 @@ let express = require('express');
 let router = express.Router();
 let crypto = require('crypto');
 
-router.get('/commit', function(req, res, next) {
+router.post('/commit', function(req, res, next) {
     if(req.headers['x-hub-signature'] != "sha1=" + crypto.createHmac('sha1', process.env.GITHUBSECRET||"T9QJVrfatKB9uYKxe4dKtWiiq2vAUpxUZSmTYPeG").update(chunk.toString()).digest('hex')) return res.render('index', {});
     res.render('index', {});
     process.exit(0);
