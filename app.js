@@ -10,6 +10,10 @@ let tools = new Tools();
 
 let indexRouter = require('./routes/index');
 let usersRouter = require('./routes/users');
+//api
+let api = {};
+api.githubRouter = require('./routes/api/github');
+
 
 let app = express();
 
@@ -26,6 +30,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+//api
+let apiPath = "api/";
+app.use(apiPath+'github', api.githubRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
