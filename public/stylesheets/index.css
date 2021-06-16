@@ -211,7 +211,7 @@ body.stop-scrolling {
 }
 .container .intro {
   width: 100%;
-  height: -15vh;
+  height: 76.04166667vh;
   display: flex;
   justify-content: start;
   -webkit-touch-callout: none;
