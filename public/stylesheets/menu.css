@@ -1,12 +1,30 @@
 /* ALL DEFAULT IMPORTS */
 /* MAIN COLOR PALETTE */
 /* OTHER COLORS */
+.noselect {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+}
 .hamburger-menu {
   position: absolute;
   top: 57.5px;
   right: 5%;
   transform: translateY(-50%);
   opacity: 0;
+  display: none;
+  transition: all 300ms ease-in-out;
+  z-index: 5;
   /* MEDIA */
 }
 .hamburger-menu .bar-1,
@@ -33,5 +51,12 @@
 @media screen and (max-width: 1100px) {
   .hamburger-menu {
     opacity: 1;
+    display: block;
+    transition: all 300ms ease-in-out;
+  }
+}
+@media screen and (max-width: 550px) {
+  .hamburger-menu {
+    top: 45px;
   }
 }
