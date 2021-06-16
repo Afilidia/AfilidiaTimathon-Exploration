@@ -1,3 +1,6 @@
+# Less stylesheet compile non colidable with git
+*.css
+
 # Workspace
 *.code-workspace
 
