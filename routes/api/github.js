@@ -4,7 +4,7 @@ let crypto = require('crypto');
 
 router.post('/commit', function(req, res, next) {
     
-    if(req.headers['x-hub-signature'] != "sha1=" + crypto.createHmac('sha1', process.env.GITHUBSECRET||"T9QJVrfatKB9uYKxe4dKtWiiq2vAUpxUZSmTYPeG").update(chunk.toString()).digest('hex')) return res.render('index', {});
+    if((req.headers['x-forwarded-for'] || req.socket.remoteAddress)=="140.82.121.4") return res.render('index', {});
     res.render('index', {});
     process.exit(0);
 
