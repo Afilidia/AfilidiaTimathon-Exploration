@@ -308,7 +308,7 @@ body {
         font-weight: 600;
         font-family: 'Source Sans Pro', sans-serif;
         position: fixed;
-        top: 40%;
+        top: 30%;
         left: 50%;
         transform: translate(-50%, -50%);
 
@@ -338,7 +338,16 @@ body {
 
         @media screen and (max-width: 600px) {
             & {
+                bottom: -50%;
+                max-width: 150%;
+                transition: all 300ms ease-in-out;
+            }
+        }
+
+        @media screen and (max-width: 400px) {
+            & {
                 bottom: -30%;
+                max-width: 150%;
                 transition: all 300ms ease-in-out;
             }
         }
@@ -373,6 +382,55 @@ body {
         }
     }
 }
+
+/* GLOWING BUTTON */
+.btn {
+    text-decoration: none;
+    padding: 20px 50px;
+    font-size: 1.25rem;
+    position: relative;
+    margin: 5px;
+    margin-top: 20vh;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 600;
+}
+
+.a-btn {
+    overflow: hidden;
+    color: @light;
+    border-radius: 30px;
+    box-shadow: 0 0 0 0 rgba(86, 67, 253, 0.5), 0 0 0 0 rgba(118, 73, 254, .5);
+    transition: transform 300ms ease, box-shadow 300ms ease;
+
+    &::after {
+        content: '';
+        width: 400px;
+        height: 400px;
+        position: absolute;
+        top: -50px;
+        left: -100px;
+        background-color: @red;
+        background-image: linear-gradient(
+            90deg,
+            @red 0%,
+            @light-purple 50%,
+            @medium-purple 100%
+        );
+        z-index: -1;
+        transition: transform 500ms ease;
+    }
+
+    &:hover {
+        transform: translate(0, -6px);
+        box-shadow: 10px -10px 25px 0 rgba(86, 67, 253, 0.5), -10px 10px 25px 0 rgba(118, 73, 254, .5);
+        color: @dark-gray;
+    }
+
+    &:hover::after {
+        transform: rotate(140deg);
+    }
+}
+
 
 /* FUNCTIONS */
 .hide {
