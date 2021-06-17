@@ -1,8 +1,10 @@
 // -*- coding: utf-8 -*-
 
 
-class Renderer {
-    constructor () {}
+class Renderer extends MenuComponent, FooterComponent {
+    constructor (settings) {
+        super();
+    }
 }
 
 
@@ -21,12 +23,12 @@ class Renderer {
  class RendererSingleton {
     static #__INSTANCE = null;
 
-    constructor() {return RendererSingleton.getInstance();}
+    constructor(settings) {return RendererSingleton.getInstance(settings);}
 
-    static getInstance() {
+    static getInstance(settings) {
         if (RendererSingleton.#__INSTANCE) return RendererSingleton.#__INSTANCE;
 
-        RendererSingleton.#__INSTANCE = new Renderer();
+        RendererSingleton.#__INSTANCE = new Renderer(settings);
         return RendererSingleton.#__INSTANCE;
     }
 }
