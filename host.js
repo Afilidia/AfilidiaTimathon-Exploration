@@ -1,6 +1,8 @@
 let express = require('express');
 let fs = require('fs');
-let config = require('./config.json');
+
+let Tools = require('./tools.js');
+let tools = new Tools();
 
 /**
  * ***Host manager***
@@ -13,9 +15,7 @@ let config = require('./config.json');
  * ```
  *  \
  * **Class variable:** \
- * router - used router \
- *  \
- * !WARNING! **You must push generated code to Express app** !WARNING!
+ * router - used router
  */
 class Host {
     constructor(router) {
@@ -27,37 +27,78 @@ class Host {
      *
      * @param {String} path
      * @param {String} files
-     * @param {Function} checker
+     * @param {Function} checker checker(req, res, next)
      * @param {String} redirect
-     * @param {Boolean} log
+     * @param {Number|Boolean} log
      * @memberof Host
      */
     pager = (path, files, checker, redirect, log) => {
-        fs.readdir(files, (err, fileList) => {
-            if (err)
-                throw err;
+        log = log ? parseInt(log) ? log : 2 : 2;
+        fs.readdir(`./views/${files}`, (err, fileList) => {
+            if (err) throw err;
             fileList.forEach(file => {
-                router.get(`${path}/${file}`, (req, res, next) => {
-                    if (!checker(req, res, next))
-                        return res.redirect(redirect);
-                    res.render(file, {});
-                });
+                if(file.slice(file.length-4, file.length-1)) {
+                    file = file.slice(0, file.length-4);
+                    if(log) tools.log(log, `Created endpoint $(fg-green)$(gb-bold)${(file=="index")?`${path}`:`${path}/${file}`}`, "white", "black");
+                    this.router.get((file=="index")?`${path}`:`${path}/${file}`, (req, res, next) => {
+                        let id = tools.randomString(10);
+                        if(log) tools.log(log, `[${id}] Connection to ${path}/${file} from ${req.headers['x-forwarded-for'] || req.socket.remoteAddress}`, "green", "black");
+                        if (!checker(req, res, next)){
+                            if(log) tools.log(log, `[${id}] Redirecting to ${redirect}`, "green", "black");
+                            return res.redirect(redirect);
+                        }
+                        res.render(files+"/"+file, {});
+                    });
+                }
             });
         });
     };
     
+    /**
+     * **Host page**
+     *
+     * @param {String} path
+     * @param {String} template
+     * @param {Function} checker checker(req, res, next)
+     * @param {String} redirect
+     * @param {Number|Boolean} log
+     * @memberof Host
+     */
     page = (path, template, checker, redirect, log) => {
-        router.get(path, (req, res, next) => {
-            if (!checker(req, res, next))
+        log = log ? parseInt(log) ? log : 2 : 2;
+        if(log) tools.log(log, `Created endpoint $(fg-green)$(gb-bold)${path}`, "white", "black");
+        this.router.get(path, (req, res, next) => {
+            if(log) tools.log(log, `[${id}] Connection to ${path} from ${req.headers['x-forwarded-for'] || req.socket.remoteAddress}`, "green", "black");
+            if (!checker(req, res, next)){
+                if(log) tools.log(log, `[${id}] Redirecting to ${redirect}`, "green", "black");
                 return res.redirect(redirect);
+            }
             res.render(template, {});
         });
     };
+    /**
+     * **Host page with custom renderer**
+     *
+     * @param {String} path
+     * @param {String} template
+     * @param {Function} checker checker(req, res, next)
+     * @param {String} redirect
+     * @param {Function} renderer renderer(req, res, next)
+     * @param {Number|Boolean} log
+     * @memberof Host
+     */
     customPage = (path, template, checker, redirect, renderer, log) => {
-        router.get(path, (req, res, next) => {
-            if (!checker(req, res, next)) return res.redirect(redirect);
+        log = log ? parseInt(log) ? log : 2 : 2;
+        if(log) tools.log(log, `Created endpoint $(fg-green)$(gb-bold)${path}`, "white", "black");
+        this.router.get(path, (req, res, next) => {
+            if(log) tools.log(log, `[${id}] Connection to ${path} from ${req.headers['x-forwarded-for'] || req.socket.remoteAddress}`, "green", "black");
+            if (!checker(req, res, next)){
+                if(log) tools.log(log, `[${id}] Redirecting to ${redirect}`, "green", "black");
+                return res.redirect(redirect);
+            }
             renderer(req, res, next);
         });
     };
 }
+
 module.exports = Host;

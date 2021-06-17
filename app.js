@@ -10,8 +10,7 @@ let tools = new Tools();
 
 let landingRouter = require('./routes/landing/manager');
 let appRouter = require('./routes/app/manager');
-//api
-let githubRouter = require('./routes/api/github.js');
+let apiRouter = require('./routes/api/manager');
 
 
 let app = express();
@@ -28,10 +27,8 @@ app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', landingRouter);
-app.use('/app', appRouter);
-//api
-let apiPath = '/api';
-app.use(apiPath+'/github', githubRouter);
+app.use('/', appRouter);
+app.use('/', apiRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -49,6 +46,6 @@ app.use(function(err, req, res, next) {
 	res.render('error');
 });
 
-tools.log(0, 'Loaded');
+tools.log(0, 'Loaded', "green");
 
 module.exports = app;

@@ -38,11 +38,30 @@ class Tools {
         else if (data.config.debug < 0)
             return reject("Level can't be lower than 1 (config.json)");
         let colors = {
-            fg: data.colors[foreground] || data.colors.fg.green,
-            bg: data.colors[background] || data.colors.bg.black
+            fg: data.colors.fg[foreground] || data.colors.fg.green,
+            bg: data.colors.bg[background] || data.colors.bg.black
         };
-        console.log(`${response.date} | ${data.colors.bright}${data.config.name} ${data.colors.reset}> ${colors.fg}${colors.bg}${message}`);
+        for (let colorID of Object.keys(data.colors)) {
+            let color = data.colors[colorID];
+            if(typeof color == "string") message = message.replace(`$(gb-${colorID})`, color);
+        }
+        for (let colorID of Object.keys(data.colors.fg)) {
+            let color = data.colors.fg[colorID];
+            message = message.replace(`$(fg-${colorID})`, color);
+        }
+        for (let colorID of Object.keys(data.colors.bg)) {
+            let color = data.colors.bg[colorID];
+            message = message.replace(`$(bg-${colorID})`, color);
+        }
+        console.log(`${data.colors.reset}${response.date} | ${data.colors.bright}${data.config.name} ${data.colors.reset}> ${colors.fg}${colors.bg}${message}`);
         return response;
     };
+    randomString = (length) => {
+        var result = "";
+        var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        return result;
+    }
 }
 module.exports = Tools;
