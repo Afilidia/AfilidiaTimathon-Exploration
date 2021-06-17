@@ -8,8 +8,8 @@ let logger = require('morgan');
 let Tools = require('./tools.js');
 let tools = new Tools();
 
-let indexRouter = require('./routes/index');
-let usersRouter = require('./routes/users');
+let landingRouter = require('./routes/landing/manager');
+let appRouter = require('./routes/app/manager');
 //api
 let githubRouter = require('./routes/api/github.js');
 
@@ -27,28 +27,28 @@ app.use(cookieParser());
 app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/', landingRouter);
+app.use('/app', appRouter);
 //api
-let apiPath = "/api";
-app.use(apiPath+"/github", githubRouter);
+let apiPath = '/api';
+app.use(apiPath+'/github', githubRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+	next(createError(404));
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+	// set locals, only providing error in development
+	res.locals.message = err.message;
+	res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+	// render the error page
+	res.status(err.status || 500);
+	res.render('error');
 });
 
-tools.log(0, "Loaded")
+tools.log(0, 'Loaded');
 
 module.exports = app;
