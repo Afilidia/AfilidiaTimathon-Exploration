@@ -10,3 +10,12 @@ if (CURRENT_PAGE.split('.')[1] != null) CURRENT_PAGE = CURRENT_PAGE.split('.')[0
 // Create inital Debugger object (Will be saved in singleton design pattern)
 const DEBUGGER = new Debugger(CURRENT_PAGE, Debugger.DEFAULT_SETTINGS);
 Debugger.info(`Currently in > ${CURRENT_PAGE} < page`);
+
+const RENDERER = RendererSingleton.getInstance({
+    renderPages: {
+        'FooterComponent': ['features'],
+        'MenuComponent': ['', 'index', 'features']
+    }
+});
+
+console.log(RENDERER);

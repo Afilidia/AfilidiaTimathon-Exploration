@@ -9,11 +9,11 @@ class Component {
         ];
     }
 
-    readFromFile(filename) {
+    readFromFile(filepath) {
         let content = '';
 
         Promise.all([
-            fetch(filename).then(result => result.text()),
+            fetch(filepath).then(result => result.text()),
         ]).then(response => {
             content = response[0];
         });
