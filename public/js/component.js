@@ -2,7 +2,12 @@
 
 
 class Component {
-    constructor () {}
+    constructor () {
+        this.allComponents = [
+            {name: 'FooterComponent'},
+            {name: 'MenuComponent'}
+        ];
+    }
 
     readFromFile(filename) {
         let content = '';

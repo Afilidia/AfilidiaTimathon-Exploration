@@ -1,9 +1,32 @@
 // -*- coding: utf-8 -*-
 
 
-class Renderer extends MenuComponent, FooterComponent {
+class Renderer {
     constructor (settings) {
-        super();
+
+        // * Create each component instances
+        this.FooterComponent = new FooterComponent();
+        this.MenuComponent = new MenuComponent();
+
+        this.Component = new this.Component();
+
+
+        // * Pages where given element render is enabled
+        this.renderPages = settings.renderPages;
+    }
+
+    // Getter -> get all matching components for CURRENT_PAGE
+    static get getMatchingComponents() {
+
+        if (this.renderPages) {
+            let result = false;
+
+            this.Component.allComponents.forEach(component => {
+                if (this.renderPages[component].includes(CURRENT_PAGE)) result = true;
+            });
+
+            return result;
+        }
     }
 }
 

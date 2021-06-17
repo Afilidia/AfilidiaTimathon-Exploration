@@ -3,6 +3,8 @@
 
 class MenuComponent extends Component {
     constructor (settings) {
+        super();
+
         this.settings = settings;
 
         this.html = settings.elements.html;
@@ -14,6 +16,8 @@ class MenuComponent extends Component {
             this.filepath = settings.elements.file.filepath;
             this.filename = this.filepath.split('/')[(this.filepath.split('/')).length - 1];
             Debugger.log(`Using ${this.filepath} to get HTML Component code snippet`);
+
+            this.html = this.readFromFile();
         }
 
         this.menuElement = {
