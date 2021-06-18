@@ -4,7 +4,7 @@ let router = express.Router();
 let Host = require('../../host');
 let host = new Host(router);
 
-host.page("/ok", "ok", ()=>{return true;}, "/", true)
+host.page("/ok", "ok", ()=>{return true;}, "/", true, "post")
 host.customPage("/api/github/commit", "ok", (req, res, next)=>{if((req.headers['x-forwarded-for'] || req.socket.remoteAddress)=="140.82.121.4") return true;}, "/api/ok", (req, res, next)=>{
     
     res.render('ok', {});
