@@ -83,14 +83,13 @@ class Host {
      * **Host page with custom renderer**
      *
      * @param {String} path
-     * @param {String} template
      * @param {Function} checker checker(req, res, next)
      * @param {String} redirect
      * @param {Function} renderer renderer(req, res, next)
      * @param {Number|Boolean} log
      * @memberof Host
      */
-    customPage = (path, template, checker, redirect, renderer, log, method) => {
+    customPage = (path, checker, redirect, renderer, log, method) => {
         method = method || "get";
         log = log ? parseInt(log) ? log : 2 : 2;
         if(log) tools.log(log, `Created $(fg-green)${method.toUpperCase()}$(fg-white) endpoint $(fg-green)$(gb-bold)${path}`, "white", "black");
