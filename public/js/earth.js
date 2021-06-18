@@ -1,11 +1,6 @@
-document.body.style.backgroundColor = '#000';//'#171133';
-document.getElementById("earth").style.width = '100%';
-document.getElementById("earth").style.height = '100%';
-
-var canvasCloud = document.getElementById("canvasCloud");
-var ctx = canvasCloud.getContext("2d");
-var img = document.getElementById("clouds");
-ctx.drawImage(img, 10, 10);
+// document.body.style.backgroundColor = '#000';//'#171133';
+// document.getElementById("earth").style.width = '100%';
+// document.getElementById("earth").style.height = '100%';
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, 1, 1, 10000 );//window.innerWidth / window.innerHeight, 1, 10000 );
@@ -14,6 +9,7 @@ var renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
 renderer.setSize( 800, 800 );
 renderer.setClearColor( 0x000000, 0 );
 document.getElementById("earth").appendChild( renderer.domElement );
+// document.getElementById("earth").getElementsByTagName("canvas")[0].id = 'earth-canvas';
 
 const light = new THREE.PointLight(0xbfb0cc, 2);
 light.position.set(5, 10, 10);
@@ -117,14 +113,16 @@ $(document).on('mouseup', function(e) {
     isDragging = false;
 });
 
-document.getElementById("hour-range").value = new Date().getHours()*60 + new Date().getMinutes();
-let hour = (document.getElementById("hour-range").value/(24*60))||0;
-setInterval(()=>{
-    hour+=1/60/60;
-    if(hour>=24) hour = 0;
-}, 1000)
+let hour = new Date().getHours()*60*60 + new Date().getMinutes()*60 + new Date().getSeconds();
+// setInterval(()=>{
+//     hour = hour+(1/60/60)||0;
+//     if(hour>=24) hour = 0;
+//     document.getElementById("hour-range").value = hour;
+//     document.getElementById("hour-range-label").innerText = `${Math.floor(hour/60/60)}:${Math.floor(hour/60-Math.floor(hour/60/60))}`;
+// }, 1000);
 function animate() {
     requestAnimationFrame( animate );
+    hour = (document.getElementById("hour-range").value/(60*60));
     let time = hour-12;
     let opacity = 1/12*(time<0?-time:time);
     lightsMesh.material.opacity = opacity;
