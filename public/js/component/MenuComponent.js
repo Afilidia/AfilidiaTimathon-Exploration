@@ -1,6 +1,5 @@
 // -*- coding: utf-8 -*-
 
-
 class MenuComponent extends Component {
     constructor (settings) {
         super();
