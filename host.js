@@ -70,6 +70,7 @@ class Host {
         log = log ? parseInt(log) ? log : 2 : 2;
         if(log) tools.log(log, `Created $(fg-green)${method.toUpperCase()}$(fg-white) endpoint $(fg-green)$(gb-bold)${path}`, "white", "black");
         this.router[method](path, (req, res, next) => {
+            let id = tools.randomString(10);
             if(log) tools.log(log, `[${id}] Connection to ${path} from ${req.headers['x-forwarded-for'] || req.socket.remoteAddress}`, "green", "black");
             if (!checker(req, res, next)){
                 if(log) tools.log(log, `[${id}] Redirecting to ${redirect}`, "green", "black");
@@ -94,6 +95,7 @@ class Host {
         log = log ? parseInt(log) ? log : 2 : 2;
         if(log) tools.log(log, `Created $(fg-green)${method.toUpperCase()}$(fg-white) endpoint $(fg-green)$(gb-bold)${path}`, "white", "black");
         this.router[method](path, (req, res, next) => {
+            let id = tools.randomString(10);
             if(log) tools.log(log, `[${id}] Connection to ${path} from ${req.headers['x-forwarded-for'] || req.socket.remoteAddress}`, "green", "black");
             if (!checker(req, res, next)){
                 if(log) tools.log(log, `[${id}] Redirecting to ${redirect}`, "green", "black");
