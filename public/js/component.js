@@ -18,4 +18,16 @@ class Component {
 
         return content;
     }
+
+    async getHTML(filepath) {
+        return await this.readFromFile(filepath);
+    }
+
+    checkIfHTMLInserted() {
+        return false;
+    }
+
+    checkIfCSSInserted() {
+        return false;
+    }
 }

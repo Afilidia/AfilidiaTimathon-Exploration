@@ -95,24 +95,26 @@ class Renderer {
             }
         }
 
-        Debugger.info(this.renderable);
         this.currentComponents.forEach(component => {
 
             // * Render all enabled components
             if ((component.name != 'parent') && (enabled[component]) && (this.renderPages[component].includes(CURRENT_PAGE))) {
 
                 // * Render each component that fulfills given conditions
-                this.Components[component].object.render();
-                Debugger.info(`Rendered ${component} element`);
+                let rendered = this.Components[component].object.render();
+                if (rendered) Debugger.info(`Rendered ${component} element`);
             }
         });
     }
 
     componentAdder(component, settings) {
-        switch (component) {
-            case 'MenuComponent': {return new MenuComponent(settings)}
-            case 'FooterComponent': {return new FooterComponent(settings)}
-        }
+        try {
+            switch (component) {
+                case 'MenuComponent': {return new MenuComponent(settings)}
+                case 'FooterComponent': {return new FooterComponent(settings)}
+            }
+        } catch (ReferenceError) {}
+
     }
 
     getRenderPages(pagesSettings) {
@@ -131,18 +133,16 @@ class Renderer {
 
     // Get all matching components for CURRENT_PAGE
     get getMatchingComponents() {
+        let result = false;
 
         if (this.renderPages) {
-            let result = false;
 
             this.Component.allComponents.forEach(component => {
                 if (this.renderPages[component.name].includes(CURRENT_PAGE)) result = true;
             });
-
-            return result;
         }
 
-        return [];
+        return result;
     }
 }
 

@@ -17,7 +17,7 @@ const renderer = RendererSingleton.getInstance({
                     'footer.css'
                 ],
 
-                pos: 'end',
+                pos: 'beforeend',
                 elements: {
                     file: {
                         filepath: '/js/txt/footer.txt',
@@ -36,7 +36,7 @@ const renderer = RendererSingleton.getInstance({
                     'menu.css'
                 ],
 
-                pos: 'start',
+                pos: 'afterbegin',
                 elements: {
                     file: {
                         filepath: '/js/txt/menu.txt',
