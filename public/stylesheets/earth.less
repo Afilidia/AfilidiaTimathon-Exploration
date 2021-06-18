@@ -30,6 +30,25 @@
         flex-direction: column;
         color: @light;
 
+        box-shadow: 0 0 1rem 0 rgba(0, 0, 0, .2);
+        border-radius: 5px;
+        background: inherit;
+        overflow: hidden;
+
+        &:before {
+            content: "";
+            position: absolute;
+            background: inherit;
+            z-index: -1;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            box-shadow: inset 0 0 2000px rgba(255, 255, 255, .12);
+            filter: blur(10px);
+            margin: -20px;
+        }
+
         /* .settings-header {
             font-size: 38px;
             font-weight: 600;
@@ -42,8 +61,8 @@
         .settings-wrapper {
             height: auto;
             min-height: 80px;
-            width: 100%;
-            padding: 10 5px;
+            width: (100% - 2px);
+            padding: 10px 5px;
 
             display: flex;
             flex-direction: column;
@@ -61,11 +80,19 @@
                 align-items: center;
                 justify-content: space-around;
 
-                .hour-range-label {
-                    font-size: 22px;
+                &.checkbox-in {
+                    justify-content: start;
+                }
+
+                .label {
                     font-family: 'Source Sans Pro', sans-serif;
+                    position: relative;
+                    left: 1%;
+                    font-size: 22px;
                     font-weight: 500;
                 }
+
+                /* .hour-range-label {} */
 
                 .hour-range[type=range] {
                     height: 26px;
