@@ -124,10 +124,8 @@
             // earthMesh.rotation.y += 1 / 16 * 0.01;
             let size = {x: document.getElementById("earth").clientWidth, y: document.getElementById("earth").clientHeight};
             renderer.setSize(size.x, size.y);
-            console.log(size.x/size.y, camera.aspect)
             camera.aspect = size.x / size.y;
             camera.updateProjectionMatrix();
-            console.log(size.x/size.y, camera.aspect)
             renderer.render( scene, camera );
         }
         animate();
