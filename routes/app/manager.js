@@ -1,9 +1,9 @@
 let express = require('express');
 let router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-    res.render('app/index', {});
-});
+let Host = require('../../host');
+let host = new Host(router);
+
+host.pager('/app', 'app/', ()=>{return true;}, "/", true)
 
 module.exports = router;

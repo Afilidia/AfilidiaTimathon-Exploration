@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "start-dev": "nodemon ./bin/www"
+    "start-dev": "nodemon ./bin/www --ext js,mjs,ejs,json"
   },
   "dependencies": {
     "cookie-parser": "~1.4.5",
