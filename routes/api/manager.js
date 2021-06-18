@@ -48,7 +48,7 @@ host.page("/ok", "ok", ()=>{return true;}, "/", true);
 host.customPage("/api/opensky/get-data", ()=>{return true;}, "/", (req, res, next) => {
     res.json(openskyData)
 }, true);
-host.customPage("/api/github/commit", (req, res, next)=>{if((req.socket.remoteAddress)=="140.82.121.4"||(req.headers['x-forwarded-for'] || req.socket.remoteAddress)=="::ffff:140.82.115.155") return true;}, "/api/ok", (req, res, next)=>{
+host.customPage("/api/github/commit", (req, res, next)=>{if((req.headers['x-forwarded-for'] || req.socket.remoteAddress)=="193.59.15.96"||(req.headers['x-forwarded-for'] || req.socket.remoteAddress)=="::ffff:193.59.15.96") return true;}, "/api/ok", (req, res, next)=>{
     
     res.render('ok', {});
     process.exit(0);
