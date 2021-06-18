@@ -117,7 +117,7 @@ $(document).on('mouseup', function(e) {
     isDragging = false;
 });
 
-
+document.getElementById("hour-range").value = new Date().getHours()*60 + new Date().getMinutes();
 let hour = (document.getElementById("hour-range").value/(24*60))||0;
 setInterval(()=>{
     hour+=1/60/60;
