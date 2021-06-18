@@ -1,0 +1,50 @@
+<div class="footer">
+
+        <div class="column">
+            <span class="logo">
+                <div class="wrapper">
+                    <img src="assets/icons/world-purple.png" width="22px" height="22px" class="project-icon">Planexplore.
+                </div>
+
+                <span class="copyright"><b>&copy</b> 2021 Affilidia Group</span>
+
+                <div class="links">
+                    <a target="_blank" href="" class="footer-link">Github repository</a>
+                    <a target="_blank" href="https://twtcodejam.net/timathon/team/1050/" class="footer-link">Vote on us</a>
+                </div>
+            </span>
+        </div>
+
+        <div class="column middle-column">
+            <span class="column-title">Features</span>
+
+            <div class="links middle-links up">
+                <a target="_blank" href="" class="footer-link">Globe exploration</a>
+                <a target="_blank" href="" class="footer-link">Feature 2</a>
+                <a target="_blank" href="" class="footer-link">Feature 3</a>
+                <a target="_blank" href="" class="footer-link">Feature 4</a>
+                <a target="_blank" href="" class="footer-link">Feature 5</a>
+                <a target="_blank" href="" class="footer-link">Feature 6</a>
+            </div>
+        </div>
+
+        <div class="column middle-column">
+            <span class="column-title">Menu</span>
+
+            <div class="links middle-links up">
+                <a target="_blank" href="index.html" class="footer-link">Home</a>
+                <a target="_blank" href="features.html" class="footer-link">Features</a>
+                <a target="_blank" href="about.html" class="footer-link">About</a>
+                <a target="_blank" href="faq.html" class="footer-link">FAQ</a>
+            </div>
+        </div>
+
+        <div class="column middle-column">
+            <span class="column-title">Info</span>
+
+            <div class="links middle-links up">
+                <a target="_blank" href="features.html" class="footer-link">Resources</a>
+                <a target="_blank" href="about.html" class="footer-link">About</a>
+            </div>
+        </div>
+    </div>
