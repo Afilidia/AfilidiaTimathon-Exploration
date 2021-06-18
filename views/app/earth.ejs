@@ -4,12 +4,19 @@
     <title>Earth Model</title>
     <style>
         body { margin: 0; }
-        canvas { width: 100%; height: 100% }
+        canvas [id~=canvasCloud] { width: 100%; height: 100% }
     </style>
     <script type="text/javascript" src="https://threejs.org/build/three.js" /></script>
 </head>
 <body>
+    <img src="/images/clouds.jpg" style="display: none;" id="clouds">
+    <canvas id="canvasCloud" style="display: none;"></canvas>
     <script>
+        var canvas = document.getElementById("canvasCloud");
+        var ctx = canvas.getContext("2d");
+        var img = document.getElementById("clouds");
+        ctx.drawImage(img, 10, 10);
+
         var scene = new THREE.Scene();
         var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
@@ -17,34 +24,44 @@
         renderer.setSize( window.innerWidth, window.innerHeight );
         document.body.appendChild( renderer.domElement );
         
+        const light = new THREE.PointLight(0xffffff, 2);
+        light.position.set(10, 10, 10);
+        scene.add(light);
+        
         var textureLoader = new THREE.TextureLoader();
 
         var geometry = new THREE.SphereGeometry(1, 32, 32);
         var material = new THREE.MeshPhongMaterial();
-        var earthMesh = new THREE.Mesh(geometry, material);
-
+        material.color= 0xffffff;
         material.map    = textureLoader.load('/images/earthmap1k.jpg');
-        material.bumpMap   = textureLoader.load('/images/earthbump1k.jpg');     
+        material.bumpMap   = textureLoader.load('/images/earthbump1k.jpg');
         material.bumpScale = 0.05;
-
-        material.specularMap = textureLoader.load('/images/earthspec1k.jpg')
-        material.specular  = new THREE.Color('grey')
-        
+        material.specularMap = textureLoader.load('/images/earthspec1k.jpg');
+        material.specular  = 0xffffff;
+        var earthMesh = new THREE.Mesh(geometry, material);
         // var geometry   = new THREE.SphereGeometry(0.51, 32, 32)
         // var material  = new THREE.MeshPhongMaterial({
-        // map         : new textureLoader.load('/images/clouds.jpg'),//Texture(canvasCloud),
-        // side        : THREE.DoubleSide,
-        // opacity     : 0.8,
-        // transparent : true,
-        // depthWrite  : false,
+        //     map         : new THREE.Texture(canvasCloud),
+        //     side        : THREE.DoubleSide,
+        //     opacity     : 0.8,
+        //     transparent : true,
+        //     depthWrite  : false
         // });
+        
+        scene.add( earthMesh );
+        camera.position.z = 2;
+
         // var cloudMesh = new THREE.Mesh(geometry, material);
         // earthMesh.add(cloudMesh);
 
-        // setInterval((delta, now) => {
-        //     cloudMesh.rotation.y += 1 / 8 * delta;
-        //     earthMesh.rotation.y += 1 / 16 * delta;
-        // }, 300)
+        function animate() {
+            requestAnimationFrame( animate );
+            // cloudMesh.rotation.y += 1 / 8 * delta;
+            earthMesh.rotation.y += 1 / 16 * 0.02;
+            renderer.render( scene, camera );
+        }
+        animate();
+        // setInterval(animate, 16);
     </script>
 </body>
 </html>
