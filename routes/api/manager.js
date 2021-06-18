@@ -51,11 +51,14 @@ host.customPage("/api/opensky/get-data", ()=>{return true;}, "/", (req, res, nex
 host.customPage("/api/github/commit", (req, res, next)=>{if((req.headers['x-forwarded-for'] || req.socket.remoteAddress)=="140.82.121.4"||(req.headers['x-forwarded-for'] || req.socket.remoteAddress)=="::ffff:140.82.115.155") return true;}, "/api/ok", (req, res, next)=>{
     
     res.render('ok', {});
-    process.exit(0);
+    restart();
 
     // Our server has an autostart when the application finishes its process (crash or exit)
     // and an automatic update from github at startup, so we use it to update automatically.
 
 }, true, "post");
+function restart() {
+    process.exit(0);
+}
 
 module.exports = router;

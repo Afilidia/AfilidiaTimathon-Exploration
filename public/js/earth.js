@@ -118,7 +118,6 @@ document.getElementById("hour-range").value = `${new Date().getHours()*60*60 + n
 setInterval(()=>{
     document.getElementById("hour-range").value = `${(parseInt(document.getElementById("hour-range").value)+1>86399?0:parseInt(document.getElementById("hour-range").value)+1)}`;
     hour = (document.getElementById("hour-range").value/60/60);
-    console.log(hour);
     if(hour>=24) hour = 0;
     document.getElementById("hour-range-label").innerText = `${Math.floor(hour)<10?`0`+Math.floor(hour):Math.floor(hour)}:${Math.floor((hour-Math.floor(hour))*60)<10?`0`+Math.floor((hour-Math.floor(hour))*60):Math.floor((hour-Math.floor(hour))*60)}`;
 }, 1000);
