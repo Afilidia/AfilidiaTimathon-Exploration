@@ -73,6 +73,13 @@ class Renderer {
         }
     }
 
+    componentAdder(component) {
+        switch (component) {
+            case 'MenuComponent': {return new MenuComponent()}
+            case 'FooterComponent': {return new FooterComponent()}
+        }
+    }
+
 
     /* GETTERS */
 
