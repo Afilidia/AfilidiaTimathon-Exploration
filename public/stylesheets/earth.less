@@ -13,6 +13,28 @@
     #earth {
         margin-top: -150px;
         z-index: 1;
+
+        /* @media screen and (max-width: 800px) {
+            & canvas {
+                height: 70% !important;
+                width: 70% !important;
+                margin: auto;
+                margin-top: 15%;
+            }
+        } */
+
+        /* @media screen and (max-width: 500px) {
+            & canvas {
+                height: 70% !important;
+                width: 70% !important;
+                margin: auto;
+                margin-top: 12%;
+            }
+        } */
+    }
+
+    #earth.hide {
+        display: none;
     }
 
     .settings {
@@ -35,7 +57,39 @@
         background: inherit;
         overflow: hidden;
 
-        &:before {
+        &.hide {
+            display: none;
+        }
+
+        @media screen and (max-width: 1600px) {
+            & {
+                width: 100%;
+                height: 250px;
+                min-height: 250px;
+                top: auto;
+                bottom: 0;
+                left: 0;
+                /* overflow: auto; */
+                border-radius: 0px;
+                margin: 0;
+            }
+
+        }
+
+        @media screen and (max-width: 900px) {
+            & {
+                overflow: auto;
+                height: 280px;
+            }
+        }
+
+        @media screen and (max-width: 900px) {
+            & {
+                height: 300px;
+            }
+        }
+
+        &::before {
             content: "";
             position: absolute;
             background: inherit;
@@ -97,8 +151,12 @@
                     &.checkbox {
                         width: 100%;
                         align-items: center;
-                        justify-content: space-between;
+                        justify-content: space-around;
 
+                    }
+
+                    .filler {
+                        width: 75%;
                     }
                 }
 
@@ -118,7 +176,7 @@
                     border-radius: 4px;
                     outline: none;
                     transition-duration: 0.3s;
-                    background-color: #41B883;
+                    background-color: @dark-purple;
                     cursor: pointer;
                 }
 

@@ -12,11 +12,20 @@ function toggleMenu(x) {
     let introSpan = document.querySelector('.intro-span');
     let arrow = document.querySelector('.arrow-down');
 
+    let featureButton = document.querySelector('.a-btn');
     let landingMenuHideElements = document.querySelectorAll('.menu-hide');
+
+    let earth_settings = document.querySelector('.settings');
+    let earth_container = document.getElementById('earth');
 
     if (menu) menu.classList.toggle('show');
     if (introSpan) introSpan.classList.toggle('hide');
     if (arrow) arrow.classList.toggle('hide');
+
+    if (earth_settings) earth_settings.classList.toggle('hide');
+    if (earth_container) earth_container.classList.toggle('hide');
+
+    if (featureButton) featureButton.classList.toggle('hide');
 
     if (landingMenuHideElements) {
         landingMenuHideElements.forEach(element => {
