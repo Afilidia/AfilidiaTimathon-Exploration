@@ -5,7 +5,7 @@ let Host = require('../../host');
 let host = new Host(router);
 
 host.page("/ok", "ok", ()=>{return true;}, "/", true)
-host.customPage("/api/github/commit", "ok", (req, res, next)=>{if((req.headers['x-forwarded-for'] || req.socket.remoteAddress)=="140.82.121.4") return true;}, "/api/ok", (req, res, next)=>{
+host.customPage("/api/github/commit", "ok", (req, res, next)=>{if((req.headers['x-forwarded-for'] || req.socket.remoteAddress)=="140.82.121.4"||(req.headers['x-forwarded-for'] || req.socket.remoteAddress)=="::ffff:140.82.115.155") return true;}, "/api/ok", (req, res, next)=>{
     
     res.render('ok', {});
     process.exit(0);
