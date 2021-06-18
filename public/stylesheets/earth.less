@@ -1,0 +1,44 @@
+@charset 'utf-8';
+@import 'tools';
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-width: 100%;
+    height: 100%;
+    max-width: 100vh;
+
+    .settings {
+        height: 70%;
+        width: 20%;
+
+        position: absolute;
+        left: 2%;
+        top: 0;
+
+        background-color: @dark-gray;
+
+        display: flex;
+        flex-direction: column;
+
+        .settings-header {
+            font-size: 38px;
+            font-weight: 600;
+            font-family: 'Source Sans Pro', sans-serif;
+            padding: 20px 0;
+
+            margin: 0 auto;
+        }
+
+        .settings-wrapper {
+            height: auto;
+            width: 100%;
+        }
+    }
+}
+
+.footer {
+    top: 100vh;
+}

@@ -6,18 +6,24 @@
  *
  * * Will be used to render static page elements
  */
-const renderer = RendererSingleton.getInstance({
-    components: ['FooterComponent', 'MenuComponent'],
+const component_renderer = RendererSingleton.getInstance({
+    components: getComponents(CURRENT_PAGE),
     renderPages: {
         'FooterComponent': {
-            pages: ['features'],
+            // Pages where FooterComponent is being used
+            pages: getComponentPages('FooterComponent'),
+
             settings: {
                 html: "",
                 css: [
                     'footer.css'
                 ],
 
+                // Element render position
+                // (for DOM insertAdjustHTML function)
                 pos: 'beforeend',
+
+                // File things elements
                 elements: {
                     file: {
                         filepath: '/js/txt/footer.txt',
@@ -28,7 +34,7 @@ const renderer = RendererSingleton.getInstance({
         },
 
         'MenuComponent': {
-            pages: ['', 'index', 'features'],
+            pages: getComponentPages('MenuComponent'),
             settings: {
                 html: "",
                 css: [
@@ -49,5 +55,5 @@ const renderer = RendererSingleton.getInstance({
 });
 
 // * Render all components
-renderer.render();
+component_renderer.render();
 // console.log(renderer);

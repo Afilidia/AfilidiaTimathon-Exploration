@@ -3,7 +3,7 @@
         <div class="column">
             <span class="logo">
                 <div class="wrapper">
-                    <img src="assets/icons/world-purple.png" width="22px" height="22px" class="project-icon">Planexplore.
+                    <img src="/assets/icons/world-purple.png" width="22px" height="22px" class="project-icon">Planexplore.
                 </div>
 
                 <span class="copyright"><b>&copy</b> 2021 Affilidia Group</span>

@@ -18,7 +18,7 @@ class FooterComponent extends Component {
             Debugger.warn('Component HTML is not passed');
             this.filepath = settings.elements.file.filepath;
             if (this.filename == null) this.filename = this.filepath.split('/')[(this.filepath.split('/')).length - 1];
-            Debugger.log(`Using ${this.filepath} to get HTML Component code snippet`);
+            Debugger.log(`Using ${this.filepath} to get HTML FooterComponent code snippet`);
 
             this.HTMLempty = true;
         }

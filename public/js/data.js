@@ -18,8 +18,23 @@ const COMPONENTS = {
     'features': ['FooterComponent', 'MenuComponent'],
     'about': ['FooterComponent', 'MenuComponent'],
     'faq': ['FooterComponent', 'MenuComponent'],
+
+    // Features
+    'earth': ['FooterComponent', 'MenuComponent'],
 };
 
+// Returns all needed components for a given page
 function getComponents(page) {
-    return COMPONENTS[page];
+    return COMPONENTS[page] || '';
+}
+
+// Returns all pages for give component
+function getComponentPages(component) {
+    let pages = [];
+
+    Object.keys(COMPONENTS).forEach(comp => {
+        if (COMPONENTS[comp].includes(component)) pages.push(comp);
+    });
+
+    return pages;
 }

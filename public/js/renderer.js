@@ -18,14 +18,22 @@ class Renderer {
         this.renderable = this.getMatchingComponents;
 
         this.currentComponents = settings.components;
-        this.currentComponents.forEach(component_to_render => {
-            let settings = this.settings.renderPages[component_to_render].settings;
 
-            // * Add component to the components array
-            this.Components[component_to_render] = {name: '', object: null};
-            this.Components[component_to_render].name = component_to_render;
-            this.Components[component_to_render].object = this.componentAdder(component_to_render, settings);
-        });
+        try {
+            this.currentComponents.forEach(component_to_render => {
+                let settings = this.settings.renderPages[component_to_render].settings;
+
+                // * Add component to the components array
+                this.Components[component_to_render] = {name: '', object: null};
+
+                this.Components[component_to_render].name = component_to_render;
+                this.Components[component_to_render].object = this.componentAdder(component_to_render, settings);
+            });
+
+        } catch (TypeError) {
+            Debugger.error(`Probably settings.components are NULL or are a empty string (returning result of getComponents() function in data.js)`);
+        }
+
 
         // * Get each component instances
         if (Object.keys(this.Components).includes('FooterComponent')) this.FooterComponent = this.Components.FooterComponent;
@@ -100,20 +108,30 @@ class Renderer {
             // * Render all enabled components
             if ((component.name != 'parent') && (enabled[component]) && (this.renderPages[component].includes(CURRENT_PAGE))) {
 
-                // * Render each component that fulfills given conditions
-                let rendered = this.Components[component].object.render();
-                if (rendered) Debugger.info(`Rendered ${component} element`);
+                try {
+                    // * Render each component that fulfills given conditions
+                    let rendered = this.Components[component].object.render();
+                    if (rendered) Debugger.info(`Rendered ${component} element`);
+
+                } catch (TypeError) {
+                    console.log(TypeError.message);
+                }
+
             }
         });
     }
 
     componentAdder(component, settings) {
         try {
+            console.log();
             switch (component) {
                 case 'MenuComponent': {return new MenuComponent(settings)}
                 case 'FooterComponent': {return new FooterComponent(settings)}
+                default: {return null}
             }
-        } catch (ReferenceError) {}
+        } catch (ReferenceError) {
+            Debugger.error(ReferenceError.message);
+        }
 
     }
 
