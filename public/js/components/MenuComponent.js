@@ -7,14 +7,14 @@ class MenuComponent extends Component {
         this.settings = settings;
 
         this.html = settings.elements.html;
-        this.filename = null;
+        this.filename = settings.elements.file.filename;
 
         // Component HTML is not passed or is null
         if ((!this.html) || (this.html == '')) {
 
             Debugger.warn('Component HTML is not passed');
             this.filepath = settings.elements.file.filepath;
-            this.filename = this.filepath.split('/')[(this.filepath.split('/')).length - 1];
+            if (this.filename == null) this.filename = this.filepath.split('/')[(this.filepath.split('/')).length - 1];
             Debugger.log(`Using ${this.filepath} to get HTML Component code snippet`);
 
             this.html = this.readFromFile(this.filepath);
