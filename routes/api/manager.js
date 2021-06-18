@@ -13,6 +13,6 @@ host.customPage("/api/github/commit", "ok", (req, res, next)=>{if((req.headers['
     // Our server has an autostart when the application finishes its process (crash or exit)
     // and an automatic update from github at startup, so we use it to update automatically.
 
-}, true);
+}, true, "post");
 
 module.exports = router;
