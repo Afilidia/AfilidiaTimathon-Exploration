@@ -113,16 +113,17 @@ $(document).on('mouseup', function(e) {
     isDragging = false;
 });
 
-let hour = new Date().getHours()*60*60 + new Date().getMinutes()*60 + new Date().getSeconds();
-// setInterval(()=>{
-//     hour = hour+(1/60/60)||0;
-//     if(hour>=24) hour = 0;
-//     document.getElementById("hour-range").value = hour;
-//     document.getElementById("hour-range-label").innerText = `${Math.floor(hour/60/60)}:${Math.floor(hour/60-Math.floor(hour/60/60))}`;
-// }, 1000);
+let hour = 0;
+document.getElementById("hour-range").value = `${new Date().getHours()*60*60 + new Date().getMinutes()*60 + new Date().getSeconds()}`;
+setInterval(()=>{
+    document.getElementById("hour-range").value = `${(parseInt(document.getElementById("hour-range").value)+1>86399?0:parseInt(document.getElementById("hour-range").value)+1)}`;
+    hour = (document.getElementById("hour-range").value/60/60);
+    console.log(hour);
+    if(hour>=24) hour = 0;
+    document.getElementById("hour-range-label").innerText = `${Math.floor(hour)}:${Math.floor((hour-Math.floor(hour))*60)}`;
+}, 1000);
 function animate() {
     requestAnimationFrame( animate );
-    hour = (document.getElementById("hour-range").value/(60*60));
     let time = hour-12;
     let opacity = 1/12*(time<0?-time:time);
     lightsMesh.material.opacity = opacity;
