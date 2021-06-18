@@ -17,8 +17,7 @@ class MenuComponent extends Component {
             if (this.filename == null) this.filename = this.filepath.split('/')[(this.filepath.split('/')).length - 1];
             Debugger.log(`Using ${this.filepath} to get HTML Component code snippet`);
 
-            this.html = this.readFromFile(this.filepath);
-            Debugger.log(`File content: ${this.html}`);
+            this.prepareHTML();
         }
 
         this.menuElement = {
@@ -26,5 +25,13 @@ class MenuComponent extends Component {
             position: settings.elements.pos,
         };
     }
+
+    async prepareHTML() {
+        this.html = await this.readFromFile(this.filepath);
+        // Debugger.log(`File content: ${this.html}`);
+    }
+
+    // * Render element method
+    render() {}
 
 }

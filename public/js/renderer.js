@@ -14,13 +14,17 @@ class Renderer {
         };
 
         // * Pages where given element render is enabled
-        this.renderPages = settings.renderPages;
+        this.renderPages = this.getRenderPages(settings.renderPages);
         this.renderable = this.getMatchingComponents;
 
         this.currentComponents = settings.components;
         this.currentComponents.forEach(component_to_render => {
             let settings = this.settings.renderPages[component_to_render].settings;
-            this.Components[component_to_render] = this.componentAdder(component_to_render, settings);
+
+            // * Add component to the components array
+            this.Components[component_to_render] = {name: '', object: null};
+            this.Components[component_to_render].name = component_to_render;
+            this.Components[component_to_render].object = this.componentAdder(component_to_render, settings);
         });
 
         // * Get each component instances
@@ -33,7 +37,7 @@ class Renderer {
             case 'add': {
                 components.forEach(component => {
                     // ! Check if component is valid and add it to the this.Components Object
-                    if (isValidComponent(component)) this.Components[component] = this.getComponent(component);
+                    if (isValidComponent(component.name)) this.Components[component] = this.componentAdder(component.settings);
                 });
 
             } break;
@@ -60,18 +64,48 @@ class Renderer {
 
     render(args) {
         let arg_Components = null;
+        let arg_Gateway = null;
 
-        // Get arguments
-        if (args.hasOwnProperty('components')) arg_Components = args.components;
+        let enabled = {};
+        this.currentComponents.forEach(component => {
+            enabled[component] = true;
+        });
 
-        if (arg_Components) {
-            if (arg_Components.hasOwnProperty('add')) {
-                this.manageComponents('add', arg_Components.add);
+        // * Get arguments if args are defined
+        if (args !== undefined) {
+            if (args.hasOwnProperty('components')) arg_Components = args.components;
+            if (args.hasOwnProperty('gateway')) arg_Gateway = args.gateway;
 
-            } else {
-                this.manageComponents('remove', arg_Components.remove);
+            // * Adding/removing components before rendering
+            if (arg_Components) {
+                if (arg_Components.hasOwnProperty('add')) {
+                    // ! args have to contain args.components.add .name && .settings
+                    this.manageComponents('add', arg_Components.add);
+
+                } else {
+                    this.manageComponents('remove', arg_Components.remove);
+                }
+            }
+
+            // * Disabling given component once
+            if (arg_Gateway) {
+                Object.keys(arg_Gateway).forEach(component => {
+                    if (arg_Gateway[component] == false) enabled[component] = false;
+                });
             }
         }
+
+        Debugger.info(this.renderable);
+        this.currentComponents.forEach(component => {
+
+            // * Render all enabled components
+            if ((component.name != 'parent') && (enabled[component]) && (this.renderPages[component].includes(CURRENT_PAGE))) {
+
+                // * Render each component that fulfills given conditions
+                this.Components[component].object.render();
+                Debugger.info(`Rendered ${component} element`);
+            }
+        });
     }
 
     componentAdder(component, settings) {
@@ -81,21 +115,34 @@ class Renderer {
         }
     }
 
+    getRenderPages(pagesSettings) {
+        let component_Pages = {};
+
+        let components = Object.keys(pagesSettings);
+        components.forEach(component => {
+            component_Pages[component] = pagesSettings[component].pages;
+        });
+
+        return component_Pages;
+    }
+
 
     /* GETTERS */
 
     // Get all matching components for CURRENT_PAGE
-    static get getMatchingComponents() {
+    get getMatchingComponents() {
 
         if (this.renderPages) {
             let result = false;
 
             this.Component.allComponents.forEach(component => {
-                if (this.renderPages[component].includes(CURRENT_PAGE)) result = true;
+                if (this.renderPages[component.name].includes(CURRENT_PAGE)) result = true;
             });
 
             return result;
         }
+
+        return [];
     }
 }
 

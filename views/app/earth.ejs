@@ -12,47 +12,66 @@
     <img src="/images/clouds.jpg" style="display: none;" id="clouds">
     <canvas id="canvasCloud" style="display: none;"></canvas>
     <script>
-        var canvas = document.getElementById("canvasCloud");
-        var ctx = canvas.getContext("2d");
+        var canvasCloud = document.getElementById("canvasCloud");
+        var ctx = canvasCloud.getContext("2d");
         var img = document.getElementById("clouds");
         ctx.drawImage(img, 10, 10);
 
         var scene = new THREE.Scene();
         var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-        var renderer = new THREE.WebGLRenderer();
+        var renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.setSize( window.innerWidth, window.innerHeight );
         document.body.appendChild( renderer.domElement );
-        
+
         const light = new THREE.PointLight(0xffffff, 2);
         light.position.set(10, 10, 10);
         scene.add(light);
-        
+
+        // ---------
+        var geometry = new THREE.SphereGeometry(1, 32, 32);
         var textureLoader = new THREE.TextureLoader();
 
-        var geometry = new THREE.SphereGeometry(1, 32, 32);
-        var material = new THREE.MeshPhongMaterial();
-        material.color= 0xffffff;
-        material.map    = textureLoader.load('/images/earthmap1k.jpg');
-        material.bumpMap   = textureLoader.load('/images/earthbump1k.jpg');
-        material.bumpScale = 0.05;
-        material.specularMap = textureLoader.load('/images/earthspec1k.jpg');
-        material.specular  = 0xffffff;
-        var earthMesh = new THREE.Mesh(geometry, material);
-        // var geometry   = new THREE.SphereGeometry(0.51, 32, 32)
-        // var material  = new THREE.MeshPhongMaterial({
-        //     map         : new THREE.Texture(canvasCloud),
-        //     side        : THREE.DoubleSide,
-        //     opacity     : 0.8,
-        //     transparent : true,
-        //     depthWrite  : false
-        // });
-        
+        // Textures
+        var map_Texture = textureLoader.load('/images/earthmap1k.jpg');
+        var bumpMap_Texture = textureLoader.load('/images/earthbump1k.jpg');
+        var specularMap_Texture = textureLoader.load('/images/earthspec1k.jpg');
+
+        var earth_Material = new THREE.MeshStandardMaterial({
+            color: new THREE.Color('hsl(0, 100%, 100%)'),
+            // shininess: 50,
+
+            // Maps
+            map: map_Texture,
+            // bumpMap: bumpMap_Texture,
+            // bumpScale: 0.05,
+            // specularMap: specularMap_Texture,
+            // specular: 0xffffff
+        });
+
+        // material.color= 0xffffff;
+        earth_Material.map    = textureLoader.load('/images/earthmap1k.jpg');
+        // material.bumpMap   = textureLoader.load('/images/earthbump1k.jpg');
+        // material.bumpScale = 0.05;
+        // material.specularMap = textureLoader.load('/images/earthspec1k.jpg');
+        // material.specular  = 0xffffff;
+
+        var earthMesh = new THREE.Mesh(geometry, earth_Material);
+
+        var cloud_Geometry   = new THREE.SphereGeometry(0.51, 32, 32)
+        var cloud_Material  = new THREE.MeshPhongMaterial({
+            map         : new THREE.Texture(canvasCloud),
+            side        : THREE.DoubleSide,
+            opacity     : 0.8,
+            transparent : true,
+            depthWrite  : false
+        });
+
         scene.add( earthMesh );
         camera.position.z = 2;
 
-        // var cloudMesh = new THREE.Mesh(geometry, material);
-        // earthMesh.add(cloudMesh);
+        var cloudMesh = new THREE.Mesh(cloud_Geometry, cloud_Material);
+        earthMesh.add(cloudMesh);
 
         function animate() {
             requestAnimationFrame( animate );
@@ -60,7 +79,8 @@
             earthMesh.rotation.y += 1 / 16 * 0.02;
             renderer.render( scene, camera );
         }
-        animate();
+        // animate();
+        renderer.render( scene, camera );
         // setInterval(animate, 16);
     </script>
 </body>
