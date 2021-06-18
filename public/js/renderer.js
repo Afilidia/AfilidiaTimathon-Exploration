@@ -3,28 +3,29 @@
 
 class Renderer {
     constructor (settings) {
-
-        // * Create each component instances
-        this.FooterComponent = new FooterComponent();
-        this.MenuComponent = new MenuComponent();
-
+        this.settings = settings;
         this.Component = new Component();
 
         this.Components = {
-            'FooterComponent': this.FooterComponent,
-            'MenuComponent': this.MenuComponent,
-
             parent: {
                 object: this.Component,
                 name: 'Component'
             }
-
         };
-
 
         // * Pages where given element render is enabled
         this.renderPages = settings.renderPages;
         this.renderable = this.getMatchingComponents;
+
+        this.currentComponents = settings.components;
+        this.currentComponents.forEach(component_to_render => {
+            let settings = this.settings.renderPages[component_to_render].settings;
+            this.Components[component_to_render] = this.componentAdder(component_to_render, settings);
+        });
+
+        // * Get each component instances
+        if (Object.keys(this.Components).includes('FooterComponent')) this.FooterComponent = this.Components.FooterComponent;
+        if (Object.keys(this.Components).includes('MenuComponent')) this.MenuComponent = this.Components.MenuComponent;
     }
 
     manageComponents(type, components) {
@@ -73,10 +74,10 @@ class Renderer {
         }
     }
 
-    componentAdder(component) {
+    componentAdder(component, settings) {
         switch (component) {
-            case 'MenuComponent': {return new MenuComponent()}
-            case 'FooterComponent': {return new FooterComponent()}
+            case 'MenuComponent': {return new MenuComponent(settings)}
+            case 'FooterComponent': {return new FooterComponent(settings)}
         }
     }
 

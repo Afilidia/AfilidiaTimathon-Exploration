@@ -12,6 +12,7 @@ class MenuComponent extends Component {
 
         // Component HTML is not passed or is null
         if ((!this.html) || (this.html == '')) {
+
             Debugger.warn('Component HTML is not passed');
             this.filepath = settings.elements.file.filepath;
             this.filename = this.filepath.split('/')[(this.filepath.split('/')).length - 1];
