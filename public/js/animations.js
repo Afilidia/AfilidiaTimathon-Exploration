@@ -95,4 +95,4 @@ $(document).ready(function() {
 /**
  * * Disable white spaces when dragging on mobile
  */
-document.addEventListener('touchmove', function(e) { e.preventDefault(); }, { passive:false });
+// document.addEventListener('touchmove', function(e) { e.preventDefault(); }, { passive:false });

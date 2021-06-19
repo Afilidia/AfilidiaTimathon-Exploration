@@ -21,7 +21,16 @@ const COMPONENTS = {
 
     // Features
     'earth': ['FooterComponent', 'MenuComponent'],
+    'nearby': ['FooterComponent', 'MenuComponent'],
 };
+
+const MAP_DATA = {
+    'Basic': {
+        map: 'https://api.maptiler.com/maps/basic/?key=rQ7gZ2MALoTqCaR6vhTJ#1/0/0',
+        attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+    },
+};
+
 
 // Returns all needed components for a given page
 function getComponents(page) {
@@ -37,4 +46,8 @@ function getComponentPages(component) {
     });
 
     return pages;
+}
+
+function getMapData(type) {
+    return MAP_DATA[type];
 }
