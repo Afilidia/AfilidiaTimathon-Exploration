@@ -99,7 +99,7 @@ $(renderer.domElement).on('mousedown', function(e) {
 
 $(renderer.domElement).on('touchstart', function() {
     isDragging = true;
-}).on('touchmove', function(e) {
+}).bind('touchy-drag', function(e) {
     mousemove(e);
 });
 
