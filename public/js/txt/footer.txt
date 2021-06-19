@@ -19,7 +19,7 @@
             <span class="column-title">Features</span>
 
             <div class="links middle-links up">
-                <a target="_blank" href="" class="footer-link">Globe exploration</a>
+                <a target="_blank" href="/app/earth" class="footer-link">Globe exploration</a>
                 <a target="_blank" href="" class="footer-link">Feature 2</a>
                 <a target="_blank" href="" class="footer-link">Feature 3</a>
                 <a target="_blank" href="" class="footer-link">Feature 4</a>

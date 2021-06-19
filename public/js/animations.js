@@ -18,14 +18,18 @@ function toggleMenu(x) {
     let earth_settings = document.querySelector('.settings');
     let earth_container = document.getElementById('earth');
 
+    let container = document.querySelector('.container');
+
     if (menu) menu.classList.toggle('show');
     if (introSpan) introSpan.classList.toggle('hide');
     if (arrow) arrow.classList.toggle('hide');
 
-    if (earth_settings) earth_settings.classList.toggle('hide');
-    if (earth_container) earth_container.classList.toggle('hide');
+    // if (earth_settings) earth_settings.classList.toggle('hide');
+    // if (earth_container) earth_container.classList.toggle('hide');
 
-    if (featureButton) featureButton.classList.toggle('hide');
+    // if (featureButton) featureButton.classList.toggle('hide');
+    if (container) container.classList.toggle('hide');
+
 
     if (landingMenuHideElements) {
         landingMenuHideElements.forEach(element => {
