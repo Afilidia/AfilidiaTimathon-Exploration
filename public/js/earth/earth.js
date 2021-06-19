@@ -96,11 +96,13 @@ $(renderer.domElement).on('mousedown', function(e) {
 }).on('mousemove', function(e) {
     mousemove(e);
 });
+
 $(renderer.domElement).on('touchstart', function() {
     isDragging = true;
 }).on('touchmove', function(e) {
     mousemove(e);
 });
+
 function mousemove(e) {
     //console.log(e);
     var deltaMove = {
