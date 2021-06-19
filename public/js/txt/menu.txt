@@ -18,13 +18,13 @@
                 </div>
             </a>
 
-            <a href="#" class="option-redirect">
+            <a href="/about.html" class="option-redirect">
                 <div class="option">
                     <span class="option-text">About</span>
                 </div>
             </a>
 
-            <a href="#" class="option-redirect">
+            <a href="/faq.html" class="option-redirect">
                 <div class="option">
                     <span class="option-text">FAQ</span>
                 </div>

@@ -10,7 +10,7 @@
     <link rel="stylesheet"  type="text/css" href="/stylesheets/menu.css">
     <link rel="stylesheet"  type="text/css" href="/stylesheets/index.css">
     <link rel="stylesheet"  type="text/css" href="/stylesheets/footer.css">
-    <link rel="stylesheet"  type="text/css" href="/stylesheets/earth.css">
+    <link rel="stylesheet"  type="text/css" href="/stylesheets/about.css">
 
     <!-- GOOGLE FONTS -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -19,48 +19,37 @@
     <!-- JQUERY -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
-    <!-- 3D SCRIPTS -->
-    <script type="text/javascript" src="https://threejs.org/build/three.js"></script>
-    <script type="text/javascript" src="/js/OBJLoader.js"></script>
-
-    <title>Globe exploration | Planexplore</title>
+    <title>About | Planexplore</title>
 </head>
 <body>
     <!-- MENU IS BEING RENDERED BY render.js - (MenuComponent) -->
 
     <div class="container">
-        <div class="settings">
-            <div class="settings-wrapper">
-                <span class="settings-name">Earth hour</span>
-
-                <div class="setting-content-wrapper">
-                    <label for="hour-range" class="hour-range-label label" id="hour-range-label">00:00</label>
-                    <input type="range" id="hour-range" class="hour-range" min="0" max="86399" value="0">
-                </div>
-            </div>
-
-            <div class="settings-wrapper">
-                <span class="settings-name">Aircrafts</span>
-
-                <div class="setting-content-wrapper checkbox-in">
-                    <label for="aircrafts-checkbox" class="label checkbox" id="hour-range-label">
-                        <span>ON</span>
-                        <div class="filler"></div>
-                        <input type="checkbox" id="aircrafts-checkbox" class="checkbox" value="1">
-                    </label>
-
-                </div>
-            </div>
+        <div class="about-header">
+            <span class="about-header-span">About</span>
+            <span class="dots">...</span>
         </div>
 
-        <!-- EARTH CANVAS HOLDER -->
-        <div id="earth" style="width: 100%; height: 100%;"></div>
-    </div>
+        <div class="buttons">
+            <a href="https://twtcodejam.net/timathon/team/1050/" class="btn a-btn about-btn">Vote</a>
+            <a href="https://twtcodejam.net/timathon/" class="btn a-btn about-btn">Timathon</a>
+            <a href="https://github.com/Afilidia/AfilidiaTimathon-Exploration/tree/main" class="btn a-btn about-btn">Repo</a>
+        </div>
 
+        <div class="about-content">
+            <p class="about-paragraphf">
+                <span class="bold">Planexplore</span> project - made by Afilidia Group for Timathon 2021 in June.
+                Jam Theme was 'Exploration'. About 230 teams took part in June's coding competition.
+
+                The project we created represents aircrafts visualization, every flying plane exploration and some more.
+                Page uses three.js library to generate Earth model. All resources are from free pages
+                and MIT or Apache license shared.
+            </p>
+        </div>
+    </div>
 
     <!-- FOOTER IS BEING RENDERED BY render.js - (FooterComponent)-->
 
-    <script src="/js/earth.js" type="text/javascript"></script>
     <script src="/js/debugger.js" type="text/javascript"></script>
     <script src="/js/data.js" type="text/javascript"></script>
     <script src="/js/component.js" type="text/javascript"></script>
