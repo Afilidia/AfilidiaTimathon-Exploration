@@ -96,7 +96,7 @@ $(renderer.domElement).on('mousedown', function(e) {
 }).on('mousemove', function(e) {
     mousemove(e);
 });
-$(renderer.domElement).on('touchstart', function(e) {
+$(renderer.domElement).on('touchstart', function() {
     isDragging = true;
 }).on('touchmove', function(e) {
     mousemove(e);
@@ -175,7 +175,7 @@ setInterval(()=>{
 $(document).on('mouseup', function(e) {
     isDragging = false;
 });
-$(document).on('touchend', function(e) {
+$(document).on('touchend', function() {
     isDragging = false;
 });
 
