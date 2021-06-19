@@ -66,6 +66,26 @@ $(document).ready(function() {
                 $("html, body").animate({ scrollTop: document.body.scrollHeight }, 300);
             });
         } break;
+
+        case 'faq' || 'faq.html': {
+            // Answer slide down animation
+            let pluses = document.querySelectorAll('.pluses');
+
+            if (pluses) pluses.forEach(plus => {
+                plus.addEventListener('click', () => {
+                    let plus2 = plus.querySelector('.plus-2');
+
+                    // Get answer from 'question' class
+                    let answer = plus.parentElement.parentElement.querySelector('.answer');
+                    let wrapper = plus.querySelector('.question-wrapper');
+
+                    if (plus2) plus2.classList.toggle('rotate');
+                    if (answer) answer.classList.toggle('show');
+                    if (wrapper) wrapper.classList.toggle('change-bg');
+                });
+            });
+
+        } break;
     }
 
 
