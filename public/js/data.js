@@ -26,7 +26,7 @@ const COMPONENTS = {
 
 const MAP_DATA = {
     'Basic': {
-        map: 'https://api.maptiler.com/maps/basic/?key=rQ7gZ2MALoTqCaR6vhTJ#1/0/0',
+        map: 'https://studio.mapbox.com/styles/afilidiagroup/ckq41dm4d2vju18mjnvw3g6vi/edit/#12/48.8665/2.3176',
         attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
     },
 };
