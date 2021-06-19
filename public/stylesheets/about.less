@@ -19,6 +19,8 @@
 
         font-family: 'Source Sans Pro', sans-serif;
 
+        .noselect();
+
         .about-header-span {
             font-size: 5em;
             font-weight: 600;
@@ -58,13 +60,13 @@
         flex-direction: column;
         align-items: center;
 
-        .about-paragraphf {
+        .about-paragraph {
             width: 50%;
             font-size: 18px;
             color: @light;
             font-family: 'Source Sans Pro', sans-serif;
             text-align: center;
-            margin-top: 50px;
+            margin: 100px 0;
 
             @media screen and (max-width: 1400px) {
                 & {
@@ -72,9 +74,78 @@
                 }
             }
         }
+
+        .tiles {
+            width: 60%;
+            height: 40%;
+
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+
+            /* GLASSMORPHISM */
+            background: rgba( 86, 67, 253, 0.30 );
+            box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+            backdrop-filter: blur( 0.0px );
+            -webkit-backdrop-filter: blur( 0.0px );
+            border-radius: 10px;
+            border: 1px solid rgba( 255, 255, 255, 0.18 );
+
+            .tiles-header {
+                font-size: 32px;
+                color: @light;
+                font-family: 'Fredoka One', cursive;
+                font-weight: 400;
+            }
+
+            .tile {
+                width: 40%;
+                height: 90%;
+                background-color: #505050;
+                border-radius: 15px;
+
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: space-around;
+
+                font-family: 'Source Sans Pro', sans-serif;
+
+                .tile-header {
+                    font-size: 18px;
+                    color: @light;
+                    font-weight: 700;
+
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+
+                    width: auto;
+                    min-width: 200px;
+                    height: auto;
+
+                    .tile-icon {
+                        width: 32px;
+                        height: 32px;
+                    }
+                }
+
+                .tile-paragraph {
+                    width: 70%;
+                    color: @light-gray;
+                    font-size: 16px;
+                    font-weight: 400;
+                    margin-bottom: 40px;
+                }
+            }
+        }
     }
 }
 
 .footer {
-    top: 100vh;
+    top: 150vh;
+}
+
+.bold {
+    font-weight: 600;
 }
