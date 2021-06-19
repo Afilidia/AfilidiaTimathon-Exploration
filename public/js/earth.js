@@ -152,36 +152,24 @@ function toDegrees(angle) {
 let MODELS = [
     { name: "bae146" }
 ];
+
 for ( let i = 0; i < MODELS.length; ++ i ) {
 
     const m = MODELS[ i ];
 
     loadGltfModel( m, function () {
-
-        ++ numLoadedModels;
-
-        if ( numLoadedModels === MODELS.length ) {
-
-            console.log( "All models loaded, time to instantiate units..." );
-            instantiateUnits();
-
-        }
-
+        fetch(`/api/opensky/get-data?model=${m.name}`)
+        .then(res => res.json())
+        .then(async res => {
+            console.log(`Loaded config for ${m.name} with ${res.states.length} states.`);
+            res.states.forEach(async state => {
+                let coords = await llhxyz(state.x,state.y,state.z);
+                spawnPlane((coords[0]/6378.137*1),-(coords[1]/6378.137*1),(coords[2]/6378.137*1));
+            });
+        });
     } );
 
 }
-
-loadGltfModel( {name: "bae146", scene}, function () {
-    fetch("/api/opensky/get-data")
-    .then(res => res.json())
-    .then(async res => {
-        console.log("Loaded states config", res.states.length);
-        res.states.forEach(async state => {
-            let coords = await llhxyz(state.x,state.y,state.z);
-            spawnPlane((coords[0]/6378.137*1),-(coords[1]/6378.137*1),(coords[2]/6378.137*1));
-        });
-    });
-} );
 
 // let objLoader = new THREE.OBJLoader();
 // let airplanes = [];
