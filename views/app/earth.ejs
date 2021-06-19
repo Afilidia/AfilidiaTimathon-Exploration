@@ -21,9 +21,15 @@
 
     <!-- 3D SCRIPTS -->
     <script type="text/javascript" src="https://threejs.org/build/three.js"></script>
-    <script type="text/javascript" src="/js/OBJLoader.js"></script>
-    <script type="text/javascript" src="/js/coords.js"></script>
-    <script type="text/javascript" src="/js/GLTFLoader.js"></script>
+    <script type="text/javascript" src="/js/earth/OBJLoader.js"></script>
+    <script type="text/javascript" src="/js/earth/coords.js"></script>
+    <script type="text/javascript" src="/js/earth/GLTFLoader.js"></script>
+    <script type="text/javascript" src="/js/earth/Pass.js"></script>
+    <script type="text/javascript" src="/js/earth/RenderPass.js"></script>
+    <script type="text/javascript" src="/js/earth/ShaderPass.js"></script>
+    <script type="text/javascript" src="/js/earth/CopyShader.js"></script>
+    <script type="text/javascript" src="/js/earth/EffectComposer.js"></script>
+    <script type="text/javascript" src="/js/earth/helper.js"></script>
 
     <title>Globe exploration | Planexplore</title>
 </head>
@@ -59,10 +65,10 @@
         <div id="earth" style="width: 100%; height: 100%;"></div>
     </div>
 
+    <script src="/js/earth/earth.js" type="text/javascript"></script>
 
     <!-- FOOTER IS BEING RENDERED BY render.js - (FooterComponent)-->
 
-    <script src="/js/earth.js" type="text/javascript"></script>
     <script src="/js/debugger.js" type="text/javascript"></script>
     <script src="/js/data.js" type="text/javascript"></script>
     <script src="/js/component.js" type="text/javascript"></script>
