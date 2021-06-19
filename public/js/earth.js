@@ -3,7 +3,7 @@
 // document.getElementById("earth").style.height = '100%';
 
 var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera( 75, 1, 1, 10000 );//window.innerWidth / window.innerHeight, 1, 10000 );
+var camera = new THREE.PerspectiveCamera( 65, 1, 1, 10000 );//window.innerWidth / window.innerHeight, 1, 10000 );
 
 var renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
 renderer.setSize( 800, 800 );
@@ -12,8 +12,10 @@ document.getElementById("earth").appendChild( renderer.domElement );
 // document.getElementById("earth").getElementsByTagName("canvas")[0].id = 'earth-canvas';
 
 const light = new THREE.PointLight(0xbfb0cc, 2);
-light.position.set(5, 10, 10);
+light.position.set(10, 10, 10);
 scene.add(light);
+const ambient = new THREE.AmbientLight(0xbfb0cc, 0.1);
+scene.add(ambient);
 
 var textureLoader = new THREE.TextureLoader();
 
@@ -121,6 +123,16 @@ setInterval(()=>{
     if(hour>=24) hour = 0;
     document.getElementById("hour-range-label").innerText = `${Math.floor(hour)<10?`0`+Math.floor(hour):Math.floor(hour)}:${Math.floor((hour-Math.floor(hour))*60)<10?`0`+Math.floor((hour-Math.floor(hour))*60):Math.floor((hour-Math.floor(hour))*60)}`;
 }, 1000);
+
+let OBJLoader = new THREE.OBJLoader();
+// let airplanes = [];
+// spawnPlane = (x, y, z) => {
+//     let obj = OBJLoader.load("/assets/models/airplane1/11803_Airplane_v1_l1.obj");
+//     obj.position.set(x, y, z);
+//     scene.add(obj);
+//     airplanes.push(obj);
+// }
+// spawnPlane( 0, 1.5, 0 );
 function animate() {
     requestAnimationFrame( animate );
     let time = hour-12;
