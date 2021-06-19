@@ -124,29 +124,6 @@ setInterval(()=>{
     document.getElementById("hour-range-label").innerText = `${Math.floor(hour)<10?`0`+Math.floor(hour):Math.floor(hour)}:${Math.floor((hour-Math.floor(hour))*60)<10?`0`+Math.floor((hour-Math.floor(hour))*60):Math.floor((hour-Math.floor(hour))*60)}`;
 }, 1000);
 
-let objLoader = new THREE.OBJLoader();
-let airplanes = [];
-spawnPlane = (x, y, z) => {
-    // let coords = {
-    //     x: x/90*0.1+0.6,
-    //     y: y/190*0.1+0.6,
-    //     z: z/15000*0.1+0.6,
-    // }
-    let coords = {x,y,z}
-    objLoader.load("/assets/models/airplane1/11803_Airplane_v1_l1.obj", (obj) => {
-        obj.position.set(coords.x, coords.y, coords.z);
-        obj.rotation.set(-Math.cos(coords.x), Math.sin(coords.y), -Math.sin(coords.z));
-        console.log(obj);
-        obj.scale.set(0.00002, 0.00002, 0.00002);
-        earthMesh.add(obj);
-        airplanes.push(obj);
-    });
-}
-// spawnPlane( 0.6, 0.6, 0.6 );
-// spawnPlane(9.1105, 45.4086, 11277.6);
-// spawnPlane(-78.6497, 42.4692, 10363.2);
-let {x,y,z} = LLAtoXYZ(150.9142, -32.7491, 6774.18);
-spawnPlane(x,y,z);
 // spawnPlane(9.1105,45.4086,11277.6);
 
 function animate() {
@@ -172,124 +149,149 @@ function toDegrees(angle) {
     return angle * (180 / Math.PI);
 }
 
-var EARTH_A  = undefined;
-var EARTH_B  = undefined;
-var EARTH_F  = undefined;
-var EARTH_Ecc= undefined;
-var EARTH_Esq= undefined;
+let MODELS = [
+    { name: "bae146" }
+];
+for ( let i = 0; i < MODELS.length; ++ i ) {
 
-function LLAtoXYZ (flati,floni, altkmi) {
-    let  dtr =  Math.PI/180.0;
-    let  flat,flon,altkm;
-    let  clat,clon,slat,slon;
-    let  rrnrm = new Array(3);
-    let  rn,esq;
-    let  x,y,z;
-    let  xvec = new Array(3);
+    const m = MODELS[ i ];
 
-    geodGBL();
+    loadGltfModel( m, function () {
 
-    flat  = Number(flati);
-    flon  = Number(floni);
-    altkm = Number(altkmi);
+        ++ numLoadedModels;
 
-    clat = Math.cos(dtr*flat);
-    slat = Math.sin(dtr*flat);
-    clon = Math.cos(dtr*flon);
-    slon = Math.sin(dtr*flon);
-        
-    rrnrm  = radcur (flat);
-    rn     = rrnrm[1];
-    re     = rrnrm[0];
+        if ( numLoadedModels === MODELS.length ) {
 
-    ecc    = EARTH_Ecc;
-    esq    = ecc*ecc
+            console.log( "All models loaded, time to instantiate units..." );
+            instantiateUnits();
 
-    x      =  (rn + altkm) * clat * clon;
-    y      =  (rn + altkm) * clat * slon;
-    z      =  ( (1-esq)*rn + altkm ) * slat;
+        }
 
-    xvec[0]  = x;
-    xvec[1]  = y;
-    xvec[2]  = z;
-
-    return  xvec ;
-}
-function radcur(lati) {
-
-    var rrnrm = new Array(3)
-
-    var dtr   = Math.PI/180.0
-
-    var  a,b,lat
-    var  asq,bsq,eccsq,ecc,clat,slat
-    var  dsq,d,rn,rm,rho,rsq,r,z
-
-    geodGBL();
-
-//        -------------------------------------
-
-    a     = EARTH_A;
-    b     = EARTH_B;
-
-    asq   = a*a;
-    bsq   = b*b;
-    eccsq  =  1 - bsq/asq;
-    ecc = Math.sqrt(eccsq);
-
-    lat   =  Number(lati);
-
-    clat  =  Math.cos(dtr*lat);
-    slat  =  Math.sin(dtr*lat);
-
-    dsq   =  1.0 - eccsq * slat * slat;
-    d     =  Math.sqrt(dsq);
-
-    rn    =  a/d;
-    rm    =  rn * (1.0 - eccsq ) / dsq;
-
-    rho   =  rn * clat;
-    z     =  (1.0 - eccsq ) * rn * slat;
-    rsq   =  rho*rho + z*z;
-    r     =  Math.sqrt( rsq );
-
-    rrnrm[0]  =  r;
-    rrnrm[1]  =  rn;
-    rrnrm[2]  =  rm;
-
-    return ( rrnrm );
+    } );
 
 }
-function wgs84() {
-    let  wgs84a, wgs84b, wgs84f
 
-    wgs84a         =  0.7//6378.137;
-    wgs84f         =  1.0/0.7//298.257223563;
-    wgs84b         =  wgs84a * ( 1.0 - wgs84f );
+loadGltfModel( {name: "bae146", scene}, function () {
+    fetch("/api/opensky/get-data")
+    .then(res => res.json())
+    .then(async res => {
+        console.log("Loaded states config", res.states.length);
+        res.states.forEach(async state => {
+            let coords = await llhxyz(state.x,state.y,state.z);
+            spawnPlane((coords[0]/6378.137*1),-(coords[1]/6378.137*1),(coords[2]/6378.137*1));
+        });
+    });
+} );
 
-    earthcon (wgs84a, wgs84b );
+// let objLoader = new THREE.OBJLoader();
+// let airplanes = [];
+// objLoader.load("/assets/models/airplane1/11803_Airplane_v1_l1.obj", (obj) => {
+//     // obj.position.set(coords.x, coords.y, coords.z);
+//     // obj.rotation.set(-Math.cos(coords.x), Math.sin(coords.y), -Math.sin(coords.z));
+//     // console.log(obj);
+//     obj.scale.set(0.00002, 0.00002, 0.00002);
+//     earthMesh.add(obj);
+//     airplanes.push(obj);
+// });
+// setInterval(async ()=>{
+// setTimeout(()=>{
+//     fetch("/api/opensky/get-data")
+//     .then(res => res.json())
+//     .then(async res => {
+//         // console.log(res.states.states);
+//         console.log(res.states.length);
+//         await res.states.filter(state => !state.on_ground).forEach(async state => {
+//             let coords = await llhxyz(state.x,state.y,state.z);
+//             spawnPlane((coords[0]/6378.137*1),-(coords[1]/6378.137*1),(coords[2]/6378.137*1));
+//         });
+//         console.log(scene);
+//     });
+// }, 5000)
+// }, 30000);
+// spawnPlane = (x, y, z) => {
+//     let coords = {x,y,z}
+//     let grp = {};
+//     // $.extend(grp, airplanes[0]);
+//     grp = airplanes[0];
+//     grp.position = {x:coords.x, y:coords.y, z:coords.z};
+//     // grp.rotation.set(-Math.cos(coords.x), Math.sin(coords.y), -Math.sin(coords.z));
+//     airplanes.push(grp);
+//     scene.children.push(grp);
+// }
+spawnPlane = (x, y, z) => {
+    let coords = {x,y,z}
+    let model = getModelByName("bae146");
+    const clonedScene = SkeletonUtils.clone( model.scene );
+
+    if ( clonedScene ) {
+
+        // THREE.Scene is cloned properly, let's find one mesh and launch animation for it
+        const clonedMesh = clonedScene.getObjectByName( u.meshName );
+
+        clonedMesh.position = {x:coords.x, y:coords.y, z:coords.z};
+        clonedMesh.rotation.set(-Math.cos(coords.x), Math.sin(coords.y), -Math.sin(coords.z));
+        // Different models can have different configurations of armatures and meshes. Therefore,
+        // We can't set position, scale or rotation to individual mesh objects. Instead we set
+        // it to the whole cloned scene and then add the whole scene to the game world
+        // Note: this may have weird effects if you have lights or other items in the GLTF file's scene!
+        worldScene.add( clonedScene );
+    }
+}
+
+/**
+ * Find a model object by name
+ * @param name
+ * @returns {object|null}
+ */
+    function getModelByName( name ) {
+
+    for ( let i = 0; i < MODELS.length; ++ i ) {
+
+        if ( MODELS[ i ].name === name ) {
+
+            return MODELS[ i ];
+
+        }
+
+    }
+
+    return null;
 
 }
-wgs84();
-function earthcon(ai,bi) {
-    let  f,ecc, eccsq, a,b
 
-    a        =  Number(ai);
-    b        =  Number(bi);
+/**
+ * Load a 3D model from a GLTF file. Use the GLTFLoader.
+ * @param model {object} Model config, one item from the MODELS array. It will be updated inside the function!
+ * @param onLoaded {function} A callback function that will be called when the model is loaded
+ */
+function loadGltfModel( model, onLoaded ) {
 
-    f        =  1-b/a;
-    eccsq    =  1 - b*b/(a*a);
-    ecc      =  Math.sqrt(eccsq);
+    const loader = new THREE.GLTFLoader();
+    const modelName = "/assets/models/" + model.name + ".glb";
 
-    EARTH_A  =  a;
-    EARTH_B  =  b;
-    EARTH_F  =  f;
-    EARTH_Ecc=  ecc;
-    EARTH_Esq=  eccsq;
-}
-function geodGBL() {
-    let  tstglobal
+    loader.load( modelName, function ( gltf ) {
 
-    tstglobal = typeof EARTH_A;
-    if ( tstglobal == "undefined" )  wgs84() 
+        const scene = gltf.scene;
+
+        // model.animations = gltf.animations;
+        model.scene = scene;
+
+        // Enable Shadows
+
+        gltf.scene.traverse( function ( object ) {
+
+            if ( object.isMesh ) {
+
+                object.castShadow = true;
+
+            }
+
+        } );
+
+        console.log( "Done loading model", model.name );
+
+        onLoaded();
+
+    } );
+
 }

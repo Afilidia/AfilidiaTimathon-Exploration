@@ -11,16 +11,20 @@ let openskyAuth = {
     user: process.env.OPENSKYUSERNAME,
     pass: process.env.OPENSKYPASSWORD
 }
-getOpenskyData = () => {
-    let data = {};
-    data.states = getOpensky("/states/all");
-    setTimeout(() => {
-        data.flights = getOpensky("/flights/all");
-    }, 5000);
+getOpenskyData = async () => {
+    let data = {states: []};
+    let fulldata = await getOpensky("/states/all");
+    fulldata.states.filter(state => !state[8]&&state[0]&&state[3]&&state[14]&&state[1]!=""&&state[2]=="United States").forEach(state => {
+        data.states.push({
+            x: state.x,
+            y: state.y,
+            z: state.z,
+        })
+    });
     // data.tracks = getOpensky("/tracks");
     return data;
 }
-getOpensky = (path) => {
+getOpensky = async (path) => {
 	this.options = {};
     this.options.method = 'GET';
     this.options.hostname = `https://${openskyAuth.user}:${openskyAuth.pass}@opensky-network.org/api${path}`;
@@ -30,19 +34,18 @@ getOpensky = (path) => {
     
     let self = this;
 
-    return new Promise(function(resolve, reject) {
-        fetch(self.options.hostname).then(res => res.text())
-        .then(res => {console.log(res); return res})
+    return await new Promise(function(resolve, reject) {
+        fetch(self.options.hostname)
         .then(res => res.json())
         .then(res => resolve(res));
     }).catch((err) => {console.log(err)});
 }
-// let openskyData = getOpenskyData();
+let openskyData = getOpenskyData();
 // setInterval(async ()=>{
 //     let data = await getOpenskyData();
 //     openskyData = data;
 // }, 30000)
-// console.log(openskyData);
+console.log(openskyData);
 
 host.page("/ok", "ok", ()=>{return true;}, "/", true);
 host.customPage("/api/opensky/get-data", ()=>{return true;}, "/", (req, res, next) => {
