@@ -94,6 +94,14 @@ let moveratio = {x:0,y:0};
 $(renderer.domElement).on('mousedown', function(e) {
     isDragging = true;
 }).on('mousemove', function(e) {
+    mousemove(e);
+});
+$(renderer.domElement).on('touchstart', function(e) {
+    isDragging = true;
+}).on('touchmove', function(e) {
+    mousemove(e);
+});
+function mousemove(e) {
     //console.log(e);
     var deltaMove = {
         x: e.offsetX-previousMousePosition.x,
@@ -132,7 +140,7 @@ $(renderer.domElement).on('mousedown', function(e) {
         x: e.offsetX,
         y: e.offsetY
     };
-});
+}
 setInterval(()=>{
     if (!isDragging) {
         if(moveratio.x + 0.004 <= 0) moveratio.x+=0.004;
@@ -165,6 +173,9 @@ setInterval(()=>{
 /* */
 
 $(document).on('mouseup', function(e) {
+    isDragging = false;
+});
+$(document).on('touchend', function(e) {
     isDragging = false;
 });
 
