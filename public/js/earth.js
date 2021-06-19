@@ -3,7 +3,7 @@
 // document.getElementById("earth").style.height = '100%';
 
 var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera( 65, 1, 1, 10000 );//window.innerWidth / window.innerHeight, 1, 10000 );
+var camera = new THREE.PerspectiveCamera( 35, 1, 1, 10000 );//window.innerWidth / window.innerHeight, 1, 10000 );
 
 var renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
 renderer.setSize( 800, 800 );
@@ -58,7 +58,7 @@ var material  = new THREE.MeshPhongMaterial({
 var cloudMesh = new THREE.Mesh(geometry, material);
 
 scene.add( earthMesh );
-camera.position.z = 2;
+camera.position.z = 4;
 
 // earthMesh.add(cloudMesh);
 earthMesh.add(lightsMesh);
@@ -124,15 +124,31 @@ setInterval(()=>{
     document.getElementById("hour-range-label").innerText = `${Math.floor(hour)<10?`0`+Math.floor(hour):Math.floor(hour)}:${Math.floor((hour-Math.floor(hour))*60)<10?`0`+Math.floor((hour-Math.floor(hour))*60):Math.floor((hour-Math.floor(hour))*60)}`;
 }, 1000);
 
-let OBJLoader = new THREE.OBJLoader();
-// let airplanes = [];
-// spawnPlane = (x, y, z) => {
-//     let obj = OBJLoader.load("/assets/models/airplane1/11803_Airplane_v1_l1.obj");
-//     obj.position.set(x, y, z);
-//     scene.add(obj);
-//     airplanes.push(obj);
-// }
-// spawnPlane( 0, 1.5, 0 );
+let objLoader = new THREE.OBJLoader();
+let airplanes = [];
+spawnPlane = (x, y, z) => {
+    // let coords = {
+    //     x: x/90*0.1+0.6,
+    //     y: y/190*0.1+0.6,
+    //     z: z/15000*0.1+0.6,
+    // }
+    let coords = {x,y,z}
+    objLoader.load("/assets/models/airplane1/11803_Airplane_v1_l1.obj", (obj) => {
+        obj.position.set(coords.x, coords.y, coords.z);
+        obj.rotation.set(-Math.cos(coords.x), Math.sin(coords.y), -Math.sin(coords.z));
+        console.log(obj);
+        obj.scale.set(0.00002, 0.00002, 0.00002);
+        earthMesh.add(obj);
+        airplanes.push(obj);
+    });
+}
+// spawnPlane( 0.6, 0.6, 0.6 );
+// spawnPlane(9.1105, 45.4086, 11277.6);
+// spawnPlane(-78.6497, 42.4692, 10363.2);
+let {x,y,z} = LLAtoXYZ(150.9142, -32.7491, 6774.18);
+spawnPlane(x,y,z);
+// spawnPlane(9.1105,45.4086,11277.6);
+
 function animate() {
     requestAnimationFrame( animate );
     let time = hour-12;
@@ -154,4 +170,126 @@ function toRadians(angle) {
 
 function toDegrees(angle) {
     return angle * (180 / Math.PI);
+}
+
+var EARTH_A  = undefined;
+var EARTH_B  = undefined;
+var EARTH_F  = undefined;
+var EARTH_Ecc= undefined;
+var EARTH_Esq= undefined;
+
+function LLAtoXYZ (flati,floni, altkmi) {
+    let  dtr =  Math.PI/180.0;
+    let  flat,flon,altkm;
+    let  clat,clon,slat,slon;
+    let  rrnrm = new Array(3);
+    let  rn,esq;
+    let  x,y,z;
+    let  xvec = new Array(3);
+
+    geodGBL();
+
+    flat  = Number(flati);
+    flon  = Number(floni);
+    altkm = Number(altkmi);
+
+    clat = Math.cos(dtr*flat);
+    slat = Math.sin(dtr*flat);
+    clon = Math.cos(dtr*flon);
+    slon = Math.sin(dtr*flon);
+        
+    rrnrm  = radcur (flat);
+    rn     = rrnrm[1];
+    re     = rrnrm[0];
+
+    ecc    = EARTH_Ecc;
+    esq    = ecc*ecc
+
+    x      =  (rn + altkm) * clat * clon;
+    y      =  (rn + altkm) * clat * slon;
+    z      =  ( (1-esq)*rn + altkm ) * slat;
+
+    xvec[0]  = x;
+    xvec[1]  = y;
+    xvec[2]  = z;
+
+    return  xvec ;
+}
+function radcur(lati) {
+
+    var rrnrm = new Array(3)
+
+    var dtr   = Math.PI/180.0
+
+    var  a,b,lat
+    var  asq,bsq,eccsq,ecc,clat,slat
+    var  dsq,d,rn,rm,rho,rsq,r,z
+
+    geodGBL();
+
+//        -------------------------------------
+
+    a     = EARTH_A;
+    b     = EARTH_B;
+
+    asq   = a*a;
+    bsq   = b*b;
+    eccsq  =  1 - bsq/asq;
+    ecc = Math.sqrt(eccsq);
+
+    lat   =  Number(lati);
+
+    clat  =  Math.cos(dtr*lat);
+    slat  =  Math.sin(dtr*lat);
+
+    dsq   =  1.0 - eccsq * slat * slat;
+    d     =  Math.sqrt(dsq);
+
+    rn    =  a/d;
+    rm    =  rn * (1.0 - eccsq ) / dsq;
+
+    rho   =  rn * clat;
+    z     =  (1.0 - eccsq ) * rn * slat;
+    rsq   =  rho*rho + z*z;
+    r     =  Math.sqrt( rsq );
+
+    rrnrm[0]  =  r;
+    rrnrm[1]  =  rn;
+    rrnrm[2]  =  rm;
+
+    return ( rrnrm );
+
+}
+function wgs84() {
+    let  wgs84a, wgs84b, wgs84f
+
+    wgs84a         =  0.7//6378.137;
+    wgs84f         =  1.0/0.7//298.257223563;
+    wgs84b         =  wgs84a * ( 1.0 - wgs84f );
+
+    earthcon (wgs84a, wgs84b );
+
+}
+wgs84();
+function earthcon(ai,bi) {
+    let  f,ecc, eccsq, a,b
+
+    a        =  Number(ai);
+    b        =  Number(bi);
+
+    f        =  1-b/a;
+    eccsq    =  1 - b*b/(a*a);
+    ecc      =  Math.sqrt(eccsq);
+
+    EARTH_A  =  a;
+    EARTH_B  =  b;
+    EARTH_F  =  f;
+    EARTH_Ecc=  ecc;
+    EARTH_Esq=  eccsq;
+}
+function geodGBL() {
+    let  tstglobal
+
+    tstglobal = typeof EARTH_A;
+    if ( tstglobal == "undefined" )  wgs84() 
 }
