@@ -38,8 +38,8 @@ getOpenskyData = async () => {
             data.states.push({
                 icao24: state[0],
                 origin: state[2],
-                long: state[5],
-                lat: state[6],
+                lat: state[5],
+                long: state[6],
                 alt: state[7],
             })
         });

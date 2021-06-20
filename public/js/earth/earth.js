@@ -128,10 +128,17 @@ function mousemove(e) {
         else if(moveratio.y - 0.01 >= deltaMove.y && deltaMove.y < -0.01) moveratio.y-=0.01;
         else moveratio.y=0; */
 
+        // var deltaRotationQuaternion = new THREE.Quaternion()
+        //     .setFromEuler(new THREE.Euler(
+        //         toRadians(moveratio.y*0.25),
+        //         toRadians(moveratio.x*0.25),
+        //         0,
+        //         'XYZ'
+        //     ));
         var deltaRotationQuaternion = new THREE.Quaternion()
             .setFromEuler(new THREE.Euler(
-                toRadians(moveratio.y*0.25),
-                toRadians(moveratio.x*0.25),
+                toRadians(deltaMove.y*0.25),
+                toRadians(deltaMove.x*0.25),
                 0,
                 'XYZ'
             ));

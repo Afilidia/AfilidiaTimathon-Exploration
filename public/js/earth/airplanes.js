@@ -1,5 +1,5 @@
 let MODELS = [
-    { name: "ba146" }
+    { name: "ba146", scale: 0.001 }
 ];
 
 let numLoadedModels = 0;
@@ -12,9 +12,28 @@ for ( let i = 0; i < MODELS.length; ++ i ) {
         .then(async res => {
             console.log(`Loaded config for ${m.name} with ${res.states.length} states.`);
             res.states.forEach(async state => {
-                let coords = await llhxyz(state.x,state.y,state.z);
-                spawnPlane((coords[0]/6378.137*1),-(coords[1]/6378.137*1),(coords[2]/6378.137*1),m);
+                let cartesian = {};
+                cartesian.x = 1 * Math.cos(state.lat) * Math.cos(state.long)
+                cartesian.y = 1 * Math.cos(state.lat) * Math.sin(state.long)
+                cartesian.z = 1 * Math.sin(state.lat)
+                // let cartesian2 = cartesian / 6378.137 * 0.8
+                // let coords = await llhxyz(state.lat,state.long,state.alt);
+                // console.log(`LLH: ${state.lat} ${state.long} ${state.alt} | Cartesian:`, cartesian);
+                // spawnPlane((coords[0]/6378.137*1),-(coords[1]/6378.137*1),(coords[2]/6378.137*1),m);
+                spawnPlane(cartesian.x, cartesian.y, cartesian.z, m)
             });
+            // for (let i = 0; i < 500; i++) {
+            //     let state = res.states[i];
+            //     let cartesian = {};
+            //     cartesian.x = 1 * Math.cos(state.lat) * Math.cos(state.long)
+            //     cartesian.y = 1 * Math.cos(state.lat) * Math.sin(state.long)
+            //     cartesian.z = 1 * Math.sin(state.lat)
+            //     // let cartesian2 = cartesian / 6378.137 * 0.8
+            //     // let coords = await llhxyz(state.lat,state.long,state.alt);
+            //     // console.log(`LLH: ${state.lat} ${state.long} ${state.alt} | Cartesian:`, cartesian);
+            //     // spawnPlane((coords[0]/6378.137*1),-(coords[1]/6378.137*1),(coords[2]/6378.137*1),m);
+            //     spawnPlane(cartesian.x, cartesian.y, cartesian.z, m)
+            // }
         });
     });
 }
@@ -59,14 +78,17 @@ spawnPlane = (x, y, z, u) => {
     const clonedScene = THREE.SkeletonUtils.clone( model.scene );
     if ( clonedScene ) {
         // THREE.Scene is cloned properly, let's find one mesh and launch animation for it
-        const clonedMesh = clonedScene.getObjectByName( u.name );
-        clonedMesh.position = {x:coords.x, y:coords.y, z:coords.z};
-        clonedMesh.rotation.set(-Math.cos(coords.x), Math.sin(coords.y), -Math.sin(coords.z));
+        // const clonedMesh = clonedScene.getObjectByName( u.name );
+        
+        // if(u.scale) clonedScene.scale = {x:u.scale,y:u.scale,z:u.scale};
+
+        clonedScene.position.set(coords.x, coords.y, coords.z);
+        clonedScene.rotation.set(-Math.cos(coords.x), Math.sin(coords.y), -Math.sin(coords.z));
         // Different models can have different configurations of armatures and meshes. Therefore,
         // We can't set position, scale or rotation to individual mesh objects. Instead we set
         // it to the whole cloned scene and then add the whole scene to the game world
         // Note: this may have weird effects if you have lights or other items in the GLTF file's scene!
-        earthMesh.add( clonedMesh );
+        earthMesh.add( clonedScene );
     }
 }
 /**
@@ -94,6 +116,9 @@ function loadGltfModel( model, onLoaded ) {
         const scene = gltf.scene;
         // model.animations = gltf.animations;
         model.scene = scene;
+        
+        if(model.scale) scene.scale.set(model.scale,model.scale,model.scale);
+
         // Enable Shadows
         gltf.scene.traverse( function ( object ) {
             if ( object.isMesh ) {
