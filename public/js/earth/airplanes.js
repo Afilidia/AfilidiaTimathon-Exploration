@@ -1,5 +1,5 @@
 let MODELS = [
-    { name: "bae146" }
+    { name: "ba146" }
 ];
 
 let numLoadedModels = 0;
@@ -13,7 +13,7 @@ for ( let i = 0; i < MODELS.length; ++ i ) {
             console.log(`Loaded config for ${m.name} with ${res.states.length} states.`);
             res.states.forEach(async state => {
                 let coords = await llhxyz(state.x,state.y,state.z);
-                spawnPlane((coords[0]/6378.137*1),-(coords[1]/6378.137*1),(coords[2]/6378.137*1));
+                spawnPlane((coords[0]/6378.137*1),-(coords[1]/6378.137*1),(coords[2]/6378.137*1),m);
             });
         });
     });
@@ -53,10 +53,10 @@ for ( let i = 0; i < MODELS.length; ++ i ) {
 //     airplanes.push(grp);
 //     scene.children.push(grp);
 // }
-spawnPlane = (x, y, z) => {
+spawnPlane = (x, y, z, u) => {
     let coords = {x,y,z}
     let model = getModelByName("ba146");
-    const clonedScene = SkeletonUtils.clone( model.scene );
+    const clonedScene = THREE.SkeletonUtils.clone( model.scene );
         if ( clonedScene ) {
                 // THREE.Scene is cloned properly, let's find one mesh and launch animation for it
         const clonedMesh = clonedScene.getObjectByName( u.meshName );

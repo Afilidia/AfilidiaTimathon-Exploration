@@ -1,5 +1,4 @@
 {
-    "magic": "glTF",
     "asset": {
         "generator": "COLLADA2GLTF",
         "version": "2.0"

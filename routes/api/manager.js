@@ -12,8 +12,6 @@ let openskyAuth = {
     pass: process.env.OPENSKYPASSWORD
 }
 getOpenskyData = async () => {
-    let data = {states: []};
-    let fulldata = await getOpensky("/states/all");
 /*
 0	icao24	string	Unique ICAO 24-bit address of the transponder in hex string representation.
 1	callsign	string	Callsign of the vehicle (8 chars). Can be null if no callsign has been received.
@@ -33,18 +31,24 @@ getOpenskyData = async () => {
 15	spi	boolean	Whether flight status indicates special purpose indicator.
 16	position_source	int	Origin of this state’s position: 0 = ADS-B, 1 = ASTERIX, 2 = MLAT
 */
-    fulldata.states.filter(state => !state[8]&&state[0]&&state[3]&&state[14]&&state[1]!="").forEach(state => {
-        data.states.push({
-            icao24: state[0],
-            origin: state[2],
-            long: state[5],
-            lat: state[6],
-            alt: state[7],
-        })
+    let data = {states: []};
+    try {
+        let fulldata = await getOpensky("/states/all");
+        fulldata.states.filter(state => !state[8]&&state[0]&&state[3]&&state[14]&&state[1]!="").forEach(state => {
+            data.states.push({
+                icao24: state[0],
+                origin: state[2],
+                long: state[5],
+                lat: state[6],
+                alt: state[7],
+            })
+        });
         data.statesCount = data.states.length;
-    });
+    } catch (error) {
+        return false;
+    }
     // data.tracks = getOpensky("/tracks");
-    return data;
+    return data || false;
 }
 getOpensky = async (path) => {
 	this.options = {};
@@ -63,12 +67,18 @@ getOpensky = async (path) => {
     }).catch((err) => {console.log(err)});
 }
 let openskyData = false;
+setTimeout(async ()=>{
+    if(!openskyData){
+        let data = await getOpenskyData();
+        openskyData = data;
+    }
+}, 1);
 setInterval(async ()=>{
     if(!openskyData){
         let data = await getOpenskyData();
         openskyData = data;
     }
-}, 10000)
+}, 30000)
 
 host.page("/ok", "ok", ()=>{return true;}, "/", true);
 host.customPage("/api/opensky/get-data", ()=>{return true;}, "/", (req, res, next) => {

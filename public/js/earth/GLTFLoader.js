@@ -862,11 +862,11 @@
 				throw new Error( 'THREE.GLTFLoader: Unsupported glTF-Binary header.' );
 
 			}
-			// else if ( this.header.version < 2.0 ) {
+			else if ( this.header.version < 2.0 ) {
 
-			// 	throw new Error( 'THREE.GLTFLoader: Legacy binary file detected.' );
+				throw new Error( 'THREE.GLTFLoader: Legacy binary file detected.' );
 
-			// }
+			}
 
 			const chunkContentsLength = this.header.length - BINARY_EXTENSION_HEADER_LENGTH;
 			const chunkView = new DataView( data, BINARY_EXTENSION_HEADER_LENGTH );
