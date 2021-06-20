@@ -6,6 +6,8 @@ const requester = new APIRequester({
     baseURL: 'https://api.maptiler.com/maps/',
 });
 
+const layers = {};
+
 // * Default map values (changeable)
 var defaults = {
     map: {
@@ -14,35 +16,40 @@ var defaults = {
         zoom: 13
     },
 
+    styles: {
+        standard: 'streets',
+        current: 'streets',
+        generated: false
+    },
+
     radius: 5000
 };
+
 
 // * Create leaflet map
 var map = L.map('mapid').setView([defaults.map.lat, defaults.map.lon], defaults.map.zoom);
 
-let style = 'streets';
-let url = requester.getURL({
-    style: style,
-    key: getMapData(style).key,
-    fileformat: getMapData(style).format,
 
-    vector: {
-        z: '{z}',
-        x: '{x}',
-        y: '{y}',
-    },
+addLayersToMap();
+
+
+// * Create custom airplane icon
+const airplane_icon = L.icon({
+    iconUrl: '/assets/markers/plane.png',
+    iconSize: [45, 48],
+    iconAnchor: [22, 94],
+    popupAnchor: [-3, -76],
+
+    shadowUrl: '/assets/markers/shadow.png',
+    shadowSize: [45, 48],
+    shadowAnchor: [14, 94]
 });
 
-// * Create map tile layer (texture) and add to the map
-const tileLayer = L.tileLayer(url, {
-    attribution: APIRequester.ATTRIBUTION,
+// tileLayer.addTo(map);
 
-    // Map settings
-    maxZoom: 20,
-    minZoom: 3
-})
-
-tileLayer.addTo(map);
+L.marker([40.7, -73.9], {icon: airplane_icon}).addTo(map)
+        .bindPopup('A pretty CSS3 popup.<br> Easily customizable.');
+        //.openPopup();
 
 
 // * Geolocalization functions
@@ -154,6 +161,7 @@ function getLang() {
     return navigator.language;
 }
 
+// * Converts given lat, lon, locality to geo object containing city
 async function convertToCity(lat, lon, locality_info) {
 
     let content = fetch(CONVERT_TO_CITY_URL + `latitude=${lat}&longitude=${lon}&localityLanguage=${locality_info}`)
@@ -162,4 +170,94 @@ async function convertToCity(lat, lon, locality_info) {
 
 
     return content;
+}
+
+// * Add all layers to the map
+function addLayersToMap() {
+    Object.keys(MAP_DATA).forEach(style => {
+        var layer = addLayer(style);
+        if (layer) layer.addTo(map);
+
+        // Add layer to global layers
+        layers[style] = layer;
+    });
+
+    let standard = defaults.styles.standard;
+    Object.keys(layers).forEach(style => {
+
+        if ((style != standard) && (layers[style] != null)) {
+            layers[style].setZIndex(0);
+        }
+    })
+}
+
+// * Returns layer object
+function addLayer(style) {
+    let url = requester.getURL({
+        style: style,
+        key: getMapData(style).key,
+        fileformat: getMapData(style).format,
+
+        vector: {
+            z: '{z}',
+            x: '{x}',
+            y: '{y}',
+        },
+    });
+
+    var tileLayer = null;
+
+    // console.log(style == defaults.styles.standard);
+    if ((style == defaults.styles.standard) || (defaults.styles.generated)) {
+        // * Create map tile layer (texture) and add to the map
+        tileLayer = L.tileLayer(url, {
+            attribution: APIRequester.ATTRIBUTION,
+
+            // Map settings
+            maxZoom: 20,
+            minZoom: 3
+        });
+    }
+
+
+    // if (style == 'hybrid') tileLayer.setZIndex(-1);
+    return tileLayer;
+}
+
+// * Switches layer to passed in param
+function switchLayer(to) {
+    let current = defaults.styles.current;
+
+    if (to == current) return;
+
+    try {
+
+        // Generate hybrid layer
+        if ((to != defaults.styles.standard) || (defaults.styles.generated == false)) {
+            defaults.styles.generated = true;
+            let layer = addLayer(to);
+            layer.addTo(map);
+            layers[to] = layer;
+        }
+
+        // Hide current
+        layers[current].setZIndex(0);
+
+        // Show new
+        layers[to].setZIndex(100);
+        defaults.styles.current = to;
+
+        // console.log(current, to);
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+// * Generate all markers in set radius
+async function generatePlanes() {
+
+    // Fetch data
+    var data = await fetch('/api/opensky/get-data').then((res) => res.json()).then((res) => {return res});
+    console.log(data);
 }

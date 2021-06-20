@@ -94,6 +94,9 @@ $(document).ready(async function() {
 
             // Handlers
             let location_Button = document.querySelector('.button.location');
+            let style_Settings = document.querySelector('.settings-value.style');
+
+            let submit_btn = document.querySelector('.submit-btn');
 
             // Radius input range change event
             $(".range-input.radius").on("input change", function(e) {
@@ -107,6 +110,28 @@ $(document).ready(async function() {
             // Get geolozalization
             if (location_Button) location_Button.addEventListener('click', () => {
                 let localization = getLocation();
+
+            });
+
+            $(".select.style").on("change", function(e) {
+                // Switch layers
+                switchLayer(e.target.value);
+
+                // Change description
+                if (style_Settings) style_Settings.textContent = getStyleDescription(e.target.value);
+            });
+
+            var getStyleDescription = (style) => {
+                let descriptions = {
+                    'streets': 'Street map',
+                    'hybrid': 'Satelite map'
+                };
+
+                return descriptions[style];
+            };
+
+            if (submit_btn) submit_btn.addEventListener('click', () => {
+                generatePlanes();
             });
 
         } break;
