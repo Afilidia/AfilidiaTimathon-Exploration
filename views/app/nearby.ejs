@@ -35,7 +35,35 @@
 
     <div class="container">
 
-        <div id="mapid"></div>
+        <div class="map-wrapper">
+            <div id="mapid"></div>
+        </div>
+
+        <div class="settings-wrapper">
+            <span class="settings-header">Customize</span>
+
+            <div class="settings-content">
+
+                <!-- GET LOCATION -->
+                <div class="settings-row">
+                    <span class="settings-row-header">Your localization</span>
+                    <div class="settings-row-content">
+                        <button class="button location">Get location</button>
+                        <span class="settings-value location">No localization</span>
+                    </div>
+                </div>
+
+                <!-- GET RADIUS -->
+                <div class="settings-row">
+                    <span class="settings-row-header">Scanning radius</span>
+                    <div class="settings-row-content">
+                        <input type="range" class="range-input radius" min="1000" max="100000" value="5000">
+                        <span class="settings-value radius">5000 m</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 
     <!-- FOOTER IS BEING RENDERED BY render.js - (FooterComponent)-->

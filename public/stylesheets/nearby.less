@@ -3,14 +3,82 @@
 
 .container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
+    align-items: flex-start;
+    justify-content: center;
     font-family: 'Source Sans Pro', sans-serif;
+    height: 100vh;
+
+    .settings-wrapper,
+    .map-wrapper {
+        width: 45%;
+        height: 70%;
+    }
+
+    .settings-wrapper {
+        background: rgba( 255, 255, 255, 0.00 );
+        box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+        backdrop-filter: blur( 20.0px );
+        -webkit-backdrop-filter: blur( 20.0px );
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+
+        .settings-header {
+            font-size: 32px;
+            font-weight: 700;
+
+            align-items: center;
+            display: flex;
+            height: 36px;
+            padding: 5px 10px;
+
+            width: (100% - 3px);
+            border-bottom: 2px solid @dark-purple;
+        }
+
+        .settings-content {
+            height: auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+
+            .settings-row {
+                width: 90%;
+                height: 20%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                margin: 20px 0;
+
+                .settings-row-header {
+                    font-size: 24px;
+                    font-weight: 500;
+                }
+
+                .settings-row-content {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    height: auto;
+                    margin: 10px 0;
+
+                    .settings-value {
+                        font-size: 20px;
+                        font-weight: 400;
+                        color: @light-purple;
+                    }
+                }
+            }
+        }
+    }
 
     #mapid {
-        height: 500px;
+        height: 100%;
         width: 100%;
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
     }
 }
 

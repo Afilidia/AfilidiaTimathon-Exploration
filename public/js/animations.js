@@ -47,7 +47,7 @@ function toggleMenu(x) {
  * * a current website.
  */
 
-$(document).ready(function() {
+$(document).ready(async function() {
 
     switch (CURRENT_PAGE) {
         case 'features' || 'features.html': {
@@ -83,6 +83,30 @@ $(document).ready(function() {
                     if (answer) answer.classList.toggle('show');
                     if (wrapper) wrapper.classList.toggle('change-bg');
                 });
+            });
+
+        } break;
+
+        case 'nearby' || 'nearby.html': {
+            // Connection of all customizable elements on map
+
+            let radius_Settings = document.querySelector('.settings-value.radius');
+
+            // Handlers
+            let location_Button = document.querySelector('.button.location');
+
+            // Radius input range change event
+            $(".range-input.radius").on("input change", function(e) {
+                if (radius_Settings) {
+                    radius_Settings.textContent = e.target.value + ' m';
+                    defaults.radius = e.target.value;
+                    // console.log(defaults.radius);
+                }
+            });
+
+            // Get geolozalization
+            if (location_Button) location_Button.addEventListener('click', () => {
+                let localization = getLocation();
             });
 
         } break;
