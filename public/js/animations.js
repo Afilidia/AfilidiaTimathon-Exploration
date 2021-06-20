@@ -101,8 +101,8 @@ $(document).ready(async function() {
             // Radius input range change event
             $(".range-input.radius").on("input change", function(e) {
                 if (radius_Settings) {
-                    radius_Settings.textContent = e.target.value + ' m';
-                    defaults.radius = e.target.value;
+                    radius_Settings.textContent = e.target.value + ' km';
+                    defaults.radius = parseInt(e.target.value);
                     // console.log(defaults.radius);
                 }
             });

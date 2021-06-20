@@ -22,7 +22,13 @@ var defaults = {
         generated: false
     },
 
-    radius: 5000
+    radius: 100000
+};
+
+const circle_style = {
+    color: '#5643fd',
+    fillColor: '#7649fe',
+    fillOpacity: 0.3
 };
 
 
@@ -37,12 +43,12 @@ addLayersToMap();
 const airplane_icon = L.icon({
     iconUrl: '/assets/markers/plane.png',
     iconSize: [45, 48],
-    iconAnchor: [22, 94],
+    iconAnchor: [0, 0],
     popupAnchor: [-3, -76],
 
     shadowUrl: '/assets/markers/shadow.png',
     shadowSize: [45, 48],
-    shadowAnchor: [14, 94]
+    shadowAnchor: [0, 0]
 });
 
 // tileLayer.addTo(map);
@@ -275,4 +281,66 @@ async function generatePlanes() {
 
     console.log(data);
 
+    // Settings vars
+
+    let count = data.statesCount;
+
+    let user_pos = defaults.map;
+    let radius = defaults.radius;
+    let degrees_r = parseFloat(getDegrees(radius).toFixed(2));
+
+    console.log(radius);
+
+    let longitude = user_pos.lon;
+    let latitude = user_pos.lat;
+
+    let polygon = {
+        left: parseFloat((longitude - degrees_r).toFixed(2)),
+        bottom:parseFloat((latitude - degrees_r).toFixed(2)),
+        right: parseFloat((longitude + degrees_r).toFixed(2)),
+        top: parseFloat((latitude + degrees_r).toFixed(2)),
+        center: {lat: user_pos.lat, lon: user_pos.lon},
+        radius: radius * 100
+    };
+
+    // console.log(user_pos);
+    // console.log(polygon.left, polygon.bottom, polygon.right, polygon.top);
+
+    // Draw circle around the user marker
+    var circle = drawCircle(polygon);
+    circle.addTo(map);
+}
+
+function getDegrees(kilometers) {
+    // 1° = 111 km  (or 60 nautical miles)
+    // 0.1° = 11.1 km
+    // 0.01° = 1.11 km (2 decimals, km accuracy)
+    // 0.001° =111 m
+    // 0.0001° = 11.1 m
+    // 0.00001° = 1.11 m
+    // 0.000001° = 0.11 m (7 decimals, cm accuracy)
+    // 1' = 1.85 km  (or 1 nautical mile)
+    // 0.1' = 185 m
+    // 0.01' = 18.5 m
+    // 0.001' = 1.85 m
+    // 30" = 900 m
+    // 15" = 450 m
+    // 3" = 90 m
+    // 1" = 30 m
+    // 1/3" = 10 m
+    // 0.1" = 3 m
+    // 1/9" = 3 m
+    // 1/27" = 1 m
+ // (7 decimals, cm accuracy)
+    return kilometers / 111;
+}
+
+function drawCircle(data) {
+
+    return L.circle([data.center.lat, data.center.lon], {
+        color: circle_style.color,
+        fillColor: circle_style.fillColor,
+        fillOpacity: circle_style.fillOpacity,
+        radius: data.radius
+    });
 }
