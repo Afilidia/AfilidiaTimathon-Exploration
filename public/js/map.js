@@ -71,8 +71,8 @@ function getLocation() {
 
 // * Saves localization
 async function savePosition(position) {
-    console.log("Latitude: " + position.coords.latitude);
-    console.log("Longitude: " + position.coords.longitude);
+    Debugger.log("Latitude: " + position.coords.latitude);
+    Debugger.log("Longitude: " + position.coords.longitude);
 
     defaults.map.lat = position.coords.latitude;
     defaults.map.lon = position.coords.longitude;
@@ -259,5 +259,20 @@ async function generatePlanes() {
 
     // Fetch data
     var data = await fetch('/api/opensky/get-data').then((res) => res.json()).then((res) => {return res});
+
+    // ! Insert waiter here (10sec)
+
+    // var checkIfFalse = () => {
+    //     console.log(data);
+
+    //     if (data) {
+    //         console.log(data);
+    //         clearInterval(cycle);
+    //     }
+    // };
+
+    // let cycle = setInterval(checkIfFalse, 300);
+
     console.log(data);
+
 }
