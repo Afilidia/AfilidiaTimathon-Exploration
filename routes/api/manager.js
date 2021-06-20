@@ -11,6 +11,89 @@ let openskyAuth = {
     user: process.env.OPENSKYUSERNAME,
     pass: process.env.OPENSKYPASSWORD
 }
+
+/*
+self.id = flight_id
+self.icao_24bit = self.__get_info(info[0])
+self.latitude = self.__get_info(info[1])
+self.longitude = self.__get_info(info[2])
+self.heading = self.__get_info(info[3])
+self.altitude = self.__get_info(info[4])
+self.ground_speed = self.__get_info(info[5])
+self.squawk = self.__get_info(info[6])
+self.aircraft_code = self.__get_info(info[8])
+self.registration = self.__get_info(info[9])
+self.time = self.__get_info(info[10])
+self.origin_airport_iata = self.__get_info(info[11])
+self.destination_airport_iata = self.__get_info(info[12])
+self.number = self.__get_info(info[13])
+self.airline_iata = self.__get_info(info[13][:2])
+self.on_ground = self.__get_info(info[14])
+self.vertical_speed =self.__get_info(info[15])
+self.callsign = self.__get_info(info[16])
+self.airline_icao = self.__get_info(info[18])
+*/
+let api = {
+    real_time_flight_tracker_config: {
+        faa: "1",
+        satellite: "1",
+        mlat: "1",
+        flarm: "1",
+        adsb: "1",
+        gnd: "1",
+        air: "1",
+        vehicles: "1",
+        estimated: "1",
+        maxage: "14400",
+        gliders: "1",
+        stats: "1"
+    },
+    headers: {
+        "accept-encoding": "gzip, br",
+        "accept-language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+        "cache-control": "max-age=0",
+        "origin": "https://www.flightradar24.com",
+        "referer": "https://www.flightradar24.com/",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-site",
+        "user-agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
+    },
+    url: "https://data-live.flightradar24.com/zones/fcgi/feed.js",
+    getData: async () => {
+        return await new Promise(function(resolve, reject) {
+            fetch(api.url, { method: 'GET', headers: api.headers})
+            .then((res) => res.json())
+            .then((json) => {
+                let response = [];
+                Object.values(json).forEach(info => {
+                    if(info[0]) response.push({
+                        icao_24bit: info[0],
+                        latitude: info[1],
+                        longitude: info[2],
+                        heading: info[3],
+                        altitude: info[4],
+                        ground_speed: info[5],
+                        squawk: info[6],
+                        aircraft_code: info[8],
+                        registration: info[9],
+                        time: info[10],
+                        origin_airport_iata: info[11],
+                        destination_airport_iata: info[12],
+                        number: info[13],
+                        airline_iata: info[13].slice(0, 2),
+                        on_ground: info[14],
+                        vertical_speed: info[15],
+                        callsign: info[16],
+                        airline_icao: info[18]
+                    });
+                });
+                resolve(response);
+            });
+        });
+    }
+}
+
 getOpenskyData = async () => {
 /*
 0	icao24	string	Unique ICAO 24-bit address of the transponder in hex string representation.
@@ -66,19 +149,19 @@ getOpensky = async (path) => {
         .then(res => resolve(res));
     }).catch((err) => {console.log(err)});
 }
-let openskyData = require("../../stateexample.json");
-// setTimeout(async ()=>{
-//     if(!openskyData){
-//         let data = await getOpenskyData();
-//         openskyData = data;
-//     }
-// }, 1);
-// setInterval(async ()=>{
-//     if(!openskyData){
-//         let data = await getOpenskyData();
-//         openskyData = data;
-//     }
-// }, 30000)
+let openskyData = false;//require("../../stateexample.json");
+setTimeout(async ()=>{
+    if(!openskyData){
+        let data = await api.getData();
+        openskyData = data;
+    }
+}, 1);
+setInterval(async ()=>{
+    if(!openskyData){
+        let data = await getOpenskyData();
+        openskyData = data;
+    }
+}, 5000);
 
 host.page("/ok", "ok", ()=>{return true;}, "/", true);
 host.customPage("/api/opensky/get-data", ()=>{return true;}, "/", (req, res, next) => {

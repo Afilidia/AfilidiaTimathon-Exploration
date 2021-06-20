@@ -10,17 +10,22 @@ for ( let i = 0; i < MODELS.length; ++ i ) {
         fetch(`/api/opensky/get-data?model=${m.name}`)
         .then(res => res.json())
         .then(async res => {
-            console.log(`Loaded config for ${m.name} with ${res.states.length} states.`);
-            res.states.forEach(async state => {
+            console.log(`Loaded config for ${m.name} with ${res.filter((flight)=>flight.on_ground!=0&&flight.airline_icao!="").length} flights and ${res.length} total airplanes.`);
+            // let cartesian = {};
+            // cartesian.x = 0.99 * Math.cos(50.86606607780635) * Math.cos(20.628595248594912)
+            // cartesian.y = 0.99 * Math.cos(50.86606607780635) * Math.sin(20.628595248594912)
+            // cartesian.z = 0.99 * Math.sin(50.86606607780635) * 1.3
+            // spawnPlane(cartesian.y, cartesian.z, cartesian.x, MODELS[0]);
+            res.filter((flight)=>flight.on_ground!=0&&flight.airline_icao!="").forEach(async flight => {
                 let cartesian = {};
-                cartesian.x = 1 * Math.cos(state.lat) * Math.cos(state.long)
-                cartesian.y = 1 * Math.cos(state.lat) * Math.sin(state.long)
-                cartesian.z = 1 * Math.sin(state.lat)
+                cartesian.x = 1 * Math.cos(flight.latitude) * Math.cos(flight.longitude);
+                cartesian.y = 1 * Math.cos(flight.latitude) * Math.sin(flight.longitude);
+                cartesian.z = 1 * Math.sin(flight.latitude);// * (1 + flight.altitude/1000);
                 // let cartesian2 = cartesian / 6378.137 * 0.8
-                // let coords = await llhxyz(state.lat,state.long,state.alt);
-                // console.log(`LLH: ${state.lat} ${state.long} ${state.alt} | Cartesian:`, cartesian);
+                // let coords = await llhxyz(flight.lat,flight.long,flight.alt);
+                // console.log(`LLH: ${flight.lat} ${flight.long} ${flight.alt} | Cartesian:`, cartesian);
                 // spawnPlane((coords[0]/6378.137*1),-(coords[1]/6378.137*1),(coords[2]/6378.137*1),m);
-                spawnPlane(cartesian.x, cartesian.y, cartesian.z, m)
+                spawnPlane(cartesian.y, cartesian.z, cartesian.x, m);
             });
             // for (let i = 0; i < 500; i++) {
             //     let state = res.states[i];
