@@ -66,19 +66,19 @@ getOpensky = async (path) => {
         .then(res => resolve(res));
     }).catch((err) => {console.log(err)});
 }
-let openskyData = false;
-setTimeout(async ()=>{
-    if(!openskyData){
-        let data = await getOpenskyData();
-        openskyData = data;
-    }
-}, 1);
-setInterval(async ()=>{
-    if(!openskyData){
-        let data = await getOpenskyData();
-        openskyData = data;
-    }
-}, 30000)
+let openskyData = require("../../stateexample.json");
+// setTimeout(async ()=>{
+//     if(!openskyData){
+//         let data = await getOpenskyData();
+//         openskyData = data;
+//     }
+// }, 1);
+// setInterval(async ()=>{
+//     if(!openskyData){
+//         let data = await getOpenskyData();
+//         openskyData = data;
+//     }
+// }, 30000)
 
 host.page("/ok", "ok", ()=>{return true;}, "/", true);
 host.customPage("/api/opensky/get-data", ()=>{return true;}, "/", (req, res, next) => {

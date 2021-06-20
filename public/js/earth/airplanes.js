@@ -55,12 +55,12 @@ for ( let i = 0; i < MODELS.length; ++ i ) {
 // }
 spawnPlane = (x, y, z, u) => {
     let coords = {x,y,z}
-    let model = getModelByName("ba146");
+    let model = getModelByName(u.name);
     const clonedScene = THREE.SkeletonUtils.clone( model.scene );
-        if ( clonedScene ) {
-                // THREE.Scene is cloned properly, let's find one mesh and launch animation for it
-        const clonedMesh = clonedScene.getObjectByName( u.meshName );
-                clonedMesh.position = {x:coords.x, y:coords.y, z:coords.z};
+    if ( clonedScene ) {
+        // THREE.Scene is cloned properly, let's find one mesh and launch animation for it
+        const clonedMesh = clonedScene.getObjectByName( u.name );
+        clonedMesh.position = {x:coords.x, y:coords.y, z:coords.z};
         clonedMesh.rotation.set(-Math.cos(coords.x), Math.sin(coords.y), -Math.sin(coords.z));
         // Different models can have different configurations of armatures and meshes. Therefore,
         // We can't set position, scale or rotation to individual mesh objects. Instead we set
@@ -82,7 +82,7 @@ function getModelByName( name ) {
     }
     return null;
 }
-    /**
+/**
  * Load a 3D model from a GLTF file. Use the GLTFLoader.
  * @param model {object} Model config, one item from the MODELS array. It will be updated inside the function!
  * @param onLoaded {function} A callback function that will be called when the model is loaded
