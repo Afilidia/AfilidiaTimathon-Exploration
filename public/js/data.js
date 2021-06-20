@@ -24,11 +24,17 @@ const COMPONENTS = {
     'nearby': ['FooterComponent', 'MenuComponent'],
 };
 
+// * All usefull styles with their keys
 const MAP_DATA = {
-    'Basic': {
-        map: 'https://studio.mapbox.com/styles/afilidiagroup/ckq41dm4d2vju18mjnvw3g6vi/edit/#12/48.8665/2.3176',
-        attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+    'streets': {
+        key: 'rQ7gZ2MALoTqCaR6vhTJ',
+        format: '.png',
     },
+
+    'hybrid': {
+        key: 'rQ7gZ2MALoTqCaR6vhTJ',
+        format: '.jpg',
+    }
 };
 
 
@@ -48,6 +54,7 @@ function getComponentPages(component) {
     return pages;
 }
 
-function getMapData(type) {
-    return MAP_DATA[type];
+function getMapData(style) {
+    return MAP_DATA[style];
 }
+
