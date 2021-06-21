@@ -14,10 +14,10 @@ class Debugger {
     };
 
     /* Console functions */
-    static warn(message) { if (Debugger.DEBUG) console.warn(`[!!] ${Debugger.#__getDebuggerData}: ${message}`); }
-    static info(message) { if (Debugger.DEBUG) console.info(`[??] ${Debugger.#__getDebuggerData}: ${message}`); }
-    static error(message) { if (Debugger.DEBUG) console.error(`[error] ${Debugger.#__getDebuggerData}: ${message}`); }
-    static log(message) { if (Debugger.DEBUG) console.log(`[log] ${Debugger.#__getDebuggerData}: ${message}`); }
+    static warn(message) { if (Debugger.DEBUG) console.warn(`[!!] ${Debugger.getDebuggerData}: ${message}`); }
+    static info(message) { if (Debugger.DEBUG) console.info(`[??] ${Debugger.getDebuggerData}: ${message}`); }
+    static error(message) { if (Debugger.DEBUG) console.error(`[error] ${Debugger.getDebuggerData}: ${message}`); }
+    static log(message) { if (Debugger.DEBUG) console.log(`[log] ${Debugger.getDebuggerData}: ${message}`); }
 
     constructor (page, settings) {
         if (page) Debugger.PAGE = page;
