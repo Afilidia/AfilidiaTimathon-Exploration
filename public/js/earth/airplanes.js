@@ -1,5 +1,5 @@
 let MODELS = [
-    { name: "ba146", scale: 0.001 }
+    { name: "ba146", scale: 0.002 }
 ];
 
 let numLoadedModels = 0;
@@ -10,23 +10,55 @@ for ( let i = 0; i < MODELS.length; ++ i ) {
         fetch(`/api/opensky/get-data?model=${m.name}`)
         .then(res => res.json())
         .then(async res => {
-            console.log(`Loaded config for ${m.name} with ${res.filter((flight)=>flight.on_ground!=0&&flight.airline_icao!="").length} flights and ${res.length} total airplanes.`);
+            console.log(`Loaded config for ${m.name} with ${res.filter((flight)=>flight.on_ground!='0'&&flight.airline_icao!="").length} flights and ${res.length} total airplanes.`);
             // let cartesian = {};
             // cartesian.x = 0.99 * Math.cos(50.86606607780635) * Math.cos(20.628595248594912)
             // cartesian.y = 0.99 * Math.cos(50.86606607780635) * Math.sin(20.628595248594912)
             // cartesian.z = 0.99 * Math.sin(50.86606607780635) * 1.3
             // spawnPlane(cartesian.y, cartesian.z, cartesian.x, MODELS[0]);
-            res.filter((flight)=>flight.on_ground!=0&&flight.airline_icao!="").forEach(async flight => {
+            res.filter((flight)=>flight.on_ground!='0'&&flight.airline_icao!="").forEach(async flight => {
                 let cartesian = {};
-                cartesian.x = 1 * Math.cos(flight.latitude) * Math.cos(flight.longitude);
-                cartesian.y = 1 * Math.cos(flight.latitude) * Math.sin(flight.longitude);
-                cartesian.z = 1 * Math.sin(flight.latitude);// * (1 + flight.altitude/1000);
+
+                // flight.longitude = 20.6285677;
+                // flight.latitude = 50.8660773;
+                // console.log(flight.altitude);
+                // let lat = flight.latitude;
+                // let lon = flight.longitude;
+
+                // * wikgu
+                // cartesian.x = 1 * Math.cos(flight.latitude) * Math.cos(flight.longitude);
+                // cartesian.y = 1 * Math.cos(flight.latitude) * Math.sin(flight.longitude);
+                // cartesian.z = 1 * Math.sin(flight.latitude);// * (1 + flight.altitude/1000);
+
+
+                let phi = (90 - flight.latitude) * Math.PI / 180;
+                let theta = (flight.longitude + 180) * Math.PI / 180;
+                let r = flight.altitude + 1.03;
+
+                // * Coding train
+                // cartesian.x = alt * Math.sin(lat) * Math.cos(lon);
+                // cartesian.y = alt * Math.sin(lat) * Math.sin(lon);
+                // cartesian.z = alt * Math.cos(lat);
+
+                // * Random guy from comments (after some FUCKIN repairs)
+                cartesian.x = -(r * Math.sin(phi)) * Math.cos(theta);
+                cartesian.y = r * Math.cos(phi);
+                cartesian.z = r * Math.sin(phi) * Math.sin(theta);
+
+
                 // let cartesian2 = cartesian / 6378.137 * 0.8
                 // let coords = await llhxyz(flight.lat,flight.long,flight.alt);
                 // console.log(`LLH: ${flight.lat} ${flight.long} ${flight.alt} | Cartesian:`, cartesian);
                 // spawnPlane((coords[0]/6378.137*1),-(coords[1]/6378.137*1),(coords[2]/6378.137*1),m);
-                spawnPlane(cartesian.y, cartesian.z, cartesian.x, m);
+
+                console.log(cartesian.x, cartesian.y, cartesian.z);
+                spawnPlane(cartesian.x, cartesian.y, cartesian.z, m);
+                // spawnPlane(cartesian.y, cartesian.z, cartesian.x, m);
             });
+
+            //     var line = new THREE.Line(geometry, material);
+            //     scene.add(line);
+
             // for (let i = 0; i < 500; i++) {
             //     let state = res.states[i];
             //     let cartesian = {};
@@ -84,11 +116,12 @@ spawnPlane = (x, y, z, u) => {
     if ( clonedScene ) {
         // THREE.Scene is cloned properly, let's find one mesh and launch animation for it
         // const clonedMesh = clonedScene.getObjectByName( u.name );
-        
+
         // if(u.scale) clonedScene.scale = {x:u.scale,y:u.scale,z:u.scale};
 
         clonedScene.position.set(coords.x, coords.y, coords.z);
-        clonedScene.rotation.set(-Math.cos(coords.x), Math.sin(coords.y), -Math.sin(coords.z));
+
+        // clonedScene.rotation.set(-Math.cos(coords.x), Math.sin(coords.y), -Math.sin(coords.z));
         // Different models can have different configurations of armatures and meshes. Therefore,
         // We can't set position, scale or rotation to individual mesh objects. Instead we set
         // it to the whole cloned scene and then add the whole scene to the game world
@@ -121,7 +154,7 @@ function loadGltfModel( model, onLoaded ) {
         const scene = gltf.scene;
         // model.animations = gltf.animations;
         model.scene = scene;
-        
+
         if(model.scale) scene.scale.set(model.scale,model.scale,model.scale);
 
         // Enable Shadows

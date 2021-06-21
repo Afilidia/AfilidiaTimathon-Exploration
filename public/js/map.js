@@ -161,7 +161,7 @@ function placeMarker(settings) {
             if (Object.keys(settings.marker).includes('icon')) icon = settings.marker.icon;
         }
 
-        if (icon) marker = L.marker([lat, lon], {icon: icon}, {'className': 'leaflet-popup'});
+        if (icon) marker = L.marker([lat, lon], {icon: icon}, {'className': 'leaflet-popup-box'});
         else marker = L.marker([lat, lon]);
 
         if (Object.keys(settings).includes('popup')) {
@@ -338,9 +338,8 @@ async function generatePlanes() {
 
     // Generate planes
     const planes = getPlanes(polygon, data);
-    console.log(planes);
 
-    clearAircrafts();
+    if (aircrafts.length > 0) clearAircrafts();
     let ground = [];
 
     planes.forEach(plane => {
@@ -362,11 +361,10 @@ async function generatePlanes() {
             },
 
             callback: function (marker) {
+                aircrafts.push(marker);
                 marker.addTo(map);
             }
         });
-
-        aircrafts.push(plane);
     });
 
     console.log(ground.length);
@@ -380,6 +378,7 @@ function getPlanes(polygon, data) {
         let lat = plane.latitude;
         let lon = plane.longitude;
 
+        // ! Fix the checkers
         if (
             (lon > polygon.left) && (lon < polygon.right)
             &&
@@ -458,24 +457,40 @@ function getCustomPopupContent(plane) {
 
     let ground = plane.on_ground;
 
-    var content =   `<div class="leaflet-popup">` +
-                        `<span class="leaflet-header">Call sign: ${callsign}</span>` +
+    var content =   `<div class="leaflet-popup-box">` +
+                        `<span class="leaflet-header">ICAO: ${icao}</span>` +
 
                         `<div class="leaflet-content">` +
                             `<div class="leaflet-row">` +
-                                `<span class="lealfet-row-header bold">Heading</span>` +
-                                `<label class="leaflet-row-content">${heading}</label>` +
+                                `<span class="lealfet-row-header bold">Longitude: </span>` +
+                                `<label class="leaflet-row-content">${lon}°</label>` +
                             `</div>` +
                         `</div>` +
+
+                        `<div class="leaflet-content">` +
+                            `<div class="leaflet-row">` +
+                                `<span class="lealfet-row-header bold">Latitude: </span>` +
+                                `<label class="leaflet-row-content">${lat}°</label>` +
+                            `</div>` +
+                        `</div>` +
+
+                        `<div class="leaflet-content">` +
+                            `<div class="leaflet-row">` +
+                                `<span class="lealfet-row-header bold">Altitude: </span>` +
+                                `<label class="leaflet-row-content">${alt} meters</label>` +
+                            `</div>` +
+                        `</div>` +
+
+                        `<div class="bar"></div>` +
                     `</div>`;
 
     return content;
 }
 
 function clearAircrafts() {
-    for (var i = aircrafts.length; i >= 0; i--) {
+    for (var i = aircrafts.length-1; i >= 0; i--) {
         let aircraft = aircrafts[i];
-        result = deleteOldCircle(aircraft);
-        if (result) aircrafts.pop();
+        map.removeLayer(aircraft);
+        aircrafts.pop();
     }
 }
