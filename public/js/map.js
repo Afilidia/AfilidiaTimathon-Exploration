@@ -7,6 +7,7 @@ const requester = new APIRequester({
 });
 
 const layers = {};
+const circles = [];
 
 // * Default map values (changeable)
 var defaults = {
@@ -43,12 +44,12 @@ addLayersToMap();
 const airplane_icon = L.icon({
     iconUrl: '/assets/markers/plane.png',
     iconSize: [45, 48],
-    iconAnchor: [0, 0],
+    iconAnchor: [24, 48],
     popupAnchor: [-3, -76],
 
     shadowUrl: '/assets/markers/shadow.png',
     shadowSize: [45, 48],
-    shadowAnchor: [0, 0]
+    shadowAnchor: [15, 48]
 });
 
 // tileLayer.addTo(map);
@@ -58,7 +59,7 @@ L.marker([40.7, -73.9], {icon: airplane_icon}).addTo(map)
         //.openPopup();
 
 
-// * Geolocalization functions
+// * ------ Geolocalization functions
 
 // * Requests localization
 function getLocation() {
@@ -289,7 +290,7 @@ async function generatePlanes() {
     let radius = defaults.radius;
     let degrees_r = parseFloat(getDegrees(radius).toFixed(2));
 
-    console.log(radius);
+    // console.log(radius);
 
     let longitude = user_pos.lon;
     let latitude = user_pos.lat;
@@ -300,7 +301,7 @@ async function generatePlanes() {
         right: parseFloat((longitude + degrees_r).toFixed(2)),
         top: parseFloat((latitude + degrees_r).toFixed(2)),
         center: {lat: user_pos.lat, lon: user_pos.lon},
-        radius: radius * 100
+        radius: radius * 100 * 7.5
     };
 
     // console.log(user_pos);
@@ -309,8 +310,32 @@ async function generatePlanes() {
     // Draw circle around the user marker
     var circle = drawCircle(polygon);
     circle.addTo(map);
+
+
+    // Generate planes
+    const planes = getPlanes(polygon, data);
+    console.log(planes);
 }
 
+// * Looks for all planes by a given polygon values
+function getPlanes(polygon, data) {
+    var planes = [];
+
+    if (data) data.forEach(plane => {
+        let lat = plane.lat;
+        let lon = plane.lon;
+
+        if (
+            (lon > polygon.left) && (lon < polygon.right)
+            &&
+            (lat < polygon.top) && (lat > polygon.bottom)
+        ) planes.push(plane);
+    });
+
+    return planes;
+}
+
+// * Calculates kilometers into degrees
 function getDegrees(kilometers) {
     // 1° = 111 km  (or 60 nautical miles)
     // 0.1° = 11.1 km
@@ -335,12 +360,33 @@ function getDegrees(kilometers) {
     return kilometers / 111;
 }
 
+// * Draws a circle for a given radius and position
 function drawCircle(data) {
+    if (circles.length > 0)  for (var i = circles.length; i >= 0; i--) {
+        let circle = circles[i];
+        result = deleteOldCircle(circle);
+        if (result) circles.pop();
+    }
 
-    return L.circle([data.center.lat, data.center.lon], {
+    var circle = L.circle([data.center.lat, data.center.lon], {
         color: circle_style.color,
         fillColor: circle_style.fillColor,
         fillOpacity: circle_style.fillOpacity,
         radius: data.radius
     });
+
+    circles.push(circle);
+    return circle;
+}
+
+// * Deletes old circle
+function deleteOldCircle(circle) {
+
+    if (circle) {
+        let removed = map.removeLayer(circle);
+        if (removed) return true;
+        return false;
+    }
+
+    return false;
 }
