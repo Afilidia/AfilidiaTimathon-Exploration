@@ -8,6 +8,7 @@ const requester = new APIRequester({
 
 const layers = {};
 const circles = [];
+const aircrafts = [];
 
 // * Default map values (changeable)
 var defaults = {
@@ -52,11 +53,23 @@ const airplane_icon = L.icon({
     shadowAnchor: [15, 48]
 });
 
+const ground_airplane_icon = L.icon({
+    iconUrl: '/assets/markers/ground_plane.png',
+    iconSize: [45, 48],
+    iconAnchor: [24, 48],
+    popupAnchor: [-3, -76],
+
+    shadowUrl: '/assets/markers/shadow.png',
+    shadowSize: [45, 48],
+    shadowAnchor: [15, 48]
+});
+
 // tileLayer.addTo(map);
 
-L.marker([40.7, -73.9], {icon: airplane_icon}).addTo(map)
-        .bindPopup('A pretty CSS3 popup.<br> Easily customizable.');
-        //.openPopup();
+// DEBUG
+// L.marker([40.7, -73.9], {icon: airplane_icon}).addTo(map)
+//         .bindPopup('A pretty CSS3 popup.<br> Easily customizable.');
+//         //.openPopup();
 
 
 // * ------ Geolocalization functions
@@ -131,6 +144,8 @@ async function savePosition(position) {
 }
 
 // * Leaflet map functions
+
+// * Creates marker on the map
 function placeMarker(settings) {
 
     if (settings) {
@@ -139,7 +154,15 @@ function placeMarker(settings) {
         let lat = settings.map.lat;
         let lon = settings.map.lon;
 
-        var marker = L.marker([lat, lon]);
+        var marker = null;
+        let icon = null;
+
+        if (Object.keys(settings).includes('marker')) {
+            if (Object.keys(settings.marker).includes('icon')) icon = settings.marker.icon;
+        }
+
+        if (icon) marker = L.marker([lat, lon], {icon: icon});
+        else marker = L.marker([lat, lon]);
 
         if (Object.keys(settings).includes('popup')) {
 
@@ -282,6 +305,7 @@ async function generatePlanes() {
 
     console.log(data);
 
+
     // Settings vars
 
     let count = data.statesCount;
@@ -315,6 +339,32 @@ async function generatePlanes() {
     // Generate planes
     const planes = getPlanes(polygon, data);
     console.log(planes);
+
+    clearAircrafts();
+
+    planes.forEach(plane => {
+        placeMarker({
+            map: {
+                lat: plane.latitude,
+                lon: plane.longitude,
+            },
+
+            popup: {
+                content: getCustomPopupContent(plane),
+                open: false
+            },
+
+            marker: {
+                icon: (Number(plane.on_ground) == 1) ? airplane_icon : ground_airplane_icon
+            },
+
+            callback: function (marker) {
+                marker.addTo(map);
+            }
+        });
+
+        aircrafts.push(plane);
+    });
 }
 
 // * Looks for all planes by a given polygon values
@@ -322,8 +372,8 @@ function getPlanes(polygon, data) {
     var planes = [];
 
     if (data) data.forEach(plane => {
-        let lat = plane.lat;
-        let lon = plane.lon;
+        let lat = plane.latitude;
+        let lon = plane.longitude;
 
         if (
             (lon > polygon.left) && (lon < polygon.right)
@@ -389,4 +439,36 @@ function deleteOldCircle(circle) {
     }
 
     return false;
+}
+
+// * Customize popup content
+function getCustomPopupContent(plane) {
+    let lat = plane.latitude;
+    let lon = plane.longitude;
+
+    let icao = plane.icao_24bit;
+    let callsign = plane.callsign;
+    let heading = plane.heading;
+    let alt = plane.altitude;
+
+    var content =   `<div class="leaflet-popup">` +
+                        `<span class="leaflet-header">Call sign: ${callsign}</span>` +
+
+                        `<div class="leaflet-content">` +
+                            `<div class="leaflet-row">` +
+                                `<span class="lealfet-row-header bold">Heading</span>` +
+                                `<label class="leaflet-row-content">${heading}</label>` +
+                            `</div>` +
+                        `</div>` +
+                    `</div>`;
+
+    return content;
+}
+
+function clearAircrafts() {
+    for (var i = aircrafts.length; i >= 0; i--) {
+        let aircraft = aircrafts[i];
+        result = deleteOldCircle(aircraft);
+        if (result) aircrafts.pop();
+    }
 }
