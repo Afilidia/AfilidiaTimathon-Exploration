@@ -374,7 +374,9 @@ async function generatePlanes() {
 function getPlanes(polygon, data) {
     var planes = [];
 
-    if (data) data.forEach(plane => {
+    if (data) Object.keys(data).forEach(element => {
+        let plane = data[element];
+
         let lat = plane.latitude;
         let lon = plane.longitude;
 

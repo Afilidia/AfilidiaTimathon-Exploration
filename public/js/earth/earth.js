@@ -2,27 +2,28 @@
 // document.getElementById("earth").style.width = '100%';
 // document.getElementById("earth").style.height = '100%';
 
+// * Create initial instances
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 35, 1, 1, 10000 );//window.innerWidth / window.innerHeight, 1, 10000 );
-
 var renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
+
 renderer.setSize( 1920, 1080 );
 renderer.setClearColor( 0x000000, 0 );
 document.getElementById("earth").appendChild( renderer.domElement );
 // document.getElementById("earth").getElementsByTagName("canvas")[0].id = 'earth-canvas';
 
+// * Create light
 const light = new THREE.PointLight(0xbfb0cc, 2);
 light.position.set(10, 10, 10);
 scene.add(light);
+
 const ambient = new THREE.AmbientLight(0xbfb0cc, 0.1);
 scene.add(ambient);
 
-// let shapeLight = new THREE.PointLight( 0xffffff, 5000, 2000 );
-// shapeLight.color.setHSL( 0.55, 0.9, 0.5 );
-// shapeLight.position.set( 0, 5000, 0 );
-// scene.add( shapeLight );
+
 var textureLoader = new THREE.TextureLoader();
 
+// * Create earth
 var earthgeometry = new THREE.SphereGeometry(0.99, 128, 128);
 var material = new THREE.MeshPhongMaterial({
     color: 0xffffff,
@@ -48,6 +49,8 @@ var material = new THREE.MeshPhongMaterial({
 });
 
 var lightsMesh = new THREE.Mesh(lightsgeometry, material);
+
+// * Create clouds
 var cloudsgeometry   = new THREE.SphereGeometry(1, 128, 128)
 var material  = new THREE.MeshPhongMaterial({
     color: 0xffffff,
@@ -83,6 +86,7 @@ camera.position.z = 4;
 // earthMesh.add(cloudMesh);
 earthMesh.add(lightsMesh);
 
+// * Mouse and drag movement
 var isDragging = false;
 var previousMousePosition = {
     x: 0,
@@ -115,26 +119,11 @@ function mousemove(e) {
         if(moveratio.x + 0.002 <= deltaMove.x) moveratio.x+=0.002;
         else if(moveratio.x - 0.002 >= deltaMove.x) moveratio.x-=0.002;
         else moveratio.x=0;
-    
+
         if(moveratio.y + 0.002 <= deltaMove.y) moveratio.y+=0.002;
         else if(moveratio.y - 0.002 >= deltaMove.y) moveratio.y-=0.002;
         else moveratio.y=0;
 
-        /* if(moveratio.x + 0.01 <= deltaMove.x && deltaMove.x > 0.01) moveratio.x+=0.01;
-        else if(moveratio.x - 0.01 >= deltaMove.x && deltaMove.x < -0.01) moveratio.x-=0.01;
-        else moveratio.x=0;
-    
-        if(moveratio.y + 0.01 <= deltaMove.y && deltaMove.y > 0.01) moveratio.y+=0.01;
-        else if(moveratio.y - 0.01 >= deltaMove.y && deltaMove.y < -0.01) moveratio.y-=0.01;
-        else moveratio.y=0; */
-
-        // var deltaRotationQuaternion = new THREE.Quaternion()
-        //     .setFromEuler(new THREE.Euler(
-        //         toRadians(moveratio.y*0.25),
-        //         toRadians(moveratio.x*0.25),
-        //         0,
-        //         'XYZ'
-        //     ));
         var deltaRotationQuaternion = new THREE.Quaternion()
             .setFromEuler(new THREE.Euler(
                 toRadians(deltaMove.y*0.25),
@@ -142,21 +131,22 @@ function mousemove(e) {
                 0,
                 'XYZ'
             ));
-        
+
         earthMesh.quaternion.multiplyQuaternions(deltaRotationQuaternion, earthMesh.quaternion);
     }
-    
+
     previousMousePosition = {
         x: e.offsetX,
         y: e.offsetY
     };
 }
-setInterval(()=>{
+
+setInterval(() => {
     if (!isDragging) {
         if(moveratio.x + 0.004 <= 0) moveratio.x+=0.004;
         else if(moveratio.x - 0.004 >= 0) moveratio.x-=0.004;
         else moveratio.x=0;
-    
+
         if(moveratio.y + 0.004 <= 0) moveratio.y+=0.004;
         else if(moveratio.y - 0.004 >= 0) moveratio.y-=0.004;
         else moveratio.y=0;
@@ -167,24 +157,25 @@ setInterval(()=>{
                 0,
                 'XYZ'
             ));
-        
+
         earthMesh.quaternion.multiplyQuaternions(deltaRotationQuaternion, earthMesh.quaternion);
     } else {
         if(moveratio.x + 0.002 <= 0) moveratio.x+=0.002;
         else if(moveratio.x - 0.002 >= 0) moveratio.x-=0.002;
         else moveratio.x=0;
-    
+
         if(moveratio.y + 0.002 <= 0) moveratio.y+=0.002;
         else if(moveratio.y - 0.002 >= 0) moveratio.y-=0.002;
         else moveratio.y=0;
     }
-    
-}, 1000/60)
+
+}, 1000/60);
 /* */
 
 $(document).on('mouseup', function(e) {
     isDragging = false;
 });
+
 $(document).on('touchend', function() {
     isDragging = false;
 });
@@ -198,26 +189,7 @@ setInterval(()=>{
     document.getElementById("hour-range-label").innerText = `${Math.floor(hour)<10?`0`+Math.floor(hour):Math.floor(hour)}:${Math.floor((hour-Math.floor(hour))*60)<10?`0`+Math.floor((hour-Math.floor(hour))*60):Math.floor((hour-Math.floor(hour))*60)}`;
 }, 1000);
 
-// spawnPlane(9.1105,45.4086,11277.6);
-
-// let startx = -silnia(-Math.ceil(earthMesh.position.x));
-// esetx = () => {
-//     earthMesh.position.x -= 0.1;
-//     if(earthMesh.position.x < 0) setTimeout(esetx(startx+silnia(-Math.ceil(earthMesh.position.x))));
-// };
-// esetx();
-// let starty = -silnia(-Math.ceil(earthMesh.position.y));
-// esety = () => {
-//     earthMesh.position.y -= 0.1;
-//     if(earthMesh.position.y < 0) setTimeout(esety(starty+silnia(-Math.ceil(earthMesh.position.y))));
-// };
-// esety();
-// let startz = -silnia(-Math.ceil(earthMesh.position.z));
-// esetz = () => {
-//     earthMesh.position.z -= 0.1;
-//     if(earthMesh.position.z < 0) setTimeout(esetz(startz+silnia(-Math.ceil(earthMesh.position.z))));
-// };
-// esetz();
+// * Animations and events loop
 function animate() {
     requestAnimationFrame( animate );
     let time = hour-12;
@@ -233,12 +205,16 @@ function animate() {
     camera.updateProjectionMatrix();
     renderer.render( scene, camera );
 }
+
 animate();
 // setInterval(animate, 16);
+
+// * Conversion degrees to radians
 function toRadians(angle) {
     return angle * (Math.PI / 180);
 }
 
+// * Conversion degrees to degrees
 function toDegrees(angle) {
     return angle * (180 / Math.PI);
 }
