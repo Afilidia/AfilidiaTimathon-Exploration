@@ -1,6 +1,10 @@
 @charset 'utf-8';
 @import 'tools';
 
+html {
+    max-width: 100%;
+}
+
 .container {
     display: flex;
     align-items: flex-start;
@@ -8,11 +12,34 @@
     font-family: 'Source Sans Pro', sans-serif;
     height: 100vh;
 
+    @media screen and (max-width: 1300px) {
+        & {
+            flex-direction: column;
+            align-items: center;
+            height: 110vh;
+        }
+    }
+
     .settings-wrapper,
     .map-wrapper {
         width: 45%;
         height: 70%;
+
+        @media screen and (max-width: 1300px) {
+            width: 90%;
+        }
+
+        @media screen and (max-width: 600px) {
+            width: 100%;
+        }
     }
+
+    .map-wrapper {
+        @media screen and (max-width: 1300px) {
+            height: 60%;
+        }
+    }
+
 
     .settings-wrapper {
         background: rgba( 255, 255, 255, 0.00 );
@@ -21,6 +48,14 @@
         -webkit-backdrop-filter: blur( 20.0px );
         border-top-right-radius: 20px;
         border-bottom-right-radius: 20px;
+
+        @media screen and (max-width: 1300px) {
+            border-top-right-radius: 0px;
+            border-bottom-right-radius: 20px;
+            border-bottom-left-radius: 20px;
+
+            height: 90%;
+        }
 
         .settings-header {
             font-size: 32px;
@@ -31,7 +66,7 @@
             height: 36px;
             padding: 5px 10px;
 
-            width: (100% - 3px);
+            width: (100% - 5px);
             border-bottom: 2px solid @dark-purple;
         }
 
@@ -50,6 +85,10 @@
                 flex-direction: column;
                 justify-content: space-between;
                 margin: 20px 0;
+
+                @media screen and (max-width: 600px) {
+                    width: 95%;
+                }
 
                 .settings-row-header {
                     font-size: 24px;
@@ -118,11 +157,22 @@
         width: 100%;
         border-top-left-radius: 20px;
         border-bottom-left-radius: 20px;
+
+        @media screen and (max-width: 1300px) {
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            border-bottom-left-radius: 0px;
+        }
+
     }
 }
 
 .footer {
     top: 100vh;
+
+    @media screen and (max-width: 1300px) {
+        top: 150vh;
+    }
 }
 
 .submit-btn {

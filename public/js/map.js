@@ -161,7 +161,7 @@ function placeMarker(settings) {
             if (Object.keys(settings.marker).includes('icon')) icon = settings.marker.icon;
         }
 
-        if (icon) marker = L.marker([lat, lon], {icon: icon});
+        if (icon) marker = L.marker([lat, lon], {icon: icon}, {'className': 'leaflet-popup'});
         else marker = L.marker([lat, lon]);
 
         if (Object.keys(settings).includes('popup')) {
