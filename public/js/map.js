@@ -341,8 +341,11 @@ async function generatePlanes() {
     console.log(planes);
 
     clearAircrafts();
+    let ground = [];
 
     planes.forEach(plane => {
+        if (Number(plane.on_ground)) ground.push(plane);
+
         placeMarker({
             map: {
                 lat: plane.latitude,
@@ -355,7 +358,7 @@ async function generatePlanes() {
             },
 
             marker: {
-                icon: (Number(plane.on_ground) == 1) ? airplane_icon : ground_airplane_icon
+                icon: (Number(plane.on_ground) == 1) ? ground_airplane_icon : airplane_icon
             },
 
             callback: function (marker) {
@@ -365,6 +368,8 @@ async function generatePlanes() {
 
         aircrafts.push(plane);
     });
+
+    console.log(ground.length);
 }
 
 // * Looks for all planes by a given polygon values
@@ -450,6 +455,8 @@ function getCustomPopupContent(plane) {
     let callsign = plane.callsign;
     let heading = plane.heading;
     let alt = plane.altitude;
+
+    let ground = plane.on_ground;
 
     var content =   `<div class="leaflet-popup">` +
                         `<span class="leaflet-header">Call sign: ${callsign}</span>` +

@@ -27,7 +27,7 @@ class Debugger {
         Debugger.DEBUG = settings.debug;
     }
 
-    static get #__getDate() {
+    static get getDate() {
         let date = new Date();
 
         return '' + (date.getHours() + 1) + ':' + (date.getMinutes() + 1) + ':' + (date.getSeconds() + 1) + (function () {
@@ -36,7 +36,7 @@ class Debugger {
         })();
     }
 
-    static get #__getDebuggerData() {
-        return `${Debugger.#__getDate} | ${Debugger.PAGE}`;
+    static get getDebuggerData() {
+        return `${Debugger.getDate} | ${Debugger.PAGE}`;
     }
 }
