@@ -95,18 +95,31 @@ var previousMousePosition = {
 
 let moveratio = {x:0,y:0};
 
+var raycaster = new THREE.Raycaster();
+var mouse = new THREE.Vector2();
+
 $(renderer.domElement).on('mousedown', function(e) {
     isDragging = true;
+    mouse.x = (e.clientX / renderer.domElement.clientWidth) * 2 - 1;
+    mouse.y =  - (e.clientY / renderer.domElement.clientHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+
+    var intersects = raycaster.intersectObjects(aircrafts);
+
+    if (intersects.length > 0) {
+        intersects[0].object.giveInfo();
+    }
 }).on('mousemove', function(e) {
     mousemove(e);
 });
 
-$(renderer.domElement).on('touchstart', function() {
-    isDragging = true;
-}).bind('touchy-drag', function(e) {
-    mousemove(e);
-    e.preventDefault();
-});
+// $(renderer.domElement).on('touchstart', function() {
+//     isDragging = true;
+// }).bind('touchy-drag', function(e) {
+//     mousemove(e);
+//     e.preventDefault();
+// });
 
 function mousemove(e) {
     //console.log(e);
@@ -176,9 +189,9 @@ $(document).on('mouseup', function(e) {
     isDragging = false;
 });
 
-$(document).on('touchend', function() {
-    isDragging = false;
-});
+// $(document).on('touchend', function() {
+//     isDragging = false;
+// });
 
 let hour = 0;
 document.getElementById("hour-range").value = `${new Date().getHours()*60*60 + new Date().getMinutes()*60 + new Date().getSeconds()}`;

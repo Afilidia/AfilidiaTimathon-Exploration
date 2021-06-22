@@ -13,8 +13,8 @@ for (let i = 0; i < MODELS.length; ++ i) {
             fetch(`/api/opensky/get-data?model=${m.name}`)
                 .then(res => res.json())
                     .then(async res => {
-                        console.log(`Loaded config for ${m.name} with ${res.filter((flight)=>flight.on_ground!='0'&&flight.airline_icao!="").length} flights and ${res.length} total airplanes.`);
-                        res.filter((flight)=>flight.on_ground!='0'&&flight.airline_icao!="").forEach(async flight => {
+                        console.log(`Loaded config for ${m.name} with ${Object.values(res).filter((flight)=>flight.on_ground==0&&flight.airline_icao!="").length} flights and ${Object.values(res).length} total airplanes.`);
+                        Object.values(res).filter((flight)=>flight.on_ground==0&&flight.airline_icao!="").forEach(async flight => {
                             let cartesian = {};
 
                             // flight.longitude = 20.6285677;
@@ -23,8 +23,7 @@ for (let i = 0; i < MODELS.length; ++ i) {
                             // * Prepare calc data
                             let phi = (90 - flight.latitude) * Math.PI / 180;
                             let theta = (flight.longitude + 180) * Math.PI / 180;
-                            let r = flight.altitude + 1.03;
-
+                            let r = (flight.altitude/700000) + 1;
                             let heading = flight.heading;
 
                             // * Calculate xyz
@@ -35,14 +34,16 @@ for (let i = 0; i < MODELS.length; ++ i) {
                             // console.log(cartesian.x, cartesian.y, cartesian.z);
 
                             // * Spawn
-                            spawnPlane(cartesian.x, cartesian.y, cartesian.z, m);
+                            spawnPlane(cartesian.x, cartesian.y, cartesian.z, m, flight);
                         });
                     });
         });
 }
 
+let aircrafts = [];
+
 // * Plane spawner
-spawnPlane = (x, y, z, u) => {
+spawnPlane = (x, y, z, u, flight) => {
     let coords = {x,y,z}
     let model = getModelByName(u.name);
 
@@ -55,8 +56,14 @@ spawnPlane = (x, y, z, u) => {
 
         // * Plane rotation
         rotatePlane(clonedScene);
+        
+        // * Set information about the plane
+        clonedScene.giveInfo = () => {
+            console.log(flight);
+        }
 
         // * Add aircraft
+        aircrafts.push(clonedScene);
         earthMesh.add(clonedScene);
     }
 }
@@ -106,3 +113,27 @@ function loadGltfModel( model, onLoaded ) {
 function getRotation(angle) {
     return (1 / 45) * angle;
 }
+
+// * Flight data * //
+// window.onload = function() {
+//     var raycaster = new THREE.Raycaster();
+//     var mouse = new THREE.Vector2();
+
+//     function onDocumentMouseDown(event) {
+//         event.preventDefault();
+
+//         mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+//         mouse.y =  - (event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+
+//         raycaster.setFromCamera(mouse, camera);
+
+//         var intersects = raycaster.intersectObjects(aircrafts);
+
+//         if (intersects.length > 0) {
+//             intersects[0].object.giveInfo();
+//         }
+
+//     }
+
+//     document.addEventListener('mousedown', onDocumentMouseDown, false);
+// };
