@@ -1,5 +1,5 @@
 let MODELS = [
-    { name: "ba146", scale: 0.002 }
+    { name: "ba146", scale: 0.002 } // 0.002
 ];
 
 let numLoadedModels = 0;
@@ -24,6 +24,8 @@ for (let i = 0; i < MODELS.length; ++ i) {
                             let phi = (90 - flight.latitude) * Math.PI / 180;
                             let theta = (flight.longitude + 180) * Math.PI / 180;
                             let r = flight.altitude + 1.03;
+
+                            let heading = flight.heading;
 
                             // * Calculate xyz
                             cartesian.x = -(r * Math.sin(phi)) * Math.cos(theta);
@@ -50,6 +52,11 @@ spawnPlane = (x, y, z, u) => {
     // * Set the calculated xyz position of the plane
     if ( clonedScene ) {
         clonedScene.position.set(coords.x, coords.y, coords.z);
+
+        // * Plane rotation
+        rotatePlane(clonedScene);
+
+        // * Add aircraft
         earthMesh.add(clonedScene);
     }
 }
@@ -62,6 +69,14 @@ function getModelByName( name ) {
         }
     }
     return null;
+}
+
+function rotatePlane(plane) {
+    plane.rotateY(0); // left - right
+    plane.rotateZ(0); // side - side
+
+    plane.lookAt(earthMesh.position);
+    plane.rotateX(180.5); // up - down
 }
 
 // * Load a 3D model from a GLTF file. Use the GLTFLoader.
@@ -85,4 +100,9 @@ function loadGltfModel( model, onLoaded ) {
         console.log( "Done loading model", model.name );
         onLoaded();
     } );
+}
+
+// * Probably wrong becouse of this fuckin three.js
+function getRotation(angle) {
+    return (1 / 45) * angle;
 }
