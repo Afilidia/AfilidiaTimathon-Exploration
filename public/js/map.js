@@ -545,10 +545,10 @@ async function update() {
 
 
         // * Marker has been moved -> remove all aircrafts
-        var outer_aircrafts = getOuterAircrafts(data, polygon);
-        var outer_aircrafts = getMarkerByICAO(outer_aircrafts);
-        console.log(outer_aircrafts);
-        clearAircrafts(outer_aircrafts);
+        // var outer_aircrafts = getOuterAircrafts(data, polygon);
+        // var outer_aircrafts = getMarkerByICAO(outer_aircrafts);
+        // console.log(outer_aircrafts);
+        clearAircrafts();
 
         defaults.moved = false;
         update();
