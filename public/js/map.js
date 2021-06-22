@@ -1,6 +1,7 @@
 // -*- coding: utf-8 -*-
 
 CONVERT_TO_CITY_URL = 'https://api.bigdatacloud.net/data/reverse-geocode-client?';
+UPDATE_DELAY = 4000;
 
 const requester = new APIRequester({
     baseURL: 'https://api.maptiler.com/maps/',
@@ -8,7 +9,8 @@ const requester = new APIRequester({
 
 const layers = {};
 const circles = [];
-const aircrafts = [];
+const aircrafts = {};
+const popups = {};
 
 // * Default map values (changeable)
 var defaults = {
@@ -24,7 +26,9 @@ var defaults = {
         generated: false
     },
 
-    radius: 100
+    radius: 100,    // * Circle radius
+    initial: null,  // * Initial marker
+    moved: false    // * If marker has been moved - true
 };
 
 const circle_style = {
@@ -39,6 +43,42 @@ var map = L.map('mapid').setView([defaults.map.lat, defaults.map.lon], defaults.
 
 
 addLayersToMap();
+
+// * Add initial marker
+placeMarker({
+    map: {
+        lat: defaults.map.lat,
+        lon: defaults.map.lon,
+    },
+
+    popup: {
+        content: '<span class="leaflet-header">This is you!</span>',
+        open: false
+    },
+
+    marker: {
+        draggable: true
+    },
+
+    callback: function (marker) {
+        marker.addTo(map);
+        defaults.initial = marker;
+
+        // * On end of marker dragging (moving with cursor)
+        marker.on('dragend', function (event) {
+            var marker = event.target;
+            var position = marker.getLatLng();
+
+            marker.setLatLng(new L.LatLng(position.lat, position.lng), {draggable: true});
+            map.flyTo(new L.LatLng(position.lat, position.lng));
+
+            defaults.map.lat = position.lat;
+            defaults.map.lon = position.lng;
+
+            defaults.moved = true;
+        });
+    }
+});
 
 
 // * Create custom airplane icon
@@ -64,12 +104,6 @@ const ground_airplane_icon = L.icon({
     shadowAnchor: [15, 48]
 });
 
-// tileLayer.addTo(map);
-
-// DEBUG
-// L.marker([40.7, -73.9], {icon: airplane_icon}).addTo(map)
-//         .bindPopup('A pretty CSS3 popup.<br> Easily customizable.');
-//         //.openPopup();
 
 
 // * ------ Geolocalization functions
@@ -137,10 +171,31 @@ async function savePosition(position) {
             open: false
         },
 
+        marker: {
+            draggable: true
+        },
+
         callback: function (marker) {
             marker.addTo(map);
+
+            // * On end of marker dragging (moving with cursor)
+            marker.on('dragend', function (event) {
+                var marker = event.target;
+                var position = marker.getLatLng();
+
+                marker.setLatLng(new L.LatLng(position.lat, position.lng), {draggable: true});
+                map.flyTo(new L.LatLng(position.lat, position.lng));
+
+                defaults.map.lat = position.lat;
+                defaults.map.lon = position.lng;
+
+                defaults.moved = true;
+            });
         }
     });
+
+    // * Remove initial marker
+    if (defaults.initial)  map.removeLayer(defaults.initial);
 }
 
 // * Leaflet map functions
@@ -156,13 +211,15 @@ function placeMarker(settings) {
 
         var marker = null;
         let icon = null;
+        let draggable = false;
 
         if (Object.keys(settings).includes('marker')) {
             if (Object.keys(settings.marker).includes('icon')) icon = settings.marker.icon;
+            if (Object.keys(settings.marker).includes('draggable')) draggable = settings.marker.draggable;
         }
 
-        if (icon) marker = L.marker([lat, lon], {icon: icon}, {'className': 'leaflet-popup-box'});
-        else marker = L.marker([lat, lon]);
+        if (icon) marker = L.marker([lat, lon], {icon: icon, draggable: draggable}, {'className': 'leaflet-popup-box'});
+        else marker = L.marker([lat, lon], {draggable: draggable});
 
         if (Object.keys(settings).includes('popup')) {
 
@@ -180,9 +237,6 @@ function placeMarker(settings) {
     }
 
     return false;
-    // L.marker([40.7, -73.9]).addTo(map)
-    //     .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-    //     .openPopup();
 }
 
 // * Get local lang
@@ -290,24 +344,9 @@ async function generatePlanes() {
     // Fetch data
     var data = await fetch('/api/opensky/get-data').then((res) => res.json()).then((res) => {return res});
 
-    // ! Insert waiter here (10sec)
-
-    // var checkIfFalse = () => {
-    //     console.log(data);
-
-    //     if (data) {
-    //         console.log(data);
-    //         clearInterval(cycle);
-    //     }
-    // };
-
-    // let cycle = setInterval(checkIfFalse, 300);
-
     console.log(data);
 
-
     // Settings vars
-
     let count = data.statesCount;
 
     let user_pos = defaults.map;
@@ -331,6 +370,7 @@ async function generatePlanes() {
     // console.log(user_pos);
     // console.log(polygon.left, polygon.bottom, polygon.right, polygon.top);
 
+
     // Draw circle around the user marker
     var circle = drawCircle(polygon);
     circle.addTo(map);
@@ -339,7 +379,7 @@ async function generatePlanes() {
     // Generate planes
     const planes = getPlanes(polygon, data);
 
-    if (aircrafts.length > 0) clearAircrafts();
+    if (Object.keys(aircrafts).length > 0) clearAircrafts();
     let ground = [];
 
     planes.forEach(plane => {
@@ -361,13 +401,16 @@ async function generatePlanes() {
             },
 
             callback: function (marker) {
-                aircrafts.push(marker);
+                aircrafts[plane.icao_24bit] = marker;
                 marker.addTo(map);
             }
         });
     });
 
-    console.log(ground.length);
+    // console.log(ground.length);
+
+    // * Update planes
+    update();
 }
 
 // * Looks for all planes by a given polygon values
@@ -380,20 +423,136 @@ function getPlanes(polygon, data) {
         let lat = plane.latitude;
         let lon = plane.longitude;
 
-        // ! Fix the checkers
-        // if (
-        //     (lon > polygon.left) && (lon < polygon.right)
-        //     &&
-        //     (lat < polygon.top) && (lat > polygon.bottom)
-        // )
-        let lonrad = Math.max(lon, polygon.center.lon)==lon?lon-polygon.center.lon:polygon.center.lon-lon;
-        let latrad = Math.max(lat, polygon.center.lat)==lat?lat-polygon.center.lat:polygon.center.lat-lat;
-        // console.log(lon, polygon.center.lon, lat, polygon.center.lat, lonrad, latrad, lonrad<polygon.radius/100/7.5, latrad<polygon.radius/100/7.5, polygon.radius/100/7.5, polygon.radius);
-        if(lonrad<getDegrees(polygon.radius/100/5)/2.5&&latrad<getDegrees(polygon.radius/100/5)/2.5) planes.push(plane);
-        // planes.push(plane);
+        if (inRange(lat, lon, polygon)) planes.push(plane);
     });
 
     return planes;
+}
+
+function inRange(lat, lon, polygon) {
+    let lonrad = Math.max(lon, polygon.center.lon) == lon ? lon-polygon.center.lon : polygon.center.lon - lon;
+    let latrad = Math.max(lat, polygon.center.lat) == lat ? lat-polygon.center.lat : polygon.center.lat - lat;
+
+    if(lonrad < getDegrees(polygon.radius / 100 / 5) / 2.5 && latrad < getDegrees(polygon.radius / 100 / 5) / 2.5) return true;
+    return false;
+}
+
+// * Aircrafts update function
+async function update() {
+    var getData = async () => {
+        return await fetch('/api/opensky/get-data').then((res) => res.json()).then((res) => {return res});
+    };
+
+    var data = await getData();
+    // console.log(data);
+
+    // Settings vars
+    let count = data.statesCount;
+
+    let user_pos = defaults.map;
+    let radius = defaults.radius;
+    let degrees_r = parseFloat(getDegrees(radius).toFixed(2));
+
+    // console.log(radius);
+
+    let longitude = user_pos.lon;
+    let latitude = user_pos.lat;
+
+    let fetched_aircrafts = [];
+
+    let polygon = {
+        left: parseFloat((longitude - degrees_r).toFixed(2)),
+        bottom:parseFloat((latitude - degrees_r).toFixed(2)),
+        right: parseFloat((longitude + degrees_r).toFixed(2)),
+        top: parseFloat((latitude + degrees_r).toFixed(2)),
+        center: {lat: user_pos.lat, lon: user_pos.lon},
+        radius: radius * 100 * 5
+    };
+
+    if (data) Object.keys(data).forEach(element => {
+        let plane = data[element];
+
+        let lat = plane.latitude;
+        let lon = plane.longitude;
+
+        if (inRange(lat, lon, polygon)) {
+            fetched_aircrafts.push(plane);
+
+            // * Update aricraft position if in range
+            if (aircrafts[plane.icao_24bit]) {
+                aircrafts[plane.icao_24bit].setLatLng([lat, lon]).update();
+
+                // * Update plane marker popup
+                aircrafts[plane.icao_24bit].setPopupContent(getCustomPopupContent(plane));
+
+                // * Update marker icon
+                if (Number(plane.on_ground) == 1) aircrafts[plane.icao_24bit].setIcon(ground_airplane_icon);
+            }
+
+        } else {
+            // * Delete aircraft if not in range
+            // if (aircrafts[plane.icao_24bit]) map.removeLayer(aircrafts[plane.icao_24bit]);
+            // delete aircrafts[plane.icao_24bit];
+        }
+    });
+
+    // console.log(fetched_aircrafts.length, Object.keys(aircrafts).length);
+    if (fetched_aircrafts.length > Object.keys(aircrafts).length) {
+        var fetched = transform(fetched_aircrafts);
+        // console.log(aircrafts);
+
+        var new_aircrafts = unmerge(fetched, aircrafts);
+        // console.log(new_aircrafts);
+
+        if (new_aircrafts) Object.keys(new_aircrafts).forEach(icao => {
+            let plane = new_aircrafts[icao];
+            // console.log(icao);
+
+            placeMarker({
+                map: {
+                    lat: plane.latitude,
+                    lon: plane.longitude,
+                },
+
+                popup: {
+                    content: getCustomPopupContent(plane),
+                    open: false
+                },
+
+                marker: {
+                    icon: (Number(plane.on_ground) == 1) ? ground_airplane_icon : airplane_icon
+                },
+
+                callback: function (marker) {
+                    aircrafts[plane.icao_24bit] = marker;
+                    marker.addTo(map);
+                }
+            });
+        });
+    }
+
+    if (defaults.moved == false) setTimeout(update, UPDATE_DELAY);
+    else {
+        // * Move circle to the new position
+        moveCircle(defaults.map.lat, defaults.map.lon);
+
+        polygon.left = parseFloat((defaults.map.lon - degrees_r).toFixed(2)),
+        polygon.bottom = parseFloat((defaults.map.lat - degrees_r).toFixed(2)),
+        polygon.right = parseFloat((defaults.map.lon + degrees_r).toFixed(2)),
+        polygon.top = parseFloat((defaults.map.lat + degrees_r).toFixed(2)),
+        polygon.center = {lat: defaults.map.lat, lon: defaults.map.lon},
+        polygon.radius = radius * 100 * 5
+
+
+        // * Marker has been moved -> remove all aircrafts
+        var outer_aircrafts = getOuterAircrafts(data, polygon);
+        var outer_aircrafts = getMarkerByICAO(outer_aircrafts);
+        console.log(outer_aircrafts);
+        clearAircrafts(outer_aircrafts);
+
+        defaults.moved = false;
+        update();
+    }
 }
 
 // * Calculates kilometers into degrees
@@ -417,7 +576,8 @@ function getDegrees(kilometers) {
     // 0.1" = 3 m
     // 1/9" = 3 m
     // 1/27" = 1 m
- // (7 decimals, cm accuracy)
+    // (7 decimals, cm accuracy)
+
     return kilometers / 111;
 }
 
@@ -465,7 +625,7 @@ function getCustomPopupContent(plane) {
     let ground = plane.on_ground;
 
     var content =   `<div class="leaflet-popup-box">` +
-                        `<span class="leaflet-header">ICAO: ${icao}</span>` +
+                        `<span class="leaflet-header">${icao}</span>` +
 
                         `<div class="leaflet-content">` +
                             `<div class="leaflet-row">` +
@@ -494,10 +654,84 @@ function getCustomPopupContent(plane) {
     return content;
 }
 
-function clearAircrafts() {
-    for (var i = aircrafts.length-1; i >= 0; i--) {
-        let aircraft = aircrafts[i];
+// * Deletes all aircraft markers
+function clearAircrafts(object) {
+    let planes = {};
+
+    if (object !== undefined) planes = object;
+    else planes = aircrafts;
+
+    // console.log(planes);
+
+    Object.keys(planes).forEach(element => {
+        let aircraft = planes[element];
         map.removeLayer(aircraft);
-        aircrafts.pop();
-    }
+        delete planes[element];
+    });
+}
+
+// * Moves circle to passed lat and lon
+function moveCircle(lat, lon) {
+    if (circles[0]) circles[0].setLatLng([lat, lon]);
+}
+
+// * Sets the icao_24bit as the key to its parent element
+function transform(array, key) {
+    var object = {};
+
+    array.forEach(element => {
+        // console.log(element);
+        object[element.icao_24bit] = element;
+    });
+
+    return object;
+}
+
+// * Deletes the content from array1 that is set in array2
+function unmerge(array1, array2) {
+    let array2_keys = Object.keys(array2);
+
+    if ((array1) && (array2)) Object.keys(array1).forEach(element => {
+        if (array2_keys.includes(element)) delete array1[element];
+    });
+
+    return array1;
+}
+
+// * Gets all aircrafts not in circle range
+function getOuterAircrafts(data, polygon) {
+    var outer = [];
+
+    if (data) Object.keys(data).forEach(element => {
+        let plane = data[element];
+
+        let lat = plane.latitude;
+        let lon = plane.longitude;
+
+        if (!inRange(lat, lon, polygon)) {
+            // console.log(plane.icao_24bit);
+            outer.push(plane);
+        }
+    });
+
+    return outer;
+}
+
+// * Returns transformed object if plane with given ICAO is set in global aircrafts list
+function getMarkerByICAO(planes) {
+    let array = {};
+
+    let getMatching = (planes, icao) => {
+        for (let i=0; i<planes.length; i++) if (planes[i].icao_24bit == icao) return planes[i];
+        return null
+    };
+
+    console.log(aircrafts);
+    if (planes) Object.keys(aircrafts).forEach(aircraft => {
+        console.log(planes, aircraft);
+        let matching = getMatching(planes, aircraft);
+        if (matching) array[aircraft] = matching;
+    });
+
+    return array;
 }
