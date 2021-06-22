@@ -24,7 +24,7 @@ var defaults = {
         generated: false
     },
 
-    radius: 100000
+    radius: 100
 };
 
 const circle_style = {
@@ -325,7 +325,7 @@ async function generatePlanes() {
         right: parseFloat((longitude + degrees_r).toFixed(2)),
         top: parseFloat((latitude + degrees_r).toFixed(2)),
         center: {lat: user_pos.lat, lon: user_pos.lon},
-        radius: radius * 100 * 7.5
+        radius: radius * 100 * 5
     };
 
     // console.log(user_pos);
@@ -381,11 +381,16 @@ function getPlanes(polygon, data) {
         let lon = plane.longitude;
 
         // ! Fix the checkers
-        if (
-            (lon > polygon.left) && (lon < polygon.right)
-            &&
-            (lat < polygon.top) && (lat > polygon.bottom)
-        ) planes.push(plane);
+        // if (
+        //     (lon > polygon.left) && (lon < polygon.right)
+        //     &&
+        //     (lat < polygon.top) && (lat > polygon.bottom)
+        // )
+        let lonrad = Math.max(lon, polygon.center.lon)==lon?lon-polygon.center.lon:polygon.center.lon-lon;
+        let latrad = Math.max(lat, polygon.center.lat)==lat?lat-polygon.center.lat:polygon.center.lat-lat;
+        // console.log(lon, polygon.center.lon, lat, polygon.center.lat, lonrad, latrad, lonrad<polygon.radius/100/7.5, latrad<polygon.radius/100/7.5, polygon.radius/100/7.5, polygon.radius);
+        if(lonrad<getDegrees(polygon.radius/100/5)/2.5&&latrad<getDegrees(polygon.radius/100/5)/2.5) planes.push(plane);
+        // planes.push(plane);
     });
 
     return planes;

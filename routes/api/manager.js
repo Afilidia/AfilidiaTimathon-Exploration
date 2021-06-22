@@ -65,9 +65,9 @@ let api = {
             fetch(api.url, { method: 'GET', headers: api.headers})
             .then((res) => res.json())
             .then((json) => {
-                let response = [];
+                let response = {};
                 Object.values(json).forEach(info => {
-                    if(info[0]) response.push({
+                    if(info[0]) response[info[0]] = {
                         icao_24bit: info[0],
                         latitude: info[1],
                         longitude: info[2],
@@ -86,7 +86,7 @@ let api = {
                         vertical_speed: info[15],
                         callsign: info[16],
                         airline_icao: info[18]
-                    });
+                    };
                 });
                 resolve(response);
             });
@@ -157,10 +157,10 @@ setTimeout(async ()=>{
     }
 }, 1);
 setInterval(async ()=>{
-    if(!openskyData){
-        let data = await getOpenskyData();
+    // if(!openskyData){
+        let data = await api.getData();
         openskyData = data;
-    }
+    // }
 }, 5000);
 
 host.page("/ok", "ok", ()=>{return true;}, "/", true);
