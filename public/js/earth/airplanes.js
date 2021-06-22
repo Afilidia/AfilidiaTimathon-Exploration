@@ -13,7 +13,9 @@ for (let i = 0; i < MODELS.length; ++ i) {
             fetch(`/api/opensky/get-data?model=${m.name}`)
                 .then(res => res.json())
                     .then(async res => {
-                        console.log(`Loaded config for ${m.name} with ${Object.values(res).filter((flight)=>flight.on_ground==0&&flight.airline_icao!="").length} flights and ${Object.values(res).length} total airplanes.`);
+                        let progressMax = Object.values(res).filter((flight)=>flight.on_ground==0&&flight.airline_icao!="").length;
+                        let progress = 0;
+                        console.log(`Loaded config for ${m.name} with ${progressMax} flights and ${Object.values(res).length} total airplanes.`);
                         Object.values(res).filter((flight)=>flight.on_ground==0&&flight.airline_icao!="").forEach(async flight => {
                             let cartesian = {};
 
@@ -35,6 +37,9 @@ for (let i = 0; i < MODELS.length; ++ i) {
 
                             // * Spawn
                             spawnPlane(cartesian.x, cartesian.y, cartesian.z, m, flight);
+
+                            progress++;
+                            document.getElementById("loading").setAttribute('progress', Math.round(progress/progressMax*100));
                         });
                     });
         });
@@ -82,7 +87,9 @@ updatePlanes = () => {
             .then(res => res.json())
                 .then(async res => {
                     // debuglat+=0.1;
-                    console.log(`Updated config for ${m.name} with ${Object.values(res).filter((flight)=>flight.on_ground==0&&flight.airline_icao!="").length} flights and ${Object.values(res).length} total airplanes.`);
+                    let progressMax = Object.values(res).filter((flight)=>flight.on_ground==0&&flight.airline_icao!="").length;
+                    let progress = 0;
+                    console.log(`Updated config for ${m.name} with ${progressMax} flights and ${Object.values(res).length} total airplanes.`);
                     aircrafts.forEach(plane => {
                         plane.toRemove = true;
                     });
@@ -109,7 +116,11 @@ updatePlanes = () => {
                         if(aircrafts[flight.icao_24bit]) aircrafts[flight.icao_24bit].position.set(cartesian.x, cartesian.y, cartesian.z);
                         else await spawnPlane(cartesian.x, cartesian.y, cartesian.z, m, flight);
 
+
                         aircrafts[flight.icao_24bit].toRemove = false;
+
+                        progress++;
+                        document.getElementById("loading").setAttribute('progress', Math.round(progress/progressMax*100));
                     });
                     aircrafts.forEach(plane => {
                         if(plane.toRemove) removePlane(plane.icao_24bit);
