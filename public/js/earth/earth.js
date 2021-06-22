@@ -100,16 +100,20 @@ var mouse = new THREE.Vector2();
 
 $(renderer.domElement).on('mousedown', function(e) {
     isDragging = true;
+    var mouse = new THREE.Vector2();
     mouse.x = (e.clientX / renderer.domElement.clientWidth) * 2 - 1;
-    mouse.y =  - (e.clientY / renderer.domElement.clientHeight) * 2 + 1;
-
-    raycaster.setFromCamera(mouse, camera);
-
-    var intersects = raycaster.intersectObjects(aircrafts);
-
-    if (intersects.length > 0) {
-        intersects[0].object.giveInfo();
-    }
+    mouse.y = -(e.clientY / renderer.domElement.clientHeight) * 2 + 1;
+    var raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(new THREE.Vector2(Object.values(aircrafts)[0].position.x, Object.values(aircrafts)[0].position.z), camera);
+    console.log(new THREE.Vector2(Object.values(aircrafts)[0].position.x, Object.values(aircrafts)[0].position.z), mouse)
+    aircrafts.forEach(plane => {
+        var intersects = raycaster.intersectObjects(plane.children[0].children, true);
+        
+        for ( let i = 0; i < intersects.length; i ++ ) {
+            console.log(intersects[i])
+            intersects[ i ].object.giveInfo();
+        }
+    });
 }).on('mousemove', function(e) {
     mousemove(e);
 });
@@ -205,19 +209,21 @@ setInterval(()=>{
 // * Animations and events loop
 function animate() {
     requestAnimationFrame( animate );
+
     let time = hour-12;
     let opacity = 1/12*(time<0?-time:time);
     lightsMesh.material.opacity = opacity;
     sphereCloudsMesh.material.opacity = 0.9-(1/12*(time<0?-time:time))*0.8;
     sphereCloudsMesh.rotation.y -= (1-(1/12*(time<0?-time:time))*0.8)*(1 / 64 * 0.01);
-    // sphereCloudsMesh.rotation.x -= 1 / 64 * 0.01;
-    // earthMesh.rotation.y += 1 / 16 * 0.01;
+
+    renderer.render( scene, camera );
+}
+setInterval(() => {
     let size = {x: document.getElementById("earth").clientWidth, y: document.getElementById("earth").clientHeight};
     renderer.setSize(size.x, size.y);
     camera.aspect = size.x / size.y;
     camera.updateProjectionMatrix();
-    renderer.render( scene, camera );
-}
+}, 500)
 
 animate();
 // setInterval(animate, 16);

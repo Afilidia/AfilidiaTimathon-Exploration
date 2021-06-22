@@ -22,16 +22,20 @@
 
     <!-- 3D SCRIPTS -->
     <script type="text/javascript" src="https://threejs.org/build/three.js"></script>
-    <script type="text/javascript" src="/js/earth/OBJLoader.js"></script>
-    <script type="text/javascript" src="/js/earth/coords.js"></script>
-    <script type="text/javascript" src="/js/earth/GLTFLoader.js"></script>
-    <script type="text/javascript" src="/js/earth/Pass.js"></script>
-    <script type="text/javascript" src="/js/earth/RenderPass.js"></script>
-    <script type="text/javascript" src="/js/earth/ShaderPass.js"></script>
-    <script type="text/javascript" src="/js/earth/CopyShader.js"></script>
-    <script type="text/javascript" src="/js/earth/EffectComposer.js"></script>
-    <script type="text/javascript" src="/js/earth/SkeletonUtils.js"></script>
-    <script type="text/javascript" src="/js/earth/helper.js"></script>
+    <%
+    let scripts = {
+        three: ["GLTFLoader", "SkeletonUtils"]
+    }
+
+    Object.keys(scripts).forEach(categoryI => {
+        let category = scripts[categoryI];
+    %>
+        <!-- <%= categoryI %> scripts: -->
+        <% category.forEach(script => { %>
+            <script type="text/javascript" src="/js/earth/<%= script %>.js"></script>
+        <% }); %>
+    <% }); %>
+
 
     <title>Globe exploration | Planexplore</title>
 </head>
