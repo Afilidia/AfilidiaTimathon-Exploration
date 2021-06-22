@@ -1,5 +1,5 @@
 let MODELS = [
-    { name: "ba146", scale: 0.002 } // 0.002
+    { name: "ba146", scale: 0.001 } // 0.001
 ];
 
 let numLoadedModels = 0;
@@ -56,7 +56,7 @@ spawnPlane = (x, y, z, u, flight) => {
 
         // * Plane rotation
         rotatePlane(clonedScene);
-        
+
         // * Set information about the plane
         clonedScene.giveInfo = () => {
             console.log(flight);
