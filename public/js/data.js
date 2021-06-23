@@ -22,6 +22,7 @@ const COMPONENTS = {
     // Features
     'earth': ['FooterComponent', 'MenuComponent'],
     'nearby': ['FooterComponent', 'MenuComponent'],
+    'airlines': ['FooterComponent', 'MenuComponent'],
 };
 
 // * All usefull styles with their keys
