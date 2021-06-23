@@ -1,5 +1,5 @@
 let MODELS = [
-    { name: "ba146", scale: 0.01 } // 0.001
+    { name: "ba146", scale: 0.001 } // 0.001
 ];
 
 let numLoadedModels = 0;
@@ -26,7 +26,6 @@ for (let i = 0; i < MODELS.length; ++ i) {
                             let phi = (90 - flight.latitude) * Math.PI / 180;
                             let theta = (flight.longitude + 180) * Math.PI / 180;
                             let r = (flight.altitude/500000) + 1;
-                            let heading = flight.heading;
 
                             // * Calculate xyz
                             cartesian.x = -(r * Math.sin(phi)) * Math.cos(theta);
