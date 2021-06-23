@@ -158,7 +158,7 @@ function mousemove(e) {
     };
 }
 
-setInterval(() => {
+setInterval(async () => {
     if (!isDragging) {
         if(moveratio.x + 0.004 <= 0) moveratio.x+=0.004;
         else if(moveratio.x - 0.004 >= 0) moveratio.x-=0.004;
@@ -167,7 +167,7 @@ setInterval(() => {
         if(moveratio.y + 0.004 <= 0) moveratio.y+=0.004;
         else if(moveratio.y - 0.004 >= 0) moveratio.y-=0.004;
         else moveratio.y=0;
-        var deltaRotationQuaternion = new THREE.Quaternion()
+        var deltaRotationQuaternion = await new THREE.Quaternion()
             .setFromEuler(new THREE.Euler(
                 toRadians(moveratio.y==0?0:moveratio.y*2),
                 toRadians(moveratio.x==0?-0.02:moveratio.x*2),
@@ -186,7 +186,7 @@ setInterval(() => {
         else moveratio.y=0;
     }
 
-}, 1000/60);
+}, 1000/120);
 /* */
 
 $(document).on('mouseup', function(e) {

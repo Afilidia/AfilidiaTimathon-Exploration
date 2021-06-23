@@ -1,5 +1,5 @@
 let MODELS = [
-    { name: "ba146", scale: 0.001 } // 0.001
+    { name: "ba146", scale: 0.01 } // 0.001
 ];
 
 let numLoadedModels = 0;
@@ -39,7 +39,7 @@ for (let i = 0; i < MODELS.length; ++ i) {
                             spawnPlane(cartesian.x, cartesian.y, cartesian.z, m, flight);
 
                             progress++;
-                            document.getElementById("loading").setAttribute('progress', Math.round(progress/progressMax*100));
+                            // document.getElementById("loading").setAttribute('progress', Math.round(progress/progressMax*100));
                         });
                     });
         });
@@ -59,8 +59,6 @@ spawnPlane = (x, y, z, u, flight) => {
     if ( clonedScene ) {
         clonedScene.position.set(coords.x, coords.y, coords.z);
 
-        // * Plane rotation
-        rotatePlane(clonedScene);
 
         // * Set information about the plane
         clonedScene.children[0].children.forEach(child => {
@@ -72,6 +70,10 @@ spawnPlane = (x, y, z, u, flight) => {
         //     console.log(flight);
         // }
         clonedScene.icao_24bit = flight.icao_24bit;
+        clonedScene.heading = flight.heading;
+
+        // * Plane rotation
+        rotatePlane(clonedScene);
 
         // * Add aircraft
         aircrafts[flight.icao_24bit] = clonedScene;
@@ -96,8 +98,8 @@ updatePlanes = () => {
                     Object.values(res).filter((flight)=>flight.on_ground==0&&flight.airline_icao!="").forEach(async flight => {
                         let cartesian = {};
 
-                        flight.longitude = 20.6285677;
-                        flight.latitude = debuglat;
+                        // flight.longitude = 20.6285677;
+                        // flight.latitude = debuglat;
 
                         // * Prepare calc data
                         let phi = (90 - flight.latitude) * Math.PI / 180;
@@ -120,7 +122,7 @@ updatePlanes = () => {
                         aircrafts[flight.icao_24bit].toRemove = false;
 
                         progress++;
-                        document.getElementById("loading").setAttribute('progress', Math.round(progress/progressMax*100));
+                        // document.getElementById("loading").setAttribute('progress', Math.round(progress/progressMax*100));
                     });
                     aircrafts.forEach(plane => {
                         if(plane.toRemove) removePlane(plane.icao_24bit);
@@ -149,7 +151,8 @@ function rotatePlane(plane) {
     plane.rotateZ(0); // side - side
 
     plane.lookAt(earthMesh.position);
-    plane.rotateX(180.5); // up - down
+    plane.rotateX(toRadians(-90)); // up - down
+    plane.rotateY(toRadians(180+plane.heading));
 }
 
 // * Load a 3D model from a GLTF file. Use the GLTFLoader.
@@ -177,11 +180,6 @@ function loadGltfModel( model, onLoaded ) {
         console.log( "Done loading model", model.name );
         onLoaded();
     } );
-}
-
-// * Probably wrong becouse of this fuckin three.js
-function getRotation(angle) {
-    return (1 / 45) * angle;
 }
 
 // * Flight data * //
