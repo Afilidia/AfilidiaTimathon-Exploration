@@ -188,9 +188,14 @@ body {
 
 
         .name {
-            height: 39px;
-            position: absolute;
-            top: (@menu-height / 3 + 1px);
+            height: @menu-height;
+
+            @media only screen and (max-width: 550px) {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: (@menu-height - 25px);
+            }
         }
 
         .options {

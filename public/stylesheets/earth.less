@@ -80,8 +80,9 @@
 
         @media screen and (max-width: 900px) {
             & {
-                overflow: auto;
-                height: 280px;
+                overflow: hidden;
+                height: 250px;
+                top: 110vh;
             }
         }
 
@@ -313,4 +314,10 @@
 
 .footer {
     top: 100vh;
+
+    @media screen and (max-width: 900px) {
+        & {
+            top: 150vh;
+        }
+    }
 }

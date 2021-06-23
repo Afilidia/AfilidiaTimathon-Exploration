@@ -149,6 +149,12 @@ async function savePosition(position) {
 
     // * Update map
 
+    // * Remove latest scan data
+    if (circles.length > 0) {
+        if (Object.keys(aircrafts).length > 0) clearAircrafts();
+        map.removeLayer(circles[0]);
+    }
+
     /**
      * * map.flyTo() is smoother and animated - a little bit slow
      * * when moving from the other side of the world
@@ -157,7 +163,7 @@ async function savePosition(position) {
      *
      * ? Which one
      */
-    map.flyTo([defaults.map.lat, defaults.map.lon], defaults.map.zoom)
+    map.flyTo([defaults.map.lat, defaults.map.lon], defaults.map.zoom);
     // map.panTo([defaults.map.lat, defaults.map.lon], defaults.map.zoom)
 
     placeMarker({
@@ -619,10 +625,15 @@ function getCustomPopupContent(plane) {
 
     let icao = plane.icao_24bit;
     let callsign = plane.callsign;
-    let heading = plane.heading;
     let alt = plane.altitude;
 
     let ground = plane.on_ground;
+
+    let airport_from = (plane.origin_airport_iata != '') ? plane.origin_airport_iata : 'Unknown';
+    let airport_to = (plane.destination_airport_iata != '') ? plane.destination_airport_iata : 'Unknown';
+
+    let heading = plane.heading;
+    let speed = plane.ground_speed;
 
     var content =   `<div class="leaflet-popup-box">` +
                         `<span class="leaflet-header">${icao}</span>` +
@@ -649,6 +660,36 @@ function getCustomPopupContent(plane) {
                         `</div>` +
 
                         `<div class="bar"></div>` +
+
+                        `<div class="leaflet-content">` +
+                            `<div class="leaflet-row">` +
+                                `<span class="lealfet-row-header bold">From: </span>` +
+                                `<label class="leaflet-row-content">${airport_from} airport</label>` +
+                            `</div>` +
+                        `</div>` +
+
+                        `<div class="leaflet-content">` +
+                            `<div class="leaflet-row">` +
+                                `<span class="lealfet-row-header bold">To: </span>` +
+                                `<label class="leaflet-row-content">${airport_to} airport</label>` +
+                            `</div>` +
+                        `</div>` +
+
+                        `<div class="bar"></div>` +
+
+                        `<div class="leaflet-content">` +
+                            `<div class="leaflet-row">` +
+                                `<span class="lealfet-row-header bold">Heading: </span>` +
+                                `<label class="leaflet-row-content">${heading} - ${calcHeading(heading)} </label>` +
+                            `</div>` +
+                        `</div>` +
+
+                        `<div class="leaflet-content">` +
+                            `<div class="leaflet-row">` +
+                                `<span class="lealfet-row-header bold">Speed: </span>` +
+                                `<label class="leaflet-row-content">${speed} km/h</label>` +
+                            `</div>` +
+                        `</div>` +
                     `</div>`;
 
     return content;
@@ -734,4 +775,19 @@ function getMarkerByICAO(planes) {
     });
 
     return array;
+}
+
+// * Get the direction the NESW plane is heading
+function calcHeading(heading) {
+  const degreePerDirection = 360 / 8;
+  const offsetAngle = heading + degreePerDirection / 2;
+
+  return (offsetAngle >= 0 * degreePerDirection && offsetAngle < 1 * degreePerDirection) ? "N"
+        : (offsetAngle >= 1 * degreePerDirection && offsetAngle < 2 * degreePerDirection) ? "NE"
+            : (offsetAngle >= 2 * degreePerDirection && offsetAngle < 3 * degreePerDirection) ? "E"
+                : (offsetAngle >= 3 * degreePerDirection && offsetAngle < 4 * degreePerDirection) ? "SE"
+                    : (offsetAngle >= 4 * degreePerDirection && offsetAngle < 5 * degreePerDirection) ? "S"
+                        : (offsetAngle >= 5 * degreePerDirection && offsetAngle < 6 * degreePerDirection) ? "SW"
+                            : (offsetAngle >= 6 * degreePerDirection && offsetAngle < 7 * degreePerDirection) ? "W"
+                                : "NW";
 }
