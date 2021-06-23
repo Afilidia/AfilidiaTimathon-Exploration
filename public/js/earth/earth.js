@@ -20,7 +20,6 @@ scene.add(light);
 const ambient = new THREE.AmbientLight(0xbfb0cc, 0.1);
 scene.add(ambient);
 
-
 var textureLoader = new THREE.TextureLoader();
 
 // * Create earth
@@ -81,6 +80,7 @@ const sphereCloudsMesh = new THREE.Mesh( earthgeometry, earthCloudsMat );
 earthMesh.add( sphereCloudsMesh );
 
 scene.add( earthMesh );
+scene.add(camera);
 camera.position.z = 4;
 
 // earthMesh.add(cloudMesh);
@@ -98,14 +98,14 @@ let moveratio = {x:0,y:0};
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 
-$(renderer.domElement).on('mousedown', function(e) {
-    isDragging = true;
-    var mouse = new THREE.Vector2();
-    mouse.x = (e.clientX / renderer.domElement.clientWidth) * 2 - 1;
-    mouse.y = -(e.clientY / renderer.domElement.clientHeight) * 2 + 1;
-    var raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(new THREE.Vector2(Object.values(aircrafts)[0].position.x, Object.values(aircrafts)[0].position.z), camera);
-    console.log(new THREE.Vector2(Object.values(aircrafts)[0].position.x, Object.values(aircrafts)[0].position.z), mouse)
+var raycaster = new THREE.Raycaster();
+function onMouseClick(e) {
+    var mouse = {
+        x: ((e.clientX / renderer.domElement.clientWidth) * 2 - 1)*2*1.15,
+        y: (-(e.clientY / renderer.domElement.clientHeight) * 2 + 1 - 0.10)*1.25
+    };
+    console.log(mouse);
+    raycaster.setFromCamera(mouse, camera);
     aircrafts.forEach(plane => {
         var intersects = raycaster.intersectObjects(plane.children[0].children, true);
         
@@ -114,6 +114,11 @@ $(renderer.domElement).on('mousedown', function(e) {
             intersects[ i ].object.giveInfo();
         }
     });
+}
+renderer.domElement.addEventListener('click', onMouseClick);
+
+$(renderer.domElement).on('mousedown', function(e) {
+    isDragging = true;
 }).on('mousemove', function(e) {
     mousemove(e);
 });
@@ -158,7 +163,7 @@ function mousemove(e) {
     };
 }
 
-setInterval(async () => {
+setInterval(() => {
     if (!isDragging) {
         if(moveratio.x + 0.004 <= 0) moveratio.x+=0.004;
         else if(moveratio.x - 0.004 >= 0) moveratio.x-=0.004;
@@ -167,7 +172,7 @@ setInterval(async () => {
         if(moveratio.y + 0.004 <= 0) moveratio.y+=0.004;
         else if(moveratio.y - 0.004 >= 0) moveratio.y-=0.004;
         else moveratio.y=0;
-        var deltaRotationQuaternion = await new THREE.Quaternion()
+        var deltaRotationQuaternion = new THREE.Quaternion()
             .setFromEuler(new THREE.Euler(
                 toRadians(moveratio.y==0?0:moveratio.y*2),
                 toRadians(moveratio.x==0?-0.02:moveratio.x*2),
@@ -185,8 +190,7 @@ setInterval(async () => {
         else if(moveratio.y - 0.002 >= 0) moveratio.y-=0.002;
         else moveratio.y=0;
     }
-
-}, 1000/120);
+}, 1000/60);
 /* */
 
 $(document).on('mouseup', function(e) {
