@@ -147,3 +147,23 @@
     }
 }
 
+/* SCROLL BAR STYLE */
+.scroll-container::-webkit-scrollbar {
+	width: 8px;
+	background-color: transparent;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0 ,0, 0, 0.1);
+	-webkit-box-shadow: inset 0 0 6px rgba(0 ,0, 0, 0.1);
+	background-color: transparent;
+	border-radius: 10px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+	border-radius: 10px;
+	background-color: @light-purple;
+    background-image: gradient(linear, 40% 0%, 75% 84%, from(@medium-purple), to(@light-purple));
+	background-image: -webkit-gradient(linear, 40% 0%, 75% 84%, from(@medium-purple), to(@light-purple));
+}
+

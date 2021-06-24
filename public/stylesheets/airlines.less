@@ -3,12 +3,114 @@
 
 .container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: center;
     width: 100%;
     min-width: 100%;
     height: 100%;
     max-width: 100vh;
+    font-family: 'Source Sans Pro', sans-serif;
+
+    .result-wrapper,
+    .settings-wrapper {
+        background: rgba( 255, 255, 255, 0.00 );
+        box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+        backdrop-filter: blur( 20.0px );
+        -webkit-backdrop-filter: blur( 20.0px );
+        border-radius: 20px;
+
+        margin: 0 20px;
+    }
+
+    .result-wrapper {
+        width: 20%;
+        height: 70%;
+
+        .header,
+        .airlines {
+            width: 100%;
+            display: flex;
+        }
+
+        .header {
+            height: 10%;
+            align-items: center;
+            justify-content: center;
+
+            border-bottom: solid 2px @medium-purple;
+        }
+
+        .airlines,
+        .scroll-container {
+            height: 95%;
+            max-height: 89.5%;
+            flex-direction: column;
+            align-items: center;
+            overflow: auto;
+
+            .airline {
+                width: 90%;
+                height: 80px;
+                min-height: 80px;
+                background-color: #323232;
+                margin: 10px 0;
+                border-radius: 10px;
+
+                &:nth-child(1) {
+                    margin-top: 20px;
+                }
+
+                .airline-row {
+                    width: 100%;
+                    height: 30%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-around;
+
+                    span.callsign {
+                        font-weight: 600;
+                        font-size: 20px;
+                        color: @light-purple;
+                    }
+
+                    .airports {
+                        width: 70%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        .airport_iata {
+                            font-size: 15px;
+                            font-weight: 700;
+                            color: @light;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .settings-wrapper {
+        width: 50%;
+        height: 70%;
+
+        .header {
+            width: 100%;
+            height: 10%;
+            display: flex;
+            align-items: center;
+            border-bottom: solid 2px @medium-purple;
+
+            .span-header {
+                margin: 0 30px;
+            }
+        }
+    }
+}
+
+.span-header {
+    font-size: 32px;
+    font-weight: 600;
 }
 
 .footer {
