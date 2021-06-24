@@ -319,7 +319,7 @@ body {
         font-size: 7em;
         font-weight: 600;
         font-family: 'Source Sans Pro', sans-serif;
-        position: fixed;
+        position: absolute;
         top: 30%;
         left: 50%;
         transform: translate(-50%, -50%);
@@ -344,8 +344,11 @@ body {
     .earth-image {
         max-width: 120%;
         max-height: 100%;
+        width: auto;
+        height: auto;
+
         position: fixed;
-        bottom: -55%;
+        bottom: -50vh;
         transition: all 300ms ease-in-out;
 
         @media screen and (max-width: 600px) {
