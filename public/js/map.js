@@ -11,6 +11,7 @@ const layers = {};
 const circles = [];
 const aircrafts = {};
 const popups = {};
+const routes = {};
 
 // * Default map values (changeable)
 var defaults = {
@@ -26,9 +27,12 @@ var defaults = {
         generated: false
     },
 
-    radius: 100,    // * Circle radius
-    initial: null,  // * Initial marker
-    moved: false    // * If marker has been moved - true
+    radius: 100,                    // * Circle radius
+    initial: null,                  // * Initial marker
+    moved: false,                   // * If marker has been moved - true
+
+    showAllAircraftsLines: false,   // * If true draws line beetwen aricraft and origin airport
+    lineColor: '#ba1e68'            // * Line color
 };
 
 const circle_style = {
@@ -39,7 +43,16 @@ const circle_style = {
 
 
 // * Create leaflet map
-var map = L.map('mapid').setView([defaults.map.lat, defaults.map.lon], defaults.map.zoom);
+var map = L.map('mapid').setView([defaults.map.lat, defaults.map.lon], defaults.map.zoom)
+            .on('click', function (event) { // * Remove all active routes
+                if (Object.keys(routes).length > 0) {
+                    Object.keys(routes).forEach(icao => {
+                        let route = routes[icao];
+                        delete routes[icao];
+                        map.removeLayer(route);
+                    });
+                }
+            });
 
 
 addLayersToMap();
@@ -83,25 +96,25 @@ placeMarker({
 
 // * Create custom airplane icon
 const airplane_icon = L.icon({
-    iconUrl: '/assets/markers/plane.png',
-    iconSize: [45, 48],
-    iconAnchor: [24, 48],
-    popupAnchor: [-3, -76],
+    iconUrl: '/assets/markers/airplane24.png',
+    iconSize: [24, 24],
+    iconAnchor: [12, 24],
+    popupAnchor: [0, -35],
 
     shadowUrl: '/assets/markers/shadow.png',
-    shadowSize: [45, 48],
-    shadowAnchor: [15, 48]
+    shadowSize: [24, 24],
+    shadowAnchor: [8, 24]
 });
 
 const ground_airplane_icon = L.icon({
-    iconUrl: '/assets/markers/ground_plane.png',
-    iconSize: [45, 48],
-    iconAnchor: [24, 48],
-    popupAnchor: [-3, -76],
+    iconUrl: '/assets/markers/ground_airplane24.png',
+    iconSize: [24, 24],
+    iconAnchor: [12, 24],
+    popupAnchor: [0, -35],
 
     shadowUrl: '/assets/markers/shadow.png',
-    shadowSize: [45, 48],
-    shadowAnchor: [15, 48]
+    shadowSize: [24, 24],
+    shadowAnchor: [8, 24]
 });
 
 
@@ -182,7 +195,7 @@ async function savePosition(position) {
         },
 
         callback: function (marker) {
-            marker.addTo(map);
+
 
             // * On end of marker dragging (moving with cursor)
             marker.on('dragend', function (event) {
@@ -197,11 +210,13 @@ async function savePosition(position) {
 
                 defaults.moved = true;
             });
+
+            marker.addTo(map);
         }
     });
 
     // * Remove initial marker
-    if (defaults.initial)  map.removeLayer(defaults.initial);
+    if (defaults.initial) map.removeLayer(defaults.initial);
 }
 
 // * Leaflet map functions
@@ -388,7 +403,7 @@ async function generatePlanes() {
     if (Object.keys(aircrafts).length > 0) clearAircrafts();
     let ground = [];
 
-    planes.forEach(plane => {
+    planes.forEach(async plane => {
         if (Number(plane.on_ground)) ground.push(plane);
 
         placeMarker({
@@ -408,9 +423,43 @@ async function generatePlanes() {
 
             callback: function (marker) {
                 aircrafts[plane.icao_24bit] = marker;
+
+                // * On marker click
+                marker.on('click', function (event) {
+                    if (routes[plane.icao_24bit] === undefined) generateLine(plane);
+                });
+
+                // * On marker end of click
+                marker.on('clickend', function (event) {
+                    let icao = plane.icao_24bit;
+                    if (routes[icao_24bit]) delete routes[icao_24bit];
+                });
+
                 marker.addTo(map);
             }
         });
+
+        if (defaults.showAllAircraftsLines) {
+            let origin_airport_pos = await getAirportLatLon(plane.origin_airport_iata);
+            // console.log(origin_airport_pos);
+
+            drawLine({
+                latlon1: {
+                    lat: plane.latitude,
+                    lon: plane.longitude,
+                },
+
+                latlon2: {
+                    lat: origin_airport_pos.latitude,
+                    lon: origin_airport_pos.longitude,
+                },
+
+                color: '#7649fe',
+                callback: function (route) {
+                    routes[plane.icao_24bit] = route;
+                }
+            });
+        }
     });
 
     // console.log(ground.length);
@@ -493,6 +542,9 @@ async function update() {
 
                 // * Update marker icon
                 if (Number(plane.on_ground) == 1) aircrafts[plane.icao_24bit].setIcon(ground_airplane_icon);
+
+                // * Update line if exists
+                updateLine(plane);
             }
 
         } else {
@@ -790,4 +842,91 @@ function calcHeading(heading) {
                         : (offsetAngle >= 5 * degreePerDirection && offsetAngle < 6 * degreePerDirection) ? "SW"
                             : (offsetAngle >= 6 * degreePerDirection && offsetAngle < 7 * degreePerDirection) ? "W"
                                 : "NW";
+}
+
+// * Draws a line from point to point with a given data
+function drawLine(data) {
+    let {latlon1, latlon2} = data;
+    let color = data.color;
+    let callback = data.callback;
+
+    var pointA = new L.LatLng(latlon1.lat, latlon1.lon);
+    var pointB = new L.LatLng(latlon2.lat, latlon2.lon);
+    var pointList = [pointA, pointB];
+
+    var route = new L.Polyline(pointList, {
+        color: color,
+        weight: 3,
+        opacity: 0.5,
+        smoothFactor: 1
+    });
+
+    callback(route);
+    route.addTo(map);
+}
+
+// * Returns given airport iata position (lat, lon)
+async function getAirportLatLon(iata) {
+    let url = 'https://gist.githubusercontent.com/tdreyno/4278655/raw/7b0762c09b519f40397e4c3e100b097d861f5588/airports.json';
+
+    if (iata) {
+        var airports = await fetch(url).then((response) => response.json()).then((data) => {return data});
+        let airport = getAirportByIATA(airports, iata);
+
+        if (iata && airport) return {
+            latitude: airport.lat || null,
+            longitude: airport.lon || null
+        };
+    }
+}
+
+// *
+function getAirportByIATA(data, iata) {
+    if (data) for (let i=0; i<data.length; i++) {
+        let airport = data[i];
+        if (airport.code == iata) return airport;
+    }
+
+    return null;
+}
+
+// * Generate line for airport and aircraft
+async function generateLine(plane) {
+    let origin_airport_pos = await getAirportLatLon(plane.origin_airport_iata);
+    // console.log(origin_airport_pos);
+
+    drawLine({
+        latlon1: {
+            lat: plane.latitude,
+            lon: plane.longitude,
+        },
+
+        latlon2: {
+            lat: origin_airport_pos.latitude,
+            lon: origin_airport_pos.longitude,
+        },
+
+        color: defaults.lineColor,
+        callback: function (route) {
+            if (Object.keys(routes).length > 0) Object.keys(routes).forEach(icao => {
+                let route = routes[icao];
+                delete routes[icao];
+                map.removeLayer(route);
+            });
+
+            routes[plane.icao_24bit] = route;
+        }
+    });
+}
+
+function updateLine(plane) {
+    if (routes[plane.icao_24bit]) {
+
+        // * Firstly delete the route
+        delete routes[plane.icao];
+        map.removeLayer(routes[plane.icao_24bit]);
+
+        // * Then create new
+        generateLine(plane);
+    }
 }
