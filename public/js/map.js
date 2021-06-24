@@ -82,6 +82,12 @@ placeMarker({
             var marker = event.target;
             var position = marker.getLatLng();
 
+            if (Object.keys(routes).length > 0) Object.keys(routes).forEach(icao => {
+                let route = routes[icao];
+                delete routes[icao];
+                map.removeLayer(route);
+            });
+
             marker.setLatLng(new L.LatLng(position.lat, position.lng), {draggable: true});
             map.flyTo(new L.LatLng(position.lat, position.lng));
 
@@ -163,10 +169,9 @@ async function savePosition(position) {
     // * Update map
 
     // * Remove latest scan data
-    if (circles.length > 0) {
-        if (Object.keys(aircrafts).length > 0) clearAircrafts();
-        map.removeLayer(circles[0]);
-    }
+    if (Object.keys(aircrafts).length > 0) clearAircrafts();
+    if (circles.length > 0) map.removeLayer(circles[0]);
+    defaults.moved = true;
 
     /**
      * * map.flyTo() is smoother and animated - a little bit slow
@@ -233,24 +238,28 @@ function placeMarker(settings) {
         var marker = null;
         let icon = null;
         let draggable = false;
+        let rotation = 0;
 
         if (Object.keys(settings).includes('marker')) {
             if (Object.keys(settings.marker).includes('icon')) icon = settings.marker.icon;
             if (Object.keys(settings.marker).includes('draggable')) draggable = settings.marker.draggable;
+            if (Object.keys(settings.marker).includes('rotation')) rotation = settings.marker.rotation;
         }
 
-        if (icon) marker = L.marker([lat, lon], {icon: icon, draggable: draggable}, {'className': 'leaflet-popup-box'});
-        else marker = L.marker([lat, lon], {draggable: draggable});
+        if (icon) marker = L.marker([lat, lon], {icon: icon, draggable: draggable, rotationAngle: rotation}, {'className': 'leaflet-popup-box'});
+        else marker = L.marker([lat, lon], {draggable: draggable, rotationAngle: rotation});
+
 
         if (Object.keys(settings).includes('popup')) {
 
             let content = settings.popup.content;
-            marker.bindPopup(content);
+            marker.bindPopup(content, {keepInView: false, autoPan: false});
 
             if (Object.keys(settings.popup).includes('open')) {
                 if (settings.popup.open) marker.openPopup();
             }
         }
+
 
         // Callback
         callback(marker);
@@ -365,7 +374,7 @@ async function generatePlanes() {
     // Fetch data
     var data = await fetch('/api/opensky/get-data').then((res) => res.json()).then((res) => {return res});
 
-    console.log(data);
+    // console.log(data);
 
     // Settings vars
     let count = data.statesCount;
@@ -418,7 +427,8 @@ async function generatePlanes() {
             },
 
             marker: {
-                icon: (Number(plane.on_ground) == 1) ? ground_airplane_icon : airplane_icon
+                icon: (Number(plane.on_ground) == 1) ? ground_airplane_icon : airplane_icon,
+                rotation: plane.heading
             },
 
             callback: function (marker) {
@@ -578,7 +588,8 @@ async function update() {
                 },
 
                 marker: {
-                    icon: (Number(plane.on_ground) == 1) ? ground_airplane_icon : airplane_icon
+                    icon: (Number(plane.on_ground) == 1) ? ground_airplane_icon : airplane_icon,
+                    rotation: plane.heading
                 },
 
                 callback: function (marker) {
@@ -732,7 +743,7 @@ function getCustomPopupContent(plane) {
                         `<div class="leaflet-content">` +
                             `<div class="leaflet-row">` +
                                 `<span class="lealfet-row-header bold">Heading: </span>` +
-                                `<label class="leaflet-row-content">${heading} - ${calcHeading(heading)} </label>` +
+                                `<label class="leaflet-row-content">${heading}° - ${calcHeading(heading)} </label>` +
                             `</div>` +
                         `</div>` +
 
@@ -873,11 +884,14 @@ async function getAirportLatLon(iata) {
         var airports = await fetch(url).then((response) => response.json()).then((data) => {return data});
         let airport = getAirportByIATA(airports, iata);
 
-        if (iata && airport) return {
+        if (airport) return {
             latitude: airport.lat || null,
             longitude: airport.lon || null
         };
     }
+
+    Debugger.warn(`Cannot find latitude and longitude of airport with iata: ${iata}`);
+    return {latitude: null, longitude: null};
 }
 
 // *
@@ -902,8 +916,8 @@ async function generateLine(plane) {
         },
 
         latlon2: {
-            lat: origin_airport_pos.latitude,
-            lon: origin_airport_pos.longitude,
+            lat: origin_airport_pos.latitude || plane.latitude,
+            lon: origin_airport_pos.longitude || plane.longitude,
         },
 
         color: defaults.lineColor,
@@ -930,3 +944,4 @@ function updateLine(plane) {
         generateLine(plane);
     }
 }
+
