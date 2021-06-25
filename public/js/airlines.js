@@ -1,5 +1,10 @@
-console.log(
-    fetch('/api/flights/kiwi/flights_multi/usd', {
+// -*- coding: utf-8 -*-
+
+
+console.log(getFlights());
+
+async function getFlights() {
+    return await fetch('/api/flights/kiwi/flights_multi/usd', {
         method: 'POST',
         body: JSON.stringify({
             "fly_from": "MAD",
@@ -12,8 +17,9 @@ console.log(
             "infants": 0,
             "children": 0
         }),
+
         headers: {
             "Content-Type": "application/json; charset=UTF-8"
         }
-    }).then((response) => {response.json()}).then((data) => {return data})
-);
+    }).then((response) => {response.json()}).then((data) => {return data});
+}
