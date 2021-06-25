@@ -95,7 +95,7 @@ let api = {
     flightsMulti: {},
     getFlightsMulti: async (currency, body) => {
         return await new Promise(function(resolve, reject) {
-            if((api.flightsMulti[currency]||{last: Date.now()-15000}).last+15000<=Date.now())
+            // if((api.flightsMulti[currency]||{last: Date.now()-15000}).last+15000<=Date.now())
             fetch(`https://api.skypicker.com/flights_multi?partner=${process.env.SKYPICKERKEY}&locale=en&curr=${currency}`, {
                 method: 'POST',
                 headers: {
@@ -112,7 +112,7 @@ let api = {
                 };
                 resolve(response);
             });
-            else resolve(api.flightsMulti[currency].data);
+            // else resolve(api.flightsMulti[currency].data);
         });
     }
 }
