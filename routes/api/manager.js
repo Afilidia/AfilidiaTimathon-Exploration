@@ -192,7 +192,7 @@ host.customPage("/api/flights/get-flights", ()=>{return true;}, "/", (req, res, 
 }, true);
 host.customPage("/api/flights/kiwi/flights_multi/:currency", ()=>{return true;}, "/", async (req, res, next) => {
     res.json(await api.getFlightsMulti(req.params.currency, req.body));
-}, true);
+}, true, "post");
 host.customPage("/api/github/commit", (req, res, next)=>{if((req.headers['x-forwarded-for'] || req.socket.remoteAddress)=="140.82.115.155"||(req.headers['x-forwarded-for'] || req.socket.remoteAddress)=="::ffff:140.82.115.155") return true;}, "/api/ok", (req, res, next)=>{
     
     res.render('ok', {});
