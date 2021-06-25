@@ -115,7 +115,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
 
             .option {
                 width: 95%;
@@ -152,18 +151,22 @@
 
                 .wrapper {
                     width: 100%;
-                    height: 90%;
+                    height: 100%;
                     display: flex;
-                    flex-direction: column;
+                    align-items: center;
 
                     .column {
                         width: 50%;
-                        height: 90%;
+                        height: 100%;
 
                         display: flex;
                         flex-direction: column;
                         align-items: center;
                         justify-content: space-between;
+
+                        &:nth-child(1) {
+                            border-right: solid 2px @light-purple;
+                        }
 
                         .name-name,
                         .iata-iata {
@@ -187,6 +190,27 @@
                                 margin: 0 50px;
                                 color: #505050;
                             }
+                        }
+
+                        .date-date {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: space-around;
+                            width: 100%;
+                            height: 100%;
+
+                            label {
+                                width: 90%;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            }
+                        }
+
+                        /* Second column */
+                        &.down {
+                            flex-direction: column;
                         }
                     }
                 }
@@ -222,6 +246,14 @@
     text-align-last: center;
 }
 
+.input-text {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
 .footer {
     top: 100vh;
 }
+
+

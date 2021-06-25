@@ -3,6 +3,8 @@
 
 console.log(getFlights());
 
+
+// * Get flights information from API
 async function getFlights() {
     return await fetch('/api/flights/kiwi/flights_multi/usd', {
         method: 'POST',
@@ -21,6 +23,8 @@ async function getFlights() {
         headers: {
             "Content-Type": "application/json; charset=UTF-8"
         }
-    }).then((response) => {response.json()}).then((data) => {console.log(data); return data})
-        .catch((error) => {console.log(error)});
+
+    }).then((response) => {response.json()})
+        .then((data) => {console.log(data); return data})
+            .catch((error) => {console.log(error)});
 }
