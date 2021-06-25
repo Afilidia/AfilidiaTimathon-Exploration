@@ -91,6 +91,29 @@ let api = {
                 resolve(response);
             });
         });
+    },
+    flightsMulti: {},
+    getFlightsMulti: async (currency, body) => {
+        return await new Promise(function(resolve, reject) {
+            if((api.flightsMulti[currency]||{last: Date.now()-15000}).last+15000<=Date.now())
+            fetch(`https://api.skypicker.com/flights_multi?partner=${process.env.SKYPICKERKEY}&locale=en&curr=${currency}`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            })
+            .then((res) => res.json())
+            .then((response) => {
+                api.flightsMulti[currency] = {
+                    lase: Date.now(),
+                    data: response
+                };
+                resolve(response);
+            });
+            else resolve(api.flightsMulti[currency].data);
+        });
     }
 }
 
@@ -164,8 +187,11 @@ setInterval(async ()=>{
 }, 5000);
 
 host.page("/ok", "ok", ()=>{return true;}, "/", true);
-host.customPage("/api/opensky/get-data", ()=>{return true;}, "/", (req, res, next) => {
-    res.json(openskyData)
+host.customPage("/api/flights/get-flights", ()=>{return true;}, "/", (req, res, next) => {
+    res.json(openskyData);
+}, true);
+host.customPage("/api/flights/kiwi/flights_multi/:currency", ()=>{return true;}, "/", async (req, res, next) => {
+    res.json(await api.getFlightsMulti(req.params.currency, req.body));
 }, true);
 host.customPage("/api/github/commit", (req, res, next)=>{if((req.headers['x-forwarded-for'] || req.socket.remoteAddress)=="140.82.115.155"||(req.headers['x-forwarded-for'] || req.socket.remoteAddress)=="::ffff:140.82.115.155") return true;}, "/api/ok", (req, res, next)=>{
     

@@ -23,12 +23,12 @@
     <!-- 3D SCRIPTS -->
     <script type="text/javascript" src="https://threejs.org/build/three.js"></script>
     <%
-    let scripts = {
+    let bodyscripts = {
         three: ["GLTFLoader", "SkeletonUtils", "ProgressRing"]
     }
 
-    Object.keys(scripts).forEach(categoryI => {
-        let category = scripts[categoryI];
+    Object.keys(bodyscripts).forEach(categoryI => {
+        let category = bodyscripts[categoryI];
     %>
         <!-- <%= categoryI %> scripts: -->
         <% category.forEach(script => { %>
@@ -74,7 +74,19 @@
     </div>
 
     <script src="/js/earth/earth.js" type="text/javascript"></script>
-    <script type="text/javascript" src="/js/earth/airplanes.js"></script>
+    <%
+    let scripts = {
+        earth: ["airplanes", "camera"]
+    }
+
+    Object.keys(scripts).forEach(categoryI => {
+        let category = scripts[categoryI];
+    %>
+        <!-- <%= categoryI %> scripts: -->
+        <% category.forEach(script => { %>
+            <script type="text/javascript" src="/js/earth/<%= script %>.js"></script>
+        <% }); %>
+    <% }); %>
 
     <!-- FOOTER IS BEING RENDERED BY render.js - (FooterComponent)-->
 

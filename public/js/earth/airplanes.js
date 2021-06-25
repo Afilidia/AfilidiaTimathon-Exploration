@@ -10,7 +10,7 @@ for (let i = 0; i < MODELS.length; ++ i) {
         loadGltfModel(m, function () {
 
             // Fetch the planes data
-            fetch(`/api/opensky/get-data?model=${m.name}`)
+            fetch(`/api/flights/get-flights?model=${m.name}`)
                 .then(res => res.json())
                     .then(async res => {
                         let progressMax = Object.values(res).filter((flight)=>flight.on_ground==0&&flight.airline_icao!="").length;
@@ -84,7 +84,7 @@ let debuglat = 50.8660773;
 updatePlanes = () => {
     for (let i = 0; i < MODELS.length; ++ i) {
         const m = MODELS[ i ];
-        fetch(`/api/opensky/get-data?model=${m.name}`)
+        fetch(`/api/flights/get-flights?model=${m.name}`)
             .then(res => res.json())
                 .then(async res => {
                     // debuglat+=0.1;
