@@ -178,13 +178,13 @@ setTimeout(async ()=>{
         let data = await api.getData();
         openskyData = data;
     }
+    setInterval(async ()=>{
+        // if(!openskyData){
+            let data = await api.getData();
+            openskyData = data;
+        // }
+    }, 5000);
 }, 1);
-setInterval(async ()=>{
-    // if(!openskyData){
-        let data = await api.getData();
-        openskyData = data;
-    // }
-}, 5000);
 
 host.page("/ok", "ok", ()=>{return true;}, "/", true);
 host.customPage("/api/flights/get-flights", ()=>{return true;}, "/", (req, res, next) => {
