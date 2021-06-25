@@ -1,12 +1,12 @@
 // -*- coding: utf-8 -*-
 
-
-console.log(getFlights());
+let flights = getFlights();
+console.log(flights);
 
 
 // * Get flights information from API
 async function getFlights() {
-    return await fetch('/api/flights/kiwi/flights_multi/usd', {
+    return await fetch('/api/flights/kiwi/flights_multi/usd', { 
         method: 'POST',
         body: JSON.stringify({
             fly_from: "KRK",
