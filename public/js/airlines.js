@@ -7,8 +7,8 @@ async function getFlights() {
     return await fetch('/api/flights/kiwi/flights_multi/usd', {
         method: 'POST',
         body: JSON.stringify({
-            "fly_from": "KRK",
-            "fly_to": "SVQ",
+            fly_from: "KRK",
+            fly_to: "SVQ",
             // "date_from": "06/08/2020",
             // "date_to": "06/08/2020",
             // "direct_flights": 0,
