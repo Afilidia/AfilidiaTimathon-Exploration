@@ -102,13 +102,13 @@
                             <div class="price-price">
                                 <label for="price-from" class="option-label">
                                     <span class="input-text">From price</span>
-                                    <input type="number" name="price-from" class="num-input" id="price-from" min="0">
+                                    <input type="number" name="price-from" class="num-input" id="price-from" min="1" max="10000">
                                 </label>
                                 
                                 <!-- <span class="char">-</span> -->
                                 <label for="price-to" class="option-label">
                                     <span class="input-text">From price</span>
-                                    <input type="number" name="price-to" class="num-input" id="price-to" min="0">
+                                    <input type="number" name="price-to" class="num-input" id="price-to" min="1" max="10000">
                                 </label>
                             </div>
                         </div>
@@ -127,7 +127,7 @@
                                         <option class="option" value="gbp">GBP</option>
                                     </select>
 
-                                    <img src="/assets/icons/langs/usd.png" class="currency-icon">
+                                    <img src="/assets/icons/langs/usd.png" class="currency-icon" id="currency-icon">
                                 </div>
                                 
                             </div>
@@ -141,12 +141,14 @@
 
                     <div class="wrapper">
 
-                        <div class="column full">
+                        <div class="column full no-border">
                             <div class="checkers">
                                 
                                 <div class="checker">
-                                    <label for="direct-flights">Direct flights</label>
-                                    <input type="checkbox" class="checkbox" id="direct-flights">
+                                    <label for="direct-flights" class="label checkbox">
+                                        <span class="input-text">Direct flights</span>
+                                        <input type="checkbox" class="checkbox" id="direct-flights">
+                                    </label>
                                 </div>
                             
                             </div>
