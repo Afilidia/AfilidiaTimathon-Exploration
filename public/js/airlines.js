@@ -56,7 +56,7 @@ async function init(elements) {
                                 to = document.getElementsByName(to)[0];
 
                                 // * Request all airports
-                                const airports = await getData('https://gist.githubusercontent.com/tdreyno/4278655/raw/7b0762c09b519f40397e4c3e100b097d861f5588/airports.json');
+                                const airports = await getData(endpoints['airports']);
                                 const codes = exractCodesFromAirports(airports);
 
 
@@ -74,6 +74,47 @@ async function init(elements) {
                                     to.insertAdjacentHTML('beforeend', HTML);
 
                                 }); else Debugger.error('Codes are empty! When initializing the iata selects');
+
+
+                                // * Check & Update
+
+                                // * from
+                                from.addEventListener('change', (e) => {
+                                    let code = e.target.value;
+                                    let field = 'to';
+
+                                    var new_codes = reduceRange(code, field);
+
+                                    if (new_codes) {
+                                        // * Delete old options
+                                        to.innerHTML = '';
+
+                                        // * Add new
+                                        new_codes.forEach(code => {
+                                            let HTML = `<option class="option" value="${code}">${code}</option>`;
+                                            to.insertAdjacentHTML('beforeend', HTML);
+                                        });
+                                    }
+                                });
+
+                                // * to
+                                to.addEventListener('change', (e) => {
+                                    let code = e.target.value;
+                                    let field = 'from';
+
+                                    var new_codes = reduceRange(code, field);
+
+                                    if (new_codes) {
+                                        // * Delete old options
+                                        from.innerHTML = '';
+
+                                        // * Add new
+                                        new_codes.forEach(code => {
+                                            let HTML = `<option class="option" value="${code}">${code}</option>`;
+                                            from.insertAdjacentHTML('beforeend', HTML);
+                                        });
+                                    }
+                                });
                                 
                             } break;
     
@@ -82,13 +123,24 @@ async function init(elements) {
                                 var currency = document.getElementsByName(content[tag].curr)[0];
 
                                 if (icon && currency) {
-                                    let path = icon.getAttribute('src').split('/');
 
-                                    if (path) {
-                                        path.pop();
-                                        path.push((currency.value).toLowerCase() + '.png');
-                                        icon.setAttribute('src', path.join('/'));
-                                    }
+                                    const changeIconPath = (curr) => {
+                                        let path = icon.getAttribute('src').split('/');
+
+                                        if (path) {
+                                            path.pop();
+                                            path.push((curr).toLowerCase() + '.png');
+                                            icon.setAttribute('src', path.join('/'));
+                                        }
+                                    };
+
+                                    // * Change icon path
+                                    changeIconPath(currency.value);
+
+                                    // * Check & Update
+                                    currency.addEventListener('change', (e) => {
+                                        changeIconPath(e.target.value);
+                                    });
                                     
                                 }
                                 
@@ -103,11 +155,79 @@ async function init(elements) {
     
                 } break;
     
-                case 'datetime': {} break;
+                case 'datetime': {
+                    let {from, to} = content;
+
+                    from = document.getElementsByName(from)[0];
+                    to = document.getElementsByName(to)[0];
+
+                    if (from && to) {
+                        const date = new Date();
+                        const week = 60 * 60 * 24 * 7;
+                        let weekTimestamp = Date.now() + week * 1000;  // Add miliseconds
+
+                        let todayPattern = getDatetimePattern(date, 'now');
+                        let weekPattern = getDatetimePattern(new Date(weekTimestamp), 'end');
+
+                        // console.log(todayPattern, weekPattern);
+
+                        from.value = todayPattern;
+                        from.min = todayPattern;
+
+                        to.value = weekPattern;
+                        
+
+                        from.addEventListener('change', (e) => {
+                            var fromDate = new Date(e.target.value);
+                            var toDate = new Date(to.value);
+                            var error = false;
+
+                            if ((fromDate.getTime() / 1000) > (toDate.getTime() / 1000)) error = true;
+                            else error = false;
+
+                            // ! Do something with error
+                        });
+                    }
+
+                } break;
     
-                case 'numeric': {} break;
+                case 'numeric': {
+                    Object.keys(content).forEach(tag => {
+                        switch (tag) {
+                            case 'price': {
+                                let {from, to} = content[tag];
+
+                                from = document.getElementsByName(from)[0];
+                                to = document.getElementsByName(to)[0];
+                                var currencySelect = document.getElementById('currency-select');
+                                let currency = (currencySelect) ? currencySelect.value : 'usd';
+
+                                if (from && to && currency) {
+                                    let max = MAX_TICKET_PRICE[currency]
+                                    to.max = max;
+
+                                    from.addEventListener('change', (e) => {
+                                        var error = false;
+
+                                        if ((from.value < 1) || (from.value > to.max)) error = true;
+                                        else error = false;
+
+                                        console.log(error);
+                                    });
+                                }
+
+                            } break;
+                        }
+
+                    });
+
+                } break;
     
                 case 'checkbox': {} break;
+
+                default: {
+                    Debugger.warn('Unexpected key in main init elements!');
+                };
             };
         });
     }
@@ -141,6 +261,7 @@ async function getFlights() {
             .catch((error) => {console.log(error)});
 }
 
+// * Asynchro fetches the data from passed url
 async function getData(url) {
     var data = await fetch(url)
                     .then((response) => response.json())
@@ -149,6 +270,7 @@ async function getData(url) {
     return data;
 }
 
+// * Gets airport codes from each
 function exractCodesFromAirports(airports) {
     var codes = [];
 
@@ -157,4 +279,32 @@ function exractCodesFromAirports(airports) {
     });
 
     return codes
+}
+
+// * Creates a datetime-local pattern from passed data
+function getDatetimePattern(date, hourPosition) {
+    if (date) {
+
+        let datetime = {
+            minute: ((date.getMinutes() + 1) < 10) ? '0' + date.getMinutes() : date.getMinutes(),
+            hour: ((date.getHours() + 1) < 10) ? '0' + date.getHours() : date.getHours(),
+            day: (date.getDate() < 10) ? '0' + date.getDate() : date.getDate(),
+            month: ((date.getMonth() + 1) < 10) ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1),
+            year: date.getFullYear()
+        };
+
+        let hourPattern = (hourPosition == 'now') ? `${datetime.hour}:${datetime.minute}`: '23:59';
+
+        var pattern = `${datetime.year}-${datetime.month}-${datetime.day}T${hourPattern}`;
+        return pattern;  
+    }
+
+    return 'YYYY-MM-DDThh:mm';
+} 
+
+// * Returns the airport codes where user can 
+// * fly from chosen one in the first select 
+function reduceRange(code, otherField) {
+    // ! Code this after the api fix
+    return null;
 }

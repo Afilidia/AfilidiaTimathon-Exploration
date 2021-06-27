@@ -38,8 +38,16 @@ const MAP_DATA = {
     }
 };
 
+const MAX_TICKET_PRICE = {
+    'usd': 100_000,
+    'pln': 376_810,
+    'eur': 83_580,
+    'gbp': 71_740,
+};
+
 const endpoints = {
-    'airports': '',
+    'airports': 'https://gist.githubusercontent.com/tdreyno/4278655/raw/7b0762c09b519f40397e4c3e100b097d861f5588/airports.json',
+    'flights': ''
 };
 
 
