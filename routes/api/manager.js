@@ -191,7 +191,10 @@ host.customPage("/api/flights/get-flights", ()=>{return true;}, "/", (req, res, 
     res.json(openskyData);
 }, true);
 host.customPage("/api/flights/kiwi/flights_multi/:currency", ()=>{return true;}, "/", async (req, res, next) => {
-    res.json(await api.getFlightsMulti(req.params.currency, req.body));
+    let fromApi = await api.getFlightsMulti(req.params.currency, req.body);
+    console.log(req.body, fromApi);
+
+    res.json(fromApi);
 }, true, "post");
 host.customPage("/api/github/commit", (req, res, next)=>{if((req.headers['x-forwarded-for'] || req.socket.remoteAddress)=="140.82.115.155"||(req.headers['x-forwarded-for'] || req.socket.remoteAddress)=="::ffff:140.82.115.155") return true;}, "/api/ok", (req, res, next)=>{
     

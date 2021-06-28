@@ -1,0 +1,5 @@
+# planexplore.afilidia.com/robots.txt
+User-agent: *
+Allow: /*
+Disallow: /api/*
+Sitemap: https://planexplore.afilidia.com/sitemap.xml
