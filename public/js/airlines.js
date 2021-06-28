@@ -25,6 +25,8 @@ const search = new Search([], {
 
     // * Checkboxes
     direct_flights: {type: 'boolean'},
+    lowest_price: {type: 'boolean'},
+    biggest_price: {type: 'boolean'},
 });
 
 // * Initialize all input fields 
@@ -246,7 +248,8 @@ async function init(elements) {
                     });
 
                 } break;
-    
+                
+                // ! Do price checkboxes
                 case 'checkbox': {} break;
 
                 default: {
