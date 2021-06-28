@@ -9,7 +9,7 @@
     min-width: 100%;
     height: 100%;
     max-width: 100vh;
-    font-family: 'Source Sans Pro', sans-serif;
+    font-family: 'Source Sans Pro', sans-serif; 
 
     .result-wrapper,
     .settings-wrapper {
@@ -115,7 +115,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
 
             .option {
                 width: 95%;
@@ -147,23 +146,26 @@
                     font-weight: 600;
                     color: @light;
                     text-transform: uppercase;
-                    margin: 0 .5vw;
                 }
 
                 .wrapper {
                     width: 100%;
-                    height: 90%;
+                    height: 100%;
                     display: flex;
-                    flex-direction: column;
+                    align-items: center;
 
                     .column {
                         width: 50%;
-                        height: 90%;
+                        height: 100%;
 
                         display: flex;
                         flex-direction: column;
                         align-items: center;
                         justify-content: space-between;
+
+                        &:nth-child(1) {
+                            border-right: solid 2px @light-purple;
+                        }
 
                         .name-name,
                         .iata-iata {
@@ -188,6 +190,130 @@
                                 color: #505050;
                             }
                         }
+
+                        .date-date {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: space-around;
+                            width: 100%;
+                            height: 100%;
+                        }
+
+                        .price-price {
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-around;
+                            flex-direction: column;
+                            height: 100%;
+                            width: 100%;
+                        }
+
+                        .currency {
+                            width: 100%;
+                            height: 100%;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+
+                            .header-wrapper,
+                            .currency-wrapper {
+                                width: 90%;
+                                height: auto;
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-around;
+                            }
+
+                            .currency-icon {
+                                .noselect();
+                            }
+
+                            * {
+                                margin: 10px 0;
+                            }
+                        }
+
+                        .checkers {
+                            width: 100%;
+                            height: 100%;
+
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-around;
+
+                            .checker {
+                                width: auto;
+                                min-width: 150px;
+                                max-width: 250px;
+                                height: auto;
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-around;
+
+                                // TODO Style the checkbox 
+
+                                label {
+                                    font-weight: 600;
+                                    text-transform: uppercase;
+                                    font-size: 14px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: space-around;
+                                    min-width: 200px;
+                                    max-width: 300px;
+                                    width: 20%;
+                                }
+
+                                .label  > .checkbox {
+                                    height: 25px;
+                                    width: 25px;
+                                    -webkit-appearance: none;
+                                    -moz-appearance: none;
+                                    -o-appearance: none;
+                                    appearance: none;
+                                    border: 1px solid @dark-purple;
+                                    border-radius: 4px;
+                                    outline: none;
+                                    transition-duration: 0.3s;
+                                    background-color: @dark-purple;
+                                    cursor: pointer;
+                                }
+                
+                                .label  > .checkbox:checked {
+                                    border: 1px solid @light-purple;
+                                    background-color: transparent;
+                                }
+                
+                                .label  > .checkbox:checked + span::before {
+                                    content: '\2713';
+                                    display: block;
+                                    text-align: center;
+                                    color: @light;
+                                    position: absolute;
+                                    left: 0.7rem;
+                                    top: 0.2rem;
+                                }
+                
+                                .label  > .checkbox:active {
+                                    border: 2px solid @dark-purple;
+                                }
+                            }
+                        }
+
+                        /* Second column */
+                        &.down {
+                            flex-direction: column;
+                        }
+
+                        &.full {
+                            width: 100%;
+                        }
+
+                        &.no-border {
+                            border: none;
+                        }
                     }
                 }
             }
@@ -198,6 +324,13 @@
 .span-header {
     font-size: 32px;
     font-weight: 600;
+}
+
+label.option-label {
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .arrow-right {
@@ -222,6 +355,14 @@
     text-align-last: center;
 }
 
+.input-text {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
 .footer {
     top: 100vh;
 }
+
+

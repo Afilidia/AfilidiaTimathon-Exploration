@@ -372,7 +372,7 @@ function switchLayer(to) {
 async function generatePlanes() {
 
     // Fetch data
-    var data = await fetch('/api/opensky/get-data').then((res) => res.json()).then((res) => {return res});
+    var data = await fetch('/api/flights/get-flights').then((res) => res.json()).then((res) => {return res});
 
     // console.log(data);
 
@@ -400,7 +400,7 @@ async function generatePlanes() {
     // console.log(user_pos);
     // console.log(polygon.left, polygon.bottom, polygon.right, polygon.top);
 
-
+ 
     // Draw circle around the user marker
     var circle = drawCircle(polygon);
     circle.addTo(map);
@@ -505,7 +505,7 @@ function inRange(lat, lon, polygon) {
 // * Aircrafts update function
 async function update() {
     var getData = async () => {
-        return await fetch('/api/opensky/get-data').then((res) => res.json()).then((res) => {return res});
+        return await fetch('/api/flights/get-flights').then((res) => res.json()).then((res) => {return res});
     };
 
     var data = await getData();

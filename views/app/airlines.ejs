@@ -36,9 +36,9 @@
                     <div class="airline-row">
                         <span class="callsign">IOZZM</span>
                         <div class="airports">
-                            <span class="from-airport airport_iata">WAW</span>
+                            <span class="from-airport airport_iata">KRK</span>
                                 <img src="/assets/icons/right-arrow.png" class="arrow-right">
-                            <span class="to-airport airport_iata">KRK</span>
+                            <span class="to-airport airport_iata">SVQ</span>
                         </div>
                     </div>
                 </div>
@@ -52,22 +52,22 @@
 
             <div class="options">
                 <div class="option">
-                    <span class="option-name">Airports</span>
+                    <!-- <span class="option-name">Airports</span> -->
 
                     <div class="wrapper">
 
                         <div class="column">
                             <div class="iata-iata">
-                                <select class="iata select from">
+                                <select class="iata select from" name="iata-from-select">
                                     <option class="option" value="KRK">KRK</option>
                                 </select>
 
                                 <img src="/assets/icons/right-arrow.png" class="arrow-right">
 
-                                <select class="iata select to">
+                                <select class="iata select to" name="iata-to-select">
                                     <option class="option" value="SVQ">SVQ</option>
                                 </select>
-                            </div>
+                            </div> 
 
                             <div class="name-name">
                                 <span class="airport-name name-from">Krakow Airport</span>
@@ -76,7 +76,85 @@
                             </div>
                         </div>
 
+                        <div class="column down">
+                            <div class="date-date">
+                                <label for="datetime-from" class="option-label">
+                                    <span class="input-text">From date</span>
+                                    <input type="datetime-local" name="datetime-from" id="datetime-from" class="date">
+                                </label>
+
+
+                                <label for="datetime-to" class="option-label">
+                                    <span class="input-text">To date</span>
+                                    <input type="datetime-local" name="datetime-to" id="datetime-to" class="date">
+                                </label>
+
+                            </div>
+                        </div>
                     </div>
+                </div>
+
+                <div class="option">
+
+                    <div class="wrapper">
+
+                        <div class="column">
+                            <div class="price-price">
+                                <label for="price-from" class="option-label">
+                                    <span class="input-text">From price</span>
+                                    <input type="number" name="price-from" class="num-input" id="price-from" min="1" max="100000">
+                                </label>
+                                
+                                <!-- <span class="char">-</span> -->
+                                <label for="price-to" class="option-label">
+                                    <span class="input-text">To price</span>
+                                    <input type="number" name="price-to" class="num-input" id="price-to" min="1" max="100000">
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="column down">
+                            <div class="currency">
+                                <div class="header-wrapper">
+                                    <span class="option-name">Ticket Currency</span>
+                                </div>
+
+                                <div class="currency-wrapper">
+                                    <select name="currency-select" id="currency-select" class="select">
+                                        <option class="option" value="usd">USD</option>
+                                        <option class="option" value="eur">EUR</option>
+                                        <option class="option" value="pln">PLN</option>
+                                        <option class="option" value="gbp">GBP</option>
+                                    </select>
+
+                                    <img src="/assets/icons/langs/usd.png" class="currency-icon" id="currency-icon">
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="option">
+
+                    <div class="wrapper">
+
+                        <div class="column full no-border">
+                            <div class="checkers">
+                                
+                                <div class="checker">
+                                    <label for="direct-flights" class="label checkbox">
+                                        <span class="input-text">Direct flights</span>
+                                        <input type="checkbox" class="checkbox" id="direct-flights">
+                                    </label>
+                                </div>
+                            
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
