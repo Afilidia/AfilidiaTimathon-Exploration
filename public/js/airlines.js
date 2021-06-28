@@ -3,6 +3,30 @@
 // let flights = getFlights();
 // console.log(flights);
 
+"use strict";
+var data = getFlights();
+
+const search = new Search([], {
+
+    // * IATA
+    iata_from: {type: 'string'},
+    iata_to: {type: 'string'},
+
+    // * Currency
+    currency: {type: 'string'},
+
+    // * Datetime
+    datetime_from: {type: 'string'},
+    datetime_to: {type: 'string'},
+
+    // * Price
+    price_from: {type: 'float'},
+    price_to: {type: 'float'},
+
+    // * Checkboxes
+    direct_flights: {type: 'boolean'},
+});
+
 // * Initialize all input fields 
 init({
     select: {
@@ -241,15 +265,15 @@ async function getFlights() {
     return await fetch('/api/flights/kiwi/flights_multi/usd', { 
         method: 'POST',
         body: JSON.stringify({
-            fly_from: "KRK",
-            fly_to: "SVQ",
-            // "date_from": "06/08/2020",
-            // "date_to": "06/08/2020",
-            // "direct_flights": 0,
-            // "passengers": 2,
-            // "adults": 2,
-            // "infants": 0,
-            // "children": 0
+            "fly_from": "KRK",
+            "fly_to": "SVQ",
+            "date_from": "06/07/2021",
+            "date_to": "20/07/2021",
+            "direct_flights": 0,
+            "passengers": 1,
+            "adults": 1,
+            "infants": 0,
+            "children": 0
         }),
 
         headers: {
