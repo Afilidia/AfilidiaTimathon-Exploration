@@ -6,6 +6,7 @@ class Filters {
 
     constructor () {
         this.types = {};
+        this.filters = {};
     }
 
     applyFilters(filters) {}

@@ -6,25 +6,25 @@
 
         <div class="options">
 
-            <a href="/index.html" class="option-redirect">
+            <a href="/" class="option-redirect">
                 <div class="option">
                     <span class="option-text">Home</span>
                 </div>
             </a>
 
-            <a href="/features.html" class="option-redirect">
+            <a href="/features" class="option-redirect">
                 <div class="option">
                     <span class="option-text">Features</span>
                 </div>
             </a>
 
-            <a href="/about.html" class="option-redirect">
+            <a href="/about" class="option-redirect">
                 <div class="option">
                     <span class="option-text">About</span>
                 </div>
             </a>
 
-            <a href="/faq.html" class="option-redirect">
+            <a href="/faq" class="option-redirect">
                 <div class="option">
                     <span class="option-text">FAQ</span>
                 </div>

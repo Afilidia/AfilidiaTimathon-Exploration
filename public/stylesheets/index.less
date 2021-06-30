@@ -316,7 +316,7 @@ body {
     }
 
     .greet {
-        font-size: 7em;
+        font-size: 6em;
         font-weight: 600;
         font-family: 'Source Sans Pro', sans-serif;
         position: absolute;
@@ -324,6 +324,8 @@ body {
         left: 50%;
         transform: translate(-50%, -50%);
         .noselect();
+        width: 80%;
+        text-align: center;
 
         @media screen and (max-width: 1350px) {
             & {
@@ -363,7 +365,7 @@ body {
 
         @media screen and (max-width: 400px) {
             & {
-                bottom: -30%;
+                bottom: -35%;
                 max-width: 150%;
                 transition: all 300ms ease-in-out;
             }
@@ -464,7 +466,15 @@ body {
     opacity: 1;
 }
 
-@keyframes gradient {
+// .footer {
+//     @media screen and (max-width: 1450px) {
+//         & {
+//             top: 220vh !important; 
+//         }
+//     }
+// }
+
+@keyframes gradient { 
 	0% {
 		background-position: 0% 50%;
 	}

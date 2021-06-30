@@ -13,7 +13,7 @@ const search = new Search([], {
     iata_to: {type: 'string'},
 
     // * Currency
-    currency: {type: 'string'},
+    currency: {type: 'string'}, 
 
     // * Datetime
     datetime_from: {type: 'string'},
