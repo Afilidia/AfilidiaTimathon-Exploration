@@ -45,14 +45,17 @@
      * @param {Object} structure        An js object containing types structure
      *
      */
-    constructor (data, structure) {
-        super();
+    constructor (data, structure, filters) {
+        super(filters);
+        console.log(data);
 
         this.data = data;
         this.structure = structure;
 
-        this.types = this.getStructureTypes(this.structure);
+        this.types = this.getStructureTypes(this.structure);  
+
         this.applyTypes(this.types);
+        // this.applyFilters(filters);
         // if (Search.DEBUG) console.log(this.types);
     }
 

@@ -4,59 +4,83 @@
 // console.log(flights);
 
 "use strict";
-var data = getFlights();
 
-const search = new Search([], {
+const date = new Date();
+const week = 60 * 60 * 24 * 7;
+const weekTimestamp = Date.now() + week * 1000;  // Add miliseconds
 
-    // * IATA
-    iata_from: {type: 'string'},
-    iata_to: {type: 'string'},
+$(document).ready(async function () {
+    var data = await getFlights('usd');
 
-    // * Currency
-    currency: {type: 'string'}, 
+    const elements = {
+        select: {
+            iata: {
+                from: 'iata-from-select',
+                to: 'iata-to-select'
+            },
 
-    // * Datetime
-    datetime_from: {type: 'string'},
-    datetime_to: {type: 'string'},
-
-    // * Price
-    price_from: {type: 'float'},
-    price_to: {type: 'float'},
-
-    // * Checkboxes
-    direct_flights: {type: 'boolean'},
-    lowest_price: {type: 'boolean'},
-    biggest_price: {type: 'boolean'},
-});
-
-// * Initialize all input fields 
-init({
-    select: {
-        iata: {
-            from: 'iata-from-select',
-            to: 'iata-to-select'
+            currency: {
+                curr: 'currency-select'
+            }
         },
 
-        currency: {
-            curr: 'currency-select'
+        datetime: {
+            from: 'datetime-from',
+            to: 'datetime-to'
+        },
+
+        numeric: {
+            price: {
+                from: 'price-from',
+                to: 'price-to'
+            }
+        },
+
+        checkbox: {
+            direct_flights: 'direct-flights',
+            lowest_price: 'lowest-price',
+            biggest_price: 'biggest-price',
         }
-    },
-
-    datetime: {
-        from: 'datetime-from',
-        to: 'datetime-to'
-    },
-
-    numeric: {
-        price: {
-            from: 'price-from',
-            to: 'price-to'
-        }
-    },
-
-    checkbox: {
-        direct_flights: 'direct-flights'
     }
+
+    var filters = {
+        select: {
+            iata: {
+                from: '',
+                to: ''
+            },
+
+            currency: {
+                curr: 'usd'
+            }
+        },
+
+        datetime: {
+            from: getDatetimePattern(date, 'now'),                  // * Datetime local pattern
+            to: getDatetimePattern(new Date(weekTimestamp), 'end')
+        },
+
+        numeric: {
+            price: {
+                from: 0,                                            // * Number
+                to: 100_000                                         // * In currency passed above
+            }
+        },
+
+        checkbox: {
+            direct_flights: false,
+            lowest_price: true,
+            biggest_price: false,
+        }
+    };
+
+    // * Initialize all input fields 
+    init(elements);
+
+    elements['button'] = 'search-flights'; 
+
+    // * Create flights instance
+    const flights = new Flights(data, elements, filters);
 });
 
 // * Inits (prepares) all page input fields
@@ -81,66 +105,72 @@ async function init(elements) {
                                 from = document.getElementsByName(from)[0];
                                 to = document.getElementsByName(to)[0];
 
-                                // * Request all airports
-                                const airports = await getData(endpoints['airports']);
-                                const codes = exractCodesFromAirports(airports);
+                                if (from && to) {
+                                    content[tag].from = from;
+                                    content[tag].to = to;
+
+                                    // * Request all airports
+                                    const airports = await getData(endpoints['airports']);
+                                    const codes = exractCodesFromAirports(airports);
 
 
-                                // ! Modify this later
-                                // ! So when user have chosen the 
-                                // ! IATA from for ex. the range of airport
-                                // ! codes on the second select is smaller 
-                                // ! (only airports that are connected to the one on the first select)
+                                    // ! Modify this later
+                                    // ! So when user have chosen the 
+                                    // ! IATA from for ex. the range of airport
+                                    // ! codes on the second select is smaller 
+                                    // ! (only airports that are connected to the one on the first select)
 
-                                if (codes) codes.forEach(code => {
-                                    let HTML = `<option class="option" value="${code}">${code}</option>`;
+                                    if (codes) codes.forEach(code => {
+                                        let HTML = `<option class="option" value="${code}">${code}</option>`;
 
-                                    // * Add all airport codes to the selects
-                                    from.insertAdjacentHTML('beforeend', HTML);
-                                    to.insertAdjacentHTML('beforeend', HTML);
+                                        // * Add all airport codes to the selects
+                                        from.insertAdjacentHTML('beforeend', HTML);
+                                        to.insertAdjacentHTML('beforeend', HTML);
 
-                                }); else Debugger.error('Codes are empty! When initializing the iata selects');
+                                    }); else Debugger.error('Codes are empty! When initializing the iata selects');
 
 
-                                // * Check & Update
+                                    // * Check & Update
 
-                                // * from
-                                from.addEventListener('change', (e) => {
-                                    let code = e.target.value;
-                                    let field = 'to';
+                                    // * from
+                                    from.addEventListener('change', (e) => {
+                                        let code = e.target.value;
+                                        let field = 'to';
 
-                                    var new_codes = reduceRange(code, field);
+                                        var new_codes = reduceRange(code, field);
 
-                                    if (new_codes) {
-                                        // * Delete old options
-                                        to.innerHTML = '';
+                                        if (new_codes) {
+                                            // * Delete old options
+                                            to.innerHTML = '';
 
-                                        // * Add new
-                                        new_codes.forEach(code => {
-                                            let HTML = `<option class="option" value="${code}">${code}</option>`;
-                                            to.insertAdjacentHTML('beforeend', HTML);
-                                        });
-                                    }
-                                });
+                                            // * Add new
+                                            new_codes.forEach(code => {
+                                                let HTML = `<option class="option" value="${code}">${code}</option>`;
+                                                to.insertAdjacentHTML('beforeend', HTML);
+                                            });
+                                        }
+                                    });
 
-                                // * to
-                                to.addEventListener('change', (e) => {
-                                    let code = e.target.value;
-                                    let field = 'from';
+                                    // * to
+                                    to.addEventListener('change', (e) => {
+                                        let code = e.target.value; 
+                                        let field = 'from';
 
-                                    var new_codes = reduceRange(code, field);
+                                        var new_codes = reduceRange(code, field);
 
-                                    if (new_codes) {
-                                        // * Delete old options
-                                        from.innerHTML = '';
+                                        if (new_codes) {
+                                            // * Delete old options
+                                            from.innerHTML = '';
 
-                                        // * Add new
-                                        new_codes.forEach(code => {
-                                            let HTML = `<option class="option" value="${code}">${code}</option>`;
-                                            from.insertAdjacentHTML('beforeend', HTML);
-                                        });
-                                    }
-                                });
+                                            // * Add new
+                                            new_codes.forEach(code => {
+                                                let HTML = `<option class="option" value="${code}">${code}</option>`;
+                                                from.insertAdjacentHTML('beforeend', HTML);
+                                            });
+                                        }
+                                    });
+                                }
+
                                 
                             } break;
     
@@ -149,6 +179,7 @@ async function init(elements) {
                                 var currency = document.getElementsByName(content[tag].curr)[0];
 
                                 if (icon && currency) {
+                                    content[tag].curr = currency;
 
                                     const changeIconPath = (curr) => {
                                         let path = icon.getAttribute('src').split('/');
@@ -188,9 +219,8 @@ async function init(elements) {
                     to = document.getElementsByName(to)[0];
 
                     if (from && to) {
-                        const date = new Date();
-                        const week = 60 * 60 * 24 * 7;
-                        let weekTimestamp = Date.now() + week * 1000;  // Add miliseconds
+                        content.from = from;
+                        content.to = to;
 
                         let todayPattern = getDatetimePattern(date, 'now');
                         let weekPattern = getDatetimePattern(new Date(weekTimestamp), 'end');
@@ -229,6 +259,9 @@ async function init(elements) {
                                 let currency = (currencySelect) ? currencySelect.value : 'usd';
 
                                 if (from && to && currency) {
+                                    content[tag].from = from;
+                                    content[tag].to = to;
+
                                     let max = MAX_TICKET_PRICE[currency]
                                     to.max = max;
 
@@ -250,7 +283,45 @@ async function init(elements) {
                 } break;
                 
                 // ! Do price checkboxes
-                case 'checkbox': {} break;
+                case 'checkbox': {
+                    Object.keys(content).forEach(tag => {
+
+                        switch (tag) {
+                            case 'direct_flights': {
+                                let direct = document.getElementsByName(content[tag])[0];
+
+                                if (direct) {
+                                    content[tag] = direct;
+
+                                    // * Set direct flights to false
+                                    direct.checked = false;
+                                }
+                            } break;
+
+                            case 'lowest-price': {
+                                let lowest = document.getElementsByName(content[tag])[0];
+
+                                if (lowest) {
+                                    content[tag] = lowest;
+
+                                    lowest.click();
+                                }
+                            } break;
+
+                            case 'biggest-price': {
+                                console.log(content[tag]);
+                                let biggest = document.getElementsByName(content[tag])[0];
+                                console.log(biggest);
+
+                                if (biggest) {
+                                    content[tag] = biggest;
+
+                                    biggest.checked = false;
+                                }
+                            } break;
+                        }
+                    });
+                } break;
 
                 default: {
                     Debugger.warn('Unexpected key in main init elements!');
@@ -264,19 +335,17 @@ async function init(elements) {
 
 
 // * Get flights information from API
-async function getFlights() {
-    return await fetch('/api/flights/kiwi/flights_multi/usd', { 
+async function getFlights(currency) {
+    var flights = await fetch(`/api/flights/kiwi/flights_multi/${currency}`, { 
         method: 'POST',
         body: JSON.stringify({
-            "fly_from": "KRK",
-            "fly_to": "SVQ",
-            "date_from": "06/07/2021",
-            "date_to": "20/07/2021",
-            "direct_flights": 0,
-            "passengers": 1,
-            "adults": 1,
-            "infants": 0,
-            "children": 0
+            "requests": [{
+                "fly_from": "KRK",
+                "fly_to": "SVQ",
+                "date_from": "06/07/2021",
+                "date_to": "20/07/2021",
+                "direct_flights": 0,
+            }]
         }),
 
         headers: {
@@ -284,8 +353,10 @@ async function getFlights() {
         }
 
     }).then((response) => response.json())
-        .then((data) => {console.log(data); return data})
+        .then((data) => {return data})
             .catch((error) => {console.log(error)});
+
+    return flights;
 }
 
 // * Asynchro fetches the data from passed url
