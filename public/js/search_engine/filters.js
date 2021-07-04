@@ -23,6 +23,7 @@ class Filters {
         }
     }
 
+    // * Filter all datasets
     filterDatasets(datasets) {
         datasets.forEach(dataset => {
             result = filter(dataset);
@@ -33,8 +34,9 @@ class Filters {
         });
     }
 
+    // * Save datasets that matches given filters
     filter(dataset) {
-
+        
     }
 
 }

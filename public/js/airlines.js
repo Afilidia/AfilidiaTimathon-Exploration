@@ -298,20 +298,20 @@ async function init(elements) {
                                 }
                             } break;
 
-                            case 'lowest-price': {
+                            case 'lowest_price': {
                                 let lowest = document.getElementsByName(content[tag])[0];
 
                                 if (lowest) {
                                     content[tag] = lowest;
 
-                                    lowest.click();
+                                    lowest.checked = true;
                                 }
                             } break;
 
-                            case 'biggest-price': {
+                            case 'biggest_price': {
                                 console.log(content[tag]);
                                 let biggest = document.getElementsByName(content[tag])[0];
-                                console.log(biggest);
+                                // console.log(biggest);
 
                                 if (biggest) {
                                     content[tag] = biggest;
