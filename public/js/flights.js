@@ -1,5 +1,6 @@
 // -*- coding: utf-8 -*-
 
+"use strict";
 
 class Flights {
 
@@ -47,7 +48,10 @@ class Flights {
                 var input = this.getInputData();
 
                 if (input) {
-                    console.log(input);
+                    var filtered = this.search.searchByFilters(input);
+
+                    // * Show filtered datasets
+                    if (filtered) {}
                 }
             });
         }

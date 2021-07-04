@@ -88,6 +88,12 @@
         return datasets;
     }
 
+    searchByFilters(filters) {
+        if (filters) this.applyFilters(filters);
+        var filtered = this.filterDatasets(this.data);
+        return filtered;
+    }
+
 
     /**
      * @description Look for similarities in datasets for a given keyword
