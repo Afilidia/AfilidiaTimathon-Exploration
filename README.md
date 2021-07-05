@@ -1,3 +1,3 @@
 # AfilidiaTimathon-Exploration
  
-## Visit the project page: (https://planexplore.afilidia.com)[🌎Planexplore]
+## Visit the project page: [🌎Planexplore](https://planexplore.afilidia.com)
