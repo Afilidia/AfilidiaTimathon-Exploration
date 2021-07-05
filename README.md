@@ -22,4 +22,5 @@ All icons and images has been freely downloaded from these websites:
 [Unsplash](https://unsplash.com) & [Flaticon](https://www.flaticon.com)
 
 
-![image](https://user-images.githubusercontent.com/65545676/124492907-559b6b00-ddb5-11eb-9a27-a29cadd9c1ae.png)
+![image](https://user-images.githubusercontent.com/65545676/124492978-677d0e00-ddb5-11eb-98ff-d805d8116515.png)
+
