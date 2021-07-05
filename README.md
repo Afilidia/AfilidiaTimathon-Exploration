@@ -19,7 +19,7 @@ This project has been created for Timathon 2021 June by Afilidia Group.
 
 ## Resources
 All icons and images has been freely downloaded from these websites: 
-[Unsplash](https://unsplash.com) & [Flaticon](https://www.flaticon.com)
+[Unsplash](https://unsplash.com) & [Flaticon](https://www.flaticon.com), [NASA](https://www.nasa.gov)
 
 
 ![image](https://user-images.githubusercontent.com/65545676/124492978-677d0e00-ddb5-11eb-98ff-d805d8116515.png)
