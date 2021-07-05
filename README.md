@@ -1,4 +1,4 @@
-# AfilidiaTimathon-Exploration
+# Afilidia Group - Exploration
  
 ## [🌎Planexplore](https://planexplore.afilidia.com)
 
@@ -20,3 +20,6 @@ This project has been created for Timathon 2021 June by Afilidia Group.
 ## Resources
 All icons and images has been freely downloaded from these websites: 
 [Unsplash](https://unsplash.com) & [Flaticon](https://www.flaticon.com)
+
+
+![image](https://user-images.githubusercontent.com/65545676/124492907-559b6b00-ddb5-11eb-9a27-a29cadd9c1ae.png)
