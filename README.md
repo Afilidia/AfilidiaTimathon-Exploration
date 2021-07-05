@@ -15,7 +15,7 @@ This project has been created for Timathon 2021 June by Afilidia Group.
 ## Features: 
 * [Airplanes around the earth visualization](https://planexplore.afilidia.com/app/earth)
 * [Nearby airctrafts scanner](https://planexplore.afilidia.com/app/nearby)
-* [Flight finder](https://planexplore.afilidia.com/app/airlines)
+* [Flight finder (working on)](https://planexplore.afilidia.com/app/airlines)
 
 ## Resources
 All icons and images has been freely downloaded from these websites: 
