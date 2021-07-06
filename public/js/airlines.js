@@ -309,7 +309,9 @@ async function init(elements) {
                             } break;
 
                             case 'biggest_price': {
+                                console.log(content[tag]);
                                 let biggest = document.getElementsByName(content[tag])[0];
+                                // console.log(biggest);
 
                                 if (biggest) {
                                     content[tag] = biggest;

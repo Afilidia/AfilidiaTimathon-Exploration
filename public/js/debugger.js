@@ -2,7 +2,7 @@
 
 
 class Debugger {
-    static DEBUG = false;
+    static DEBUG = true;
     static PAGE = null;
     static SETTINGS = null;
 

@@ -46,7 +46,7 @@ class Flights {
 
                 // * Get all data from the fields
                 var input = this.getInputData();
-                console.log(input);
+
                 if (input) {
                     var filtered = this.search.searchByFilters(input);
 
