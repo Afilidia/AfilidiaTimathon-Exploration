@@ -39,21 +39,21 @@ class Tools {
             return reject("Level can't be lower than 1 (config.json)");
         let colors = {
             fg: data.colors.fg[foreground] || data.colors.fg.green,
-            bg: data.colors.bg[background] || data.colors.bg.black
+            bg: data.colors.bg[background] || false
         };
         for (let colorID of Object.keys(data.colors)) {
             let color = data.colors[colorID];
-            if(typeof color == "string") message = message.replace(`$(gb-${colorID})`, color);
+            if(typeof color == "string") for(let i = 0; i < message.length; i++) message = message.replace(`$(gb-${colorID})`, color);
         }
         for (let colorID of Object.keys(data.colors.fg)) {
             let color = data.colors.fg[colorID];
-            message = message.replace(`$(fg-${colorID})`, color);
+            for(let i = 0; i < message.length; i++) message = message.replace(`$(fg-${colorID})`, color);
         }
         for (let colorID of Object.keys(data.colors.bg)) {
             let color = data.colors.bg[colorID];
-            message = message.replace(`$(bg-${colorID})`, color);
+            for(let i = 0; i < message.length; i++) message = message.replace(`$(bg-${colorID})`, color);
         }
-        console.log(`${data.colors.reset}${response.date} | ${data.colors.bright}${data.config.name} ${data.colors.reset}> ${colors.fg}${colors.bg}${message}`);
+        console.log(`${data.colors.reset}${response.date} | ${data.colors.bright}${data.config.name} ${data.colors.reset}> ${colors.fg}${colors.bg||""}${message}${data.colors.reset}`);
         return response;
     };
     randomString = (length) => {

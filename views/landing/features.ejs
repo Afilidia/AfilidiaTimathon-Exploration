@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="Aircraft,Airplane,Plane,Air,Exploration,Scanner,Longitude,Latitude,Altitude,Features">
+    <meta name="description" content="Planexplore - All the website features">
+    <meta name="author" content="Afilidia">
+
+    <link rel="icon" href="/assets/icons/world-purple.png">
+
+    <!-- STYLES -->
+    <link rel="stylesheet"  type="text/css" href="stylesheets/menu.css">
+    <link rel="stylesheet"  type="text/css" href="stylesheets/index.css">
+    <link rel="stylesheet"  type="text/css" href="stylesheets/footer.css">
+    <link rel="stylesheet"  type="text/css" href="stylesheets/features.css">
+    <link rel="stylesheet"  type="text/css" href="stylesheets/lightslider.css">
+
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,300;1,600&display=swap" rel="stylesheet">
+
+    <!-- JQUERY & JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="/js/lightslider.js" type="text/javascript"></script>
+
+    <title>Features | Planexplore</title>
+</head>
+<body>
+
+    <!-- MENU IS BEING RENDERED BY render.js - (MenuComponent) -->
+
+    <div class="container">
+        <div class="intro">
+            <span class="intro-span">
+                Check out the features below
+            </span>
+
+            <div class="arrow arrow-down">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <div class="header">
+            <span class="header-span">Features</span>
+            <div class="bar"></div>
+        </div>
+
+        <div class="boxes">
+            <!-- ALL THE FEATURE BOXES -->
+            <ul id="autoWidth" class="cs-hidden">
+
+                <li class="item-a"> <!-- BOX - 1 -->
+                    <a href="/app/earth" class="feature-redirect">
+                        <div class="box">
+                            <span class="feature-name">Globe exploration</span>
+                            <img src="/assets/img/features/global-exploration.jpg" class="feature-image">
+                            <p class="feature-description">
+                                Take a look at all the planes flying around the world!
+                            </p>
+                        </div>
+                    </a>
+                </li>
+
+                <li class="item-a"> <!-- BOX - 2 -->
+                    <a href="/app/nearby" class="feature-redirect">
+                        <div class="box">
+                            <span class="feature-name">Scan nearby</span>
+                            <img src="/assets/img/features/scan-nearby.jpg" class="feature-image">
+                            <p class="feature-description">
+                                Scan all planes that are nearby any localization.
+                            </p>
+                        </div>
+                    </a>
+                </li>
+
+                <li class="item-a"> <!-- BOX - 3 -->
+                    <a href="/app/airlines" class="feature-redirect">
+                        <div class="box">
+                            <span class="feature-name">Find flights</span>
+                            <img src="/assets/img/features/find-flights.jpg" class="feature-image">
+                            <p class="feature-description">
+                                Find all future flights that matches your settings
+                            </p>
+                        </div>
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+
+    <!-- FOOTER IS BEING RENDERED BY render.js - (FooterComponent)-->
+
+    <script src="js/debugger.js" type="text/javascript"></script>
+    <script src="js/data.js" type="text/javascript"></script>
+    <script src="js/component.js" type="text/javascript"></script>
+    <script src="js/components/MenuComponent.js" type="text/javascript"></script>
+    <script src="js/components/FooterComponent.js" type="text/javascript"></script>
+    <script src="js/renderer.js" type="text/javascript"></script>
+    <script src="js/animations.js" type="text/javascript"></script>
+    <script src="js/setuper.js" type="text/javascript"></script>
+</body>
+</html>

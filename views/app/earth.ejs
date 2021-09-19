@@ -1,0 +1,105 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="Aircraft,Airplane,Plane,Air,Exploration,Scanner,Longitude,Latitude,Altitude,Afilidia,Timathon">
+    <meta name="description" content="Planexplore - Check the position of every plane on the earth">
+    <meta name="author" content="Afilidia">
+
+    <link rel="icon" href="/assets/icons/world-purple.png">
+
+    <!-- STYLES -->
+    <link rel="stylesheet"  type="text/css" href="/stylesheets/menu.css">
+    <link rel="stylesheet"  type="text/css" href="/stylesheets/index.css">
+    <link rel="stylesheet"  type="text/css" href="/stylesheets/footer.css">
+    <link rel="stylesheet"  type="text/css" href="/stylesheets/earth.css">
+
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,300;1,600&display=swap" rel="stylesheet">
+
+    <!-- JQUERY -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <!-- <script type="text/javascript" src="/js/jquery/jquery.touchy.min.js"></script> -->
+
+    <!-- 3D SCRIPTS -->
+    <script type="text/javascript" src="https://threejs.org/build/three.js"></script>
+    <%
+    let bodyscripts = {
+        three: ["GLTFLoader", "SkeletonUtils", "ProgressRing"]
+    }
+
+    Object.keys(bodyscripts).forEach(categoryI => {
+        let category = bodyscripts[categoryI];
+    %>
+        <!-- <%= categoryI %> scripts: -->
+        <% category.forEach(script => { %>
+            <script type="text/javascript" src="/js/earth/<%= script %>.js"></script>
+        <% }); %>
+    <% }); %>
+
+
+    <title>Globe exploration | Planexplore</title>
+</head>
+<body>
+    <!-- MENU IS BEING RENDERED BY render.js - (MenuComponent) -->
+
+    <div class="container">
+        <div class="settings">
+            <div class="settings-wrapper">
+                <span class="settings-name">Earth hour</span>
+ 
+                <div class="setting-content-wrapper">
+                    <label for="hour-range" class="hour-range-label label" id="hour-range-label">00:00</label>
+                    <input type="range" id="hour-range" class="hour-range" min="0" max="86399" value="0">
+                </div>
+            </div>
+
+            <div class="settings-wrapper">
+                <span class="settings-name">Aircrafts</span>
+
+                <div class="setting-content-wrapper checkbox-in">
+                    <label for="aircrafts-checkbox" class="label checkbox" id="hour-range-label">
+                        <span>ON</span>
+                        <div class="filler"></div>
+                        <input type="checkbox" id="aircrafts-checkbox" class="checkbox" value="1">
+                    </label>
+
+                </div>
+            </div>
+        </div>
+
+        <div id="loading" style="position: fixed; top: 97%; left: 90%; width: 8%; text-align: right;"><div class="label">Loading...</div><progress-ring stroke="5" radius="15" progress="0" id="loading"></progress-ring></div>
+
+        <!-- EARTH CANVAS HOLDER -->
+        <div id="earth" style="width: 100%; height: 100%;"></div>
+    </div>
+
+    <script src="/js/earth/earth.js" type="text/javascript"></script>
+    <%
+    let scripts = {
+        earth: ["airplanes", "camera"]
+    }
+
+    Object.keys(scripts).forEach(categoryI => {
+        let category = scripts[categoryI];
+    %>
+        <!-- <%= categoryI %> scripts: -->
+        <% category.forEach(script => { %>
+            <script type="text/javascript" src="/js/earth/<%= script %>.js"></script>
+        <% }); %>
+    <% }); %>
+
+    <!-- FOOTER IS BEING RENDERED BY render.js - (FooterComponent)-->
+
+    <script src="/js/debugger.js" type="text/javascript"></script>
+    <script src="/js/data.js" type="text/javascript"></script>
+    <script src="/js/component.js" type="text/javascript"></script>
+    <script src="/js/components/MenuComponent.js" type="text/javascript"></script>
+    <script src="/js/components/FooterComponent.js" type="text/javascript"></script>
+    <script src="/js/renderer.js" type="text/javascript"></script>
+    <script src="/js/animations.js" type="text/javascript"></script>
+    <script src="/js/setuper.js" type="text/javascript"></script>
+</body>
+</html>

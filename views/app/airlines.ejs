@@ -1,0 +1,198 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="Aircraft,Airplane,Plane,Air,Exploration,Scanner,Longitude,Latitude,Altitude,Afilidia,Timathon,Airline,Departure">
+    <meta name="description" content="Planexplore - Plan your future departure using this flight finding tool">
+    <meta name="author" content="Afilidia">
+
+    <link rel="icon" href="/assets/icons/world-purple.png">
+
+    <!-- STYLES -->
+    <link rel="stylesheet"  type="text/css" href="/stylesheets/menu.css">
+    <link rel="stylesheet"  type="text/css" href="/stylesheets/index.css">
+    <link rel="stylesheet"  type="text/css" href="/stylesheets/footer.css">
+    <link rel="stylesheet"  type="text/css" href="/stylesheets/airlines.css">
+
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,300;1,600&display=swap" rel="stylesheet">
+
+    <!-- JQUERY -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <title>Airline finder | Planexplore</title>
+</head>
+<body>
+    <!-- MENU IS BEING RENDERED BY render.js - (MenuComponent) -->
+
+    <div class="container">
+        <div class="result-wrapper" id="result-wrapper">
+            <div class="header">
+                <span class="span-header">Airlines</span>
+            </div>
+
+            <div class="airlines scroll-container">
+
+                <div class="airline">
+                    <div class="airline-row">
+                        <span class="callsign">IOZZM</span>
+                        <div class="airports">
+                            <span class="from-airport airport_iata">KRK</span>
+                                <img src="/assets/icons/right-arrow.png" class="arrow-right">
+                            <span class="to-airport airport_iata">SVQ</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="settings-wrapper">
+            <div class="header">
+                <span class="span-header">Options</span>
+            </div>
+
+            <div class="options">
+                <div class="option">
+                    <!-- <span class="option-name">Airports</span> -->
+
+                    <div class="wrapper">
+
+                        <div class="column">
+                            <div class="iata-iata">
+                                <select class="iata select from" name="iata-from-select">
+                                    <option class="option" value="KRK">KRK</option>
+                                </select>
+
+                                <img src="/assets/icons/right-arrow.png" class="arrow-right">
+
+                                <select class="iata select to" name="iata-to-select">
+                                    <option class="option" value="SVQ">SVQ</option>
+                                </select>
+                            </div>
+
+                            <div class="name-name">
+                                <span class="airport-name name-from">Krakow Airport</span>
+                                <img src="/assets/icons/right-arrow.png" class="small-arrow arrow-right small-opacity-arrow">
+                                <span class="airport-name name-to">Seville Airport</span>
+                            </div>
+                        </div>
+
+                        <div class="column down">
+                            <div class="date-date">
+                                <label for="datetime-from" class="option-label">
+                                    <span class="input-text">From date</span>
+                                    <input type="datetime-local" name="datetime-from" id="datetime-from" class="date">
+                                </label>
+
+
+                                <label for="datetime-to" class="option-label">
+                                    <span class="input-text">To date</span>
+                                    <input type="datetime-local" name="datetime-to" id="datetime-to" class="date">
+                                </label>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="option">
+
+                    <div class="wrapper">
+
+                        <div class="column">
+                            <div class="price-price">
+                                <label for="price-from" class="option-label">
+                                    <span class="input-text">From price</span>
+                                    <input type="number" name="price-from" class="num-input" id="price-from" min="1" max="100000">
+                                </label>
+
+                                <!-- <span class="char">-</span> -->
+                                <label for="price-to" class="option-label">
+                                    <span class="input-text">To price</span>
+                                    <input type="number" name="price-to" class="num-input" id="price-to" min="1" max="100000">
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="column down">
+                            <div class="currency">
+                                <div class="header-wrapper">
+                                    <span class="option-name">Ticket Currency</span>
+                                </div>
+
+                                <div class="currency-wrapper">
+                                    <select name="currency-select" id="currency-select" class="select">
+                                        <option class="option" value="usd">USD</option>
+                                        <option class="option" value="eur">EUR</option>
+                                        <option class="option" value="pln">PLN</option>
+                                        <option class="option" value="gbp">GBP</option>
+                                    </select>
+
+                                    <img src="/assets/icons/langs/usd.png" class="currency-icon" id="currency-icon">
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="option">
+
+                    <div class="wrapper">
+
+                        <div class="column full no-border">
+                            <div class="checkers">
+
+                                <div class="checker">
+                                    <label for="direct-flights" class="label checkbox">
+                                        <span class="input-text">Direct flights</span>
+                                        <input type="checkbox" class="checkbox" id="direct-flights" name="direct-flights">
+                                    </label>
+                                </div>
+
+                                <div class="checker">
+                                    <label for="lowest-price" class="label checkbox">
+                                        <span class="input-text">From lowest price</span>
+                                        <input type="checkbox" class="checkbox" id="lowest-price" name="lowest-price" checked>
+                                    </label>
+                                </div>
+
+                                <div class="checker">
+                                    <label for="biggest-price" class="label checkbox">
+                                        <span class="input-text">From biggest price</span>
+                                        <input type="checkbox" class="checkbox" id="biggest-price" name="biggest-price">
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <a href="#result-wrapper" class="btn a-btn search-flights">Search</a>
+
+    </div>
+
+    <!-- FOOTER IS BEING RENDERED BY render.js - (FooterComponent)-->
+
+    <script src="/js/debugger.js" type="text/javascript"></script>
+    <script src="/js/data.js" type="text/javascript"></script>
+    <script src="/js/flights.js" type="text/javascript"></script>
+    <script src="/js/search_engine/filters.js" type="text/javascript"></script>
+    <script src="/js/search_engine/search.js" type="text/javascript"></script>
+    <script src="/js/airlines.js" type="text/javascript"></script>
+    <script src="/js/component.js" type="text/javascript"></script>
+    <script src="/js/components/MenuComponent.js" type="text/javascript"></script>
+    <script src="/js/components/FooterComponent.js" type="text/javascript"></script>
+    <script src="/js/renderer.js" type="text/javascript"></script>
+    <script src="/js/animations.js" type="text/javascript"></script>
+    <script src="/js/setuper.js" type="text/javascript"></script>
+</body>
+</html>

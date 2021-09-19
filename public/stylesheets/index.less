@@ -46,6 +46,7 @@ body {
     justify-content: space-between;
 
     transition: all 300ms ease-in-out;
+    z-index: 10;
     .noselect();
 
     @media screen and (max-width: 550px) {
@@ -165,6 +166,7 @@ body {
                 }
 
             } /* option */
+
         } /* a */
 
         @media screen and (max-width: 1100px) {
@@ -187,9 +189,14 @@ body {
 
 
         .name {
-            height: 39px;
-            position: absolute;
-            top: (@menu-height / 3 + 1px);
+            height: @menu-height;
+
+            @media only screen and (max-width: 550px) {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: (@menu-height - 25px);
+            }
         }
 
         .options {
@@ -229,6 +236,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+
 
     .intro {
         width: 100%;
@@ -294,6 +302,10 @@ body {
                 &:nth-child(3) {
                     animation-delay: -.4s;
                 }
+
+                &:hover {
+                    cursor: pointer;
+                }
             }
 
             &.hide {
@@ -304,13 +316,16 @@ body {
     }
 
     .greet {
-        font-size: 7em;
+        font-size: 6em;
         font-weight: 600;
         font-family: 'Source Sans Pro', sans-serif;
-        position: fixed;
+        position: absolute;
         top: 30%;
         left: 50%;
         transform: translate(-50%, -50%);
+        .noselect();
+        width: 80%;
+        text-align: center;
 
         @media screen and (max-width: 1350px) {
             & {
@@ -332,9 +347,13 @@ body {
     .earth-image {
         max-width: 120%;
         max-height: 100%;
+        width: auto;
+        height: auto;
+
         position: fixed;
-        bottom: -55%;
+        bottom: -50vh;
         transition: all 300ms ease-in-out;
+        .noselect();
 
         @media screen and (max-width: 600px) {
             & {
@@ -346,7 +365,7 @@ body {
 
         @media screen and (max-width: 400px) {
             & {
-                bottom: -30%;
+                bottom: -35%;
                 max-width: 150%;
                 transition: all 300ms ease-in-out;
             }
@@ -393,6 +412,8 @@ body {
     margin-top: 20vh;
     font-family: 'Source Sans Pro', sans-serif;
     font-weight: 600;
+
+    .noselect();
 }
 
 .a-btn {
@@ -429,6 +450,10 @@ body {
     &:hover::after {
         transform: rotate(140deg);
     }
+
+    &.hide {
+        display: none;
+    }
 }
 
 
@@ -441,7 +466,15 @@ body {
     opacity: 1;
 }
 
-@keyframes gradient {
+// .footer {
+//     @media screen and (max-width: 1450px) {
+//         & {
+//             top: 220vh !important; 
+//         }
+//     }
+// }
+
+@keyframes gradient { 
 	0% {
 		background-position: 0% 50%;
 	}

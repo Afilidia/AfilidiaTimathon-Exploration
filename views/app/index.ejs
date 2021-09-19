@@ -1,1 +1,57 @@
-test
+
+<div class="leaflet-popup-box">
+    <span class="leaflet-header">ICAO: ${icao}</span>
+
+    <div class="leaflet-content">
+        <div class="leaflet-row">
+            <span class="lealfet-row-header bold">Longitude: </span>
+            <label class="leaflet-row-content">${lon}°</label>
+        </div>
+    </div>
+
+    <div class="leaflet-content">
+        <div class="leaflet-row">
+            <span class="lealfet-row-header bold">Latitude: </span>
+            <label class="leaflet-row-content">${lat}°</label>
+        </div>
+    </div>
+
+    <div class="leaflet-content">
+        <div class="leaflet-row">
+            <span class="lealfet-row-header bold">Altitude: </span>
+            <label class="leaflet-row-content">${alt} meters</label>
+        </div>
+    </div>
+
+    <div class="bar"></div>
+
+    <div class="leaflet-content">
+        <div class="leaflet-row">
+            <span class="lealfet-row-header bold">From: </span>
+            <label class="leaflet-row-content">${airport_from} meters</label>
+        </div>
+    </div>
+
+    <div class="leaflet-content">
+        <div class="leaflet-row">
+            <span class="lealfet-row-header bold">To: </span>
+            <label class="leaflet-row-content">${airport_to} meters</label>
+        </div>
+    </div>
+
+    <div class="bar"></div>
+
+    <div class="leaflet-content">
+        <div class="leaflet-row">
+            <span class="lealfet-row-header bold">Heading: </span>
+            <label class="leaflet-row-content">${heading} </label>
+        </div>
+    </div>
+
+    <div class="leaflet-content">
+        <div class="leaflet-row">
+            <span class="lealfet-row-header bold">Speed: </span>
+            <label class="leaflet-row-content">${speed} km/h</label>
+        </div>
+    </div>
+</div>

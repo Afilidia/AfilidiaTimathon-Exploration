@@ -9,16 +9,25 @@ class Component {
         ];
     }
 
-    readFromFile(filepath) {
-        let content = '';
+    async readFromFile(filepath) {
+        let content = await new Promise(function(resolve, reject) {
+            fetch(filepath)
+            .then(res => res.text())
+            .then(res => resolve(res));
+        }).catch((err) => {console.log(err)});
 
-        Promise.all([
-            fetch(filepath).then(result => result.text()),
-        ]).then(response => {
-            content = response[0];
-        });
-
-        console.log(content);
         return content;
+    }
+
+    async getHTML(filepath) {
+        return await this.readFromFile(filepath);
+    }
+
+    checkIfHTMLInserted() {
+        return false;
+    }
+
+    checkIfCSSInserted() {
+        return false;
     }
 }

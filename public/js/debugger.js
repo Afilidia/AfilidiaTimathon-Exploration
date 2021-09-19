@@ -14,10 +14,10 @@ class Debugger {
     };
 
     /* Console functions */
-    static warn(message) { if (Debugger.DEBUG) console.warn(`[!!] ${Debugger.#__getDebuggerData}: ${message}`); }
-    static info(message) { if (Debugger.DEBUG) console.info(`[??] ${Debugger.#__getDebuggerData}: ${message}`); }
-    static error(message) { if (Debugger.DEBUG) console.error(`[error] ${Debugger.#__getDebuggerData}: ${message}`); }
-    static log(message) { if (Debugger.DEBUG) console.log(`[log] ${Debugger.#__getDebuggerData}: ${message}`); }
+    static warn(message) { if (Debugger.DEBUG) console.warn(`[!!] ${Debugger.getDebuggerData}: ${message}`); }
+    static info(message) { if (Debugger.DEBUG) console.info(`[??] ${Debugger.getDebuggerData}: ${message}`); }
+    static error(message) { if (Debugger.DEBUG) console.error(`[error] ${Debugger.getDebuggerData}: ${message}`); }
+    static log(message) { if (Debugger.DEBUG) console.log(`[log] ${Debugger.getDebuggerData}: ${message}`); }
 
     constructor (page, settings) {
         if (page) Debugger.PAGE = page;
@@ -27,7 +27,7 @@ class Debugger {
         Debugger.DEBUG = settings.debug;
     }
 
-    static get #__getDate() {
+    static get getDate() {
         let date = new Date();
 
         return '' + (date.getHours() + 1) + ':' + (date.getMinutes() + 1) + ':' + (date.getSeconds() + 1) + (function () {
@@ -36,7 +36,7 @@ class Debugger {
         })();
     }
 
-    static get #__getDebuggerData() {
-        return `${Debugger.#__getDate} | ${Debugger.PAGE}`;
+    static get getDebuggerData() {
+        return `${Debugger.getDate} | ${Debugger.PAGE}`;
     }
 }

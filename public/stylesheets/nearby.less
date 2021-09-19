@@ -1,0 +1,146 @@
+@charset 'utf-8';
+@import 'tools';
+
+html {
+    max-width: 100%;
+}
+
+.container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    font-family: 'Source Sans Pro', sans-serif;
+    height: 100vh;
+
+    @media screen and (max-width: 1300px) {
+        & {
+            flex-direction: column;
+            align-items: center;
+            height: 110vh;
+        }
+    }
+
+    .settings-wrapper,
+    .map-wrapper {
+        width: 45%;
+        height: 70%;
+
+        @media screen and (max-width: 1300px) {
+            width: 90%;
+        }
+
+        @media screen and (max-width: 600px) {
+            width: 100%;
+        }
+    }
+
+    .map-wrapper {
+        @media screen and (max-width: 1300px) {
+            height: 60%;
+        }
+    }
+
+
+    .settings-wrapper {
+        background: rgba( 255, 255, 255, 0.00 );
+        box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+        backdrop-filter: blur( 20.0px );
+        -webkit-backdrop-filter: blur( 20.0px );
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+
+        @media screen and (max-width: 1300px) {
+            border-top-right-radius: 0px;
+            border-bottom-right-radius: 20px;
+            border-bottom-left-radius: 20px;
+
+            height: 100%;
+        }
+
+        .settings-header {
+            font-size: 32px;
+            font-weight: 700;
+
+            align-items: center;
+            display: flex;
+            height: 36px;
+            padding: 5px 10px;
+
+            width: (100% - 5px);
+            border-bottom: 2px solid @dark-purple;
+        }
+
+        .settings-content {
+            height: auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+
+            .settings-row {
+                width: 90%;
+                height: 20%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                margin: 20px 0;
+
+                @media screen and (max-width: 600px) {
+                    width: 95%;
+                }
+
+                .settings-row-header {
+                    font-size: 24px;
+                    font-weight: 500;
+                }
+
+                .settings-row-content {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    height: auto;
+                    margin: 10px 0;
+
+                    .settings-value {
+                        font-size: 20px;
+                        font-weight: 400;
+                        color: @light-purple;
+                    }
+                }
+            }
+        }
+    }
+
+    #mapid {
+        height: 100%;
+        width: 100%;
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+
+        @media screen and (max-width: 1300px) {
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            border-bottom-left-radius: 0px;
+        }
+
+    }
+}
+
+.footer {
+    top: 100vh;
+
+    @media screen and (max-width: 1300px) {
+        top: 150vh;
+    }
+}
+
+.submit-btn {
+    padding: 10px 25px;
+    margin-top: 0;
+
+    position: absolute;
+    bottom: 1%;
+    right: 1%;
+}

@@ -3,28 +3,41 @@
 
 class Renderer {
     constructor (settings) {
-
-        // * Create each component instances
-        this.FooterComponent = new FooterComponent();
-        this.MenuComponent = new MenuComponent();
-
+        this.settings = settings;
         this.Component = new Component();
 
         this.Components = {
-            'FooterComponent': this.FooterComponent,
-            'MenuComponent': this.MenuComponent,
-
             parent: {
                 object: this.Component,
                 name: 'Component'
             }
-
         };
 
-
         // * Pages where given element render is enabled
-        this.renderPages = settings.renderPages;
+        this.renderPages = this.getRenderPages(settings.renderPages);
         this.renderable = this.getMatchingComponents;
+
+        this.currentComponents = settings.components;
+
+        try {
+            this.currentComponents.forEach(component_to_render => {
+                let settings = this.settings.renderPages[component_to_render].settings;
+
+                // * Add component to the components array
+                this.Components[component_to_render] = {name: '', object: null};
+
+                this.Components[component_to_render].name = component_to_render;
+                this.Components[component_to_render].object = this.componentAdder(component_to_render, settings);
+            });
+
+        } catch (TypeError) {
+            Debugger.error(`Probably settings.components are NULL or are a empty string (returning result of getComponents() function in data.js)`);
+        }
+
+
+        // * Get each component instances
+        if (Object.keys(this.Components).includes('FooterComponent')) this.FooterComponent = this.Components.FooterComponent;
+        if (Object.keys(this.Components).includes('MenuComponent')) this.MenuComponent = this.Components.MenuComponent;
     }
 
     manageComponents(type, components) {
@@ -32,7 +45,7 @@ class Renderer {
             case 'add': {
                 components.forEach(component => {
                     // ! Check if component is valid and add it to the this.Components Object
-                    if (isValidComponent(component)) this.Components[component] = this.getComponent(component);
+                    if (isValidComponent(component.name)) this.Components[component] = this.componentAdder(component.settings);
                 });
 
             } break;
@@ -59,35 +72,95 @@ class Renderer {
 
     render(args) {
         let arg_Components = null;
+        let arg_Gateway = null;
 
-        // Get arguments
-        if (args.hasOwnProperty('components')) arg_Components = args.components;
+        let enabled = {};
+        this.currentComponents.forEach(component => {
+            enabled[component] = true;
+        });
 
-        if (arg_Components) {
-            if (arg_Components.hasOwnProperty('add')) {
-                this.manageComponents('add', arg_Components.add);
+        // * Get arguments if args are defined
+        if (args !== undefined) {
+            if (args.hasOwnProperty('components')) arg_Components = args.components;
+            if (args.hasOwnProperty('gateway')) arg_Gateway = args.gateway;
 
-            } else {
-                this.manageComponents('remove', arg_Components.remove);
+            // * Adding/removing components before rendering
+            if (arg_Components) {
+                if (arg_Components.hasOwnProperty('add')) {
+                    // ! args have to contain args.components.add .name && .settings
+                    this.manageComponents('add', arg_Components.add);
+
+                } else {
+                    this.manageComponents('remove', arg_Components.remove);
+                }
+            }
+
+            // * Disabling given component once
+            if (arg_Gateway) {
+                Object.keys(arg_Gateway).forEach(component => {
+                    if (arg_Gateway[component] == false) enabled[component] = false;
+                });
             }
         }
+
+        this.currentComponents.forEach(component => {
+
+            // * Render all enabled components
+            if ((component.name != 'parent') && (enabled[component]) && (this.renderPages[component].includes(CURRENT_PAGE))) {
+
+                try {
+                    // * Render each component that fulfills given conditions
+                    let rendered = this.Components[component].object.render();
+                    if (rendered) Debugger.info(`Rendered ${component} element`);
+
+                } catch (TypeError) {
+                    console.log(TypeError.message);
+                }
+
+            }
+        });
+    }
+
+    componentAdder(component, settings) {
+        try {
+            console.log();
+            switch (component) {
+                case 'MenuComponent': {return new MenuComponent(settings)}
+                case 'FooterComponent': {return new FooterComponent(settings)}
+                default: {return null}
+            }
+        } catch (ReferenceError) {
+            Debugger.error(ReferenceError.message);
+        }
+
+    }
+
+    getRenderPages(pagesSettings) {
+        let component_Pages = {};
+
+        let components = Object.keys(pagesSettings);
+        components.forEach(component => {
+            component_Pages[component] = pagesSettings[component].pages;
+        });
+
+        return component_Pages;
     }
 
 
     /* GETTERS */
 
     // Get all matching components for CURRENT_PAGE
-    static get getMatchingComponents() {
+    get getMatchingComponents() {
+        let result = false;
 
         if (this.renderPages) {
-            let result = false;
 
             this.Component.allComponents.forEach(component => {
-                if (this.renderPages[component].includes(CURRENT_PAGE)) result = true;
+                if (this.renderPages[component.name].includes(CURRENT_PAGE)) result = true;
             });
-
-            return result;
         }
+
+        return result;
     }
 }
 

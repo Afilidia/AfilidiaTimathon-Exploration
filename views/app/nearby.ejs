@@ -1,0 +1,102 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="Aircraft,Airplane,Plane,Air,Exploration,Scanner,Longitude,Latitude,Altitude,Afilidia,Timathon">
+    <meta name="description" content="Planexplore - Scan the nearby terrain to see all the aircrafts around you!">
+    <meta name="author" content="Afilidia">
+
+    <link rel="icon" href="/assets/icons/world-purple.png">
+
+    <!-- STYLES -->
+    <link rel="stylesheet"  type="text/css" href="/stylesheets/menu.css">
+    <link rel="stylesheet"  type="text/css" href="/stylesheets/index.css">
+    <link rel="stylesheet"  type="text/css" href="/stylesheets/footer.css">
+    <link rel="stylesheet"  type="text/css" href="/stylesheets/nearby.css">
+    <link rel="stylesheet"  type="text/css" href="/stylesheets/popup.css">
+
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,300;1,600&display=swap" rel="stylesheet">
+
+    <!-- JQUERY -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin=""/>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+
+    <title>Find nearby aircrafts | Planexplore</title>
+</head>
+<body>
+    <!-- MENU IS BEING RENDERED BY render.js - (MenuComponent) -->
+
+    <div class="container">
+
+        <div class="map-wrapper">
+            <div id="mapid"></div>
+        </div>
+
+        <div class="settings-wrapper">
+            <span class="settings-header">Customize</span>
+
+            <div class="settings-content">
+
+                <!-- GET LOCATION -->
+                <div class="settings-row">
+                    <span class="settings-row-header">Your localization</span>
+                    <div class="settings-row-content">
+                        <button class="button location">Get location</button>
+                        <span class="settings-value location">No localization</span>
+                    </div>
+                </div>
+
+                <!-- GET RADIUS -->
+                <div class="settings-row">
+                    <span class="settings-row-header">Scanning radius</span>
+                    <div class="settings-row-content">
+                        <input type="range" class="range-input radius" min="10" max="1000" value="100">
+                        <span class="settings-value radius">100 km</span>
+                    </div>
+                </div>
+
+                <!-- GET RADIUS -->
+                <div class="settings-row">
+                    <span class="settings-row-header">Map style</span>
+                    <div class="settings-row-content">
+
+                        <select class="select style">
+                            <option class="option" value="streets">Streets</option>
+                            <option class="option" value="hybrid">Hybrid</option>
+                        </select>
+                        <span class="settings-value style">Streets map</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <a href="#" class="a-btn btn submit-btn">Find</a>
+        </div>
+
+    </div>
+
+    <!-- FOOTER IS BEING RENDERED BY render.js - (FooterComponent)-->
+
+    <script src="/js/debugger.js" type="text/javascript"></script>
+    <script src="/js/requests.js" type="text/javascript"></script>
+    <script src="/js/leaflet.rotatedMarker.js" type="text/javascript"></script>
+    <script src="/js/data.js" type="text/javascript"></script>
+    <script src="/js/map.js" type="text/javascript"></script>
+    <script src="/js/component.js" type="text/javascript"></script>
+    <script src="/js/components/MenuComponent.js" type="text/javascript"></script>
+    <script src="/js/components/FooterComponent.js" type="text/javascript"></script>
+    <script src="/js/renderer.js" type="text/javascript"></script>
+    <script src="/js/animations.js" type="text/javascript"></script>
+    <script src="/js/setuper.js" type="text/javascript"></script>
+</body>
+</html>

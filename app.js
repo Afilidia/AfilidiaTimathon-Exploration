@@ -30,6 +30,18 @@ app.use('/', landingRouter);
 app.use('/', appRouter);
 app.use('/', apiRouter);
 
+/* CROSS ORIGIN */
+let cors = require('cors');
+
+//enables cors
+app.use(cors({
+	'allowedHeaders': ['sessionId', 'Content-Type'],
+	'exposedHeaders': ['sessionId'],
+	'origin': '*',
+	'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+	'preflightContinue': false
+}));
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
 	next(createError(404));
